@@ -12,8 +12,8 @@ class AttractionRepository:
             lng: str, 
             transport: str, 
             images: List[str], 
-            category_id: int, 
-            mrt_id: int) -> bool:
+            category: str, 
+            mrt: str) -> bool:
         return NotImplemented
     def get_all(self) -> List[Attraction]:
         return NotImplemented
