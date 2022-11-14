@@ -16,7 +16,7 @@ class CategoryRepository:
         return NotImplemented
 
 class MRTRepository:
-    def add(self, value: MRT) -> None:
+    def add(self, name: str) -> bool:
         return NotImplemented
     def get_all(self) -> List[MRT]:
         return NotImplemented
