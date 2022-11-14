@@ -3,7 +3,17 @@ import typing
 List = typing.List
 
 class Attraction:
-    def __init__(self, id: int, name: str, description: str, address: str, lat: str, lng: str, transport: str, images: List[str], category_id: int, mrt_id: int):
+    def __init__(self, 
+                 id: int, 
+                 name: str, 
+                 description: str, 
+                 address: str, 
+                 lat: str, 
+                 lng: str, 
+                 transport: str, 
+                 images: List[str], 
+                 category: str, 
+                 mrt: str):
         self.id = id
         self.name = name
         self.description = description
@@ -12,8 +22,8 @@ class Attraction:
         self.lng = lng
         self.transport = transport
         self.images = images
-        self.category_id = category_id
-        self.mrt_id = mrt_id
+        self.category = category
+        self.mrt = mrt
 
 class Category:
     def __init__(self, id: int, name: str):
