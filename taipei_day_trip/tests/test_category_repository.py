@@ -2,6 +2,7 @@ import pytest
 
 from taipei_day_trip.core import UnitOfWork
 from taipei_day_trip.repository import MemoryUnitOfWork
+from taipei_day_trip.repository import MySQLUnitOfWork
 
 def category_test_case(db: UnitOfWork):
     assert len(db.categories.get_all()) == 0
@@ -15,4 +16,9 @@ def category_test_case(db: UnitOfWork):
 
 def test_memory_based_repository():
     db = MemoryUnitOfWork()
+    category_test_case(db)
+
+@pytest.mark.skipif(not MySQLUnitOfWork.isAvailable('config.json'), reason="database is not avaibable")
+def test_mysql_based_repository():
+    db = MySQLUnitOfWork('config.json', debug=True)
     category_test_case(db)
