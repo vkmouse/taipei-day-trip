@@ -15,8 +15,8 @@ def attraction_test_case(db: UnitOfWork):
                               lng=40,
                               transport='trans',
                               images=[],
-                              category_id=1,
-                              mrt_id=1) == True
+                              category='category1',
+                              mrt='mrt1') == True
     all = db.attractions.get_all()
     assert len(all) == 1
     assert all[0].id == 1
@@ -37,8 +37,8 @@ def attraction_test_case(db: UnitOfWork):
                               lng=40,
                               transport='trans',
                               images=[],
-                              category_id=2,
-                              mrt_id=2) == False
+                              category='category2',
+                              mrt='mrt2') == False
 
 def test_memory_based_repository():
     db = MemoryUnitOfWork()
