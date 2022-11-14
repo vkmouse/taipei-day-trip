@@ -19,24 +19,22 @@ class MemoryAttractionRepository(AttractionRepository):
             lng: str, 
             transport: str, 
             images: List[str], 
-            category_id: int, 
-            mrt_id: int) -> bool:
-        category = self.__categories.get_by_id(category_id)
-        mrt = self.__mrts.get_by_id(mrt_id)
-        if category == None or mrt == None:
-            return False
-        element = Attraction(self.__next_id, 
-                           name,
-                           description,
-                           address,
-                           lat,
-                           lng,
-                           transport,
-                           images,
-                           category=self.__categories.get_by_id(category_id).name,
-                           mrt=self.__mrts.get_by_id(mrt_id).name)
-        self.__db.append(element)
-        return True
+            category: str, 
+            mrt: str) -> bool:
+        if self.__categories.exists(category) and self.__mrts.exists(mrt):
+            element = Attraction(self.__next_id, 
+                                 name,
+                                 description,
+                                 address,
+                                 lat,
+                                 lng,
+                                 transport,
+                                 images,
+                                 category=category,
+                                 mrt=mrt)
+            self.__db.append(element)
+            return True
+        return False
 
     def get_all(self) -> List[Attraction]:
         return self.__db

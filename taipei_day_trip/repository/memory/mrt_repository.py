@@ -18,11 +18,8 @@ class MemoryMRTRepository(MRTRepository):
     def get_all(self) -> List[MRT]:
         return self.__db
 
-    def get_by_id(self, id: int) -> MRT | None:
-        elements = list(filter(lambda i: i.id == id, self.__db))
-        if len(elements) > 0:
-            return elements[0]
-        return None
+    def exists(self, name: str) -> bool:
+        return len(list(filter(lambda i: i.name == name, self.__db))) > 0
 
     @property
     def __next_id(self):
