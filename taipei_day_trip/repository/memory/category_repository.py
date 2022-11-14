@@ -1,0 +1,24 @@
+from taipei_day_trip.core import Category
+from taipei_day_trip.core import CategoryRepository
+from taipei_day_trip.core import List
+
+class MemoryCategoryRepository(CategoryRepository):
+    def __init__(self):
+        self.__db: List[Category] = []
+        self.__id: int = 0
+
+    def add(self, name: str) -> bool:
+        category_exists = len(list(filter(lambda i: i.name == name, self.__db))) > 0
+        if category_exists:
+            return False
+        category = Category(self.__next_id, name)
+        self.__db.append(category)
+        return True
+
+    def get_all(self) -> List[Category]:
+        return self.__db
+
+    @property
+    def __next_id(self):
+        self.__id += 1
+        return self.__id
