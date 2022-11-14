@@ -11,12 +11,18 @@ class MemoryCategoryRepository(CategoryRepository):
         category_exists = len(list(filter(lambda i: i.name == name, self.__db))) > 0
         if category_exists:
             return False
-        category = Category(self.__next_id, name)
-        self.__db.append(category)
+        element = Category(self.__next_id, name)
+        self.__db.append(element)
         return True
 
     def get_all(self) -> List[Category]:
         return self.__db
+
+    def get_by_id(self, id: int) -> Category | None:
+        elements = list(filter(lambda i: i.id == id, self.__db))
+        if len(elements) > 0:
+            return elements[0]
+        return None
 
     @property
     def __next_id(self):
