@@ -17,6 +17,10 @@ class AttractionRepository:
         return NotImplemented
     def get_all(self) -> List[Attraction]:
         return NotImplemented
+    def get_by_id(self, id) -> Attraction | None:
+        return NotImplemented
+    def search_by_name(self, pattern: str, start: int, end: int) -> List[Attraction]:
+        return NotImplemented
 
 class CategoryRepository:
     def add(self, name: str) -> bool:
