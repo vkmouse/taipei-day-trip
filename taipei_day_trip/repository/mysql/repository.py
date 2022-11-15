@@ -2,7 +2,7 @@ import mysql.connector
 import logging
 
 class MySQLRepository:
-    def withConnection(func):
+    def with_connection(func):
         def wrap(self, *args, **kwargs):
             cnx = self.cnxpool.get_connection()
             cursor = cnx.cursor()
@@ -21,32 +21,32 @@ class MySQLRepository:
     def __init__(self, cnxpool: mysql.connector.pooling.MySQLConnectionPool, debug: bool):
         self.debug = debug
         self.cnxpool = cnxpool
-        self.createTable()
+        self.create_table()
 
-    @withConnection
-    def createTable(self, cnx, cursor):
-        if not self.tableExists():
-            cursor.execute(self.createTableStatement)
+    @with_connection
+    def create_table(self, cnx, cursor):
+        if not self.table_exists():
+            cursor.execute(self.create_table_statement)
 
-    @withConnection
-    def dropTableIfExists(self, cnx, cursor):
-        if self.tableExists():
-            cursor.execute(self.dropTableStatement)
+    @with_connection
+    def drop_table_if_exists(self, cnx, cursor):
+        if self.table_exists():
+            cursor.execute(self.drop_table_statement)
 
-    @withConnection
-    def tableExists(self, cnx, cursor) -> bool:
+    @with_connection
+    def table_exists(self, cnx, cursor) -> bool:
         cursor.execute('SHOW TABLES;')
-        isExists = (self.tableName,) in cursor.fetchall()
+        isExists = (self.tablename,) in cursor.fetchall()
         return isExists
 
     @property
-    def tableName(self) -> str:
+    def tablename(self) -> str:
         return NotImplemented
 
     @property
-    def createTableStatement(self) -> str:
+    def create_table_statement(self) -> str:
         return NotImplemented
 
     @property
-    def dropTableStatement(self) -> str:
-        return 'DROP TABLE {};'.format(self.tableName)
+    def drop_table_statement(self) -> str:
+        return 'DROP TABLE {};'.format(self.tablename)

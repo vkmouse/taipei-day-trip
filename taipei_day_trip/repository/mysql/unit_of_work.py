@@ -19,12 +19,12 @@ class MySQLUnitOfWork(UnitOfWork):
 
     def __del__(self):
         if self.__debug:
-            self.attractions.dropTableIfExists()
-            self.categories.dropTableIfExists()
-            self.mrts.dropTableIfExists()
+            self.attractions.drop_table_if_exists()
+            self.categories.drop_table_if_exists()
+            self.mrts.drop_table_if_exists()
 
     def _create_attraction_repository(self) -> AttractionRepository:
-        return MySQLAttractionRepository(self.__cnxpool, self.categories.tableName, self.mrts.tableName, self.__debug)
+        return MySQLAttractionRepository(self.__cnxpool, self.categories.tablename, self.mrts.tablename, self.__debug)
 
     def _create_category_repository(self) -> CategoryRepository:
         return MySQLCategoryRepository(self.__cnxpool, self.__debug)

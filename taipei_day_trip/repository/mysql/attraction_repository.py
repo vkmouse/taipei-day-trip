@@ -5,13 +5,13 @@ from taipei_day_trip.repository.mysql.attraction_image_repository import MySQLAt
 from taipei_day_trip.repository.mysql.repository import MySQLRepository
 
 class MySQLAttractionRepository(MySQLRepository, AttractionRepository):
-    def __init__(self, cnxpool, categoryTableName: str, mrtTableName: str, debug: bool):
-        self.categoryTableName = categoryTableName
-        self.mrtTableName = mrtTableName
+    def __init__(self, cnxpool, category_tablename: str, mrt_tablename: str, debug: bool):
+        self.category_tablename = category_tablename
+        self.mrt_tablename = mrt_tablename
         MySQLRepository.__init__(self, cnxpool, debug)
-        self.attraction_images = MySQLAttractionImageRepository(cnxpool, self.tableName, debug)
+        self.attraction_images = MySQLAttractionImageRepository(cnxpool, self.tablename, debug)
 
-    @MySQLRepository.withConnection
+    @MySQLRepository.with_connection
     def add(self, 
             name: str, 
             description: str, 
@@ -27,9 +27,9 @@ class MySQLAttractionRepository(MySQLRepository, AttractionRepository):
             'VALUES (%s, %s, %s, %s, %s, %s,'
             '    (SELECT id FROM {category} WHERE name = %s),'
             '    (SELECT id FROM {mrt} WHERE name = %s));'
-        ).format(attraction=self.tableName,
-                 category=self.categoryTableName,
-                 mrt=self.mrtTableName)
+        ).format(attraction=self.tablename,
+                 category=self.category_tablename,
+                 mrt=self.mrt_tablename)
         data = (name, description, address, lat, lng, transport, category, mrt,)
         cursor.execute(query, data)
         cnx.commit()
@@ -39,7 +39,7 @@ class MySQLAttractionRepository(MySQLRepository, AttractionRepository):
         self.attraction_images.add(id, images)
         return True
 
-    @MySQLRepository.withConnection
+    @MySQLRepository.with_connection
     def get_all(self, cnx, cursor) -> List[Attraction]:
         query = (
             'SELECT'
@@ -57,9 +57,9 @@ class MySQLAttractionRepository(MySQLRepository, AttractionRepository):
             '    ON {attraction}.category_id={category}.id '
             'INNER JOIN {mrt} '
             '    ON {attraction}.category_id={mrt}.id'
-        ).format(attraction=self.tableName,
-                 category=self.categoryTableName,
-                 mrt=self.mrtTableName)
+        ).format(attraction=self.tablename,
+                 category=self.category_tablename,
+                 mrt=self.mrt_tablename)
         cursor.execute(query)
         rows = cursor.fetchall()
         output: List[Attraction] = []
@@ -79,13 +79,13 @@ class MySQLAttractionRepository(MySQLRepository, AttractionRepository):
         return output
 
     @property
-    def tableName(self) -> str:
+    def tablename(self) -> str:
         if self.debug:
             return 'test_attraction'
         return 'attraction'
 
     @property
-    def createTableStatement(self) -> str:
+    def create_table_statement(self) -> str:
         return (
             'CREATE TABLE {attraction} ('
             '    id              bigint        NOT NULL  AUTO_INCREMENT,'
@@ -101,10 +101,10 @@ class MySQLAttractionRepository(MySQLRepository, AttractionRepository):
             '    FOREIGN KEY (category_id) REFERENCES {category} (id),'
             '    FOREIGN KEY (mrt_id) REFERENCES {mrt} (id)'
             ');'
-        ).format(attraction=self.tableName,
-                 category=self.categoryTableName,
-                 mrt=self.mrtTableName)
+        ).format(attraction=self.tablename,
+                 category=self.category_tablename,
+                 mrt=self.mrt_tablename)
 
-    def dropTableIfExists(self):
-        self.attraction_images.dropTableIfExists()
-        super().dropTableIfExists()
+    def drop_table_if_exists(self):
+        self.attraction_images.drop_table_if_exists()
+        super().drop_table_if_exists()

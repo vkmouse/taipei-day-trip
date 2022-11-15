@@ -6,29 +6,29 @@ class MySQLAttractionImageRepository(MySQLRepository):
         self.attraction_table_name = attraction_table_name
         MySQLRepository.__init__(self, cnxpool, debug)
 
-    @MySQLRepository.withConnection
+    @MySQLRepository.with_connection
     def add(self, attraction_id: int, urls: List[str], cnx, cursor):
         if len(urls) > 0:
-            query = 'INSERT INTO {} (attraction_id, url) VALUES (%s, %s)'.format(self.tableName)
+            query = 'INSERT INTO {} (attraction_id, url) VALUES (%s, %s)'.format(self.tablename)
             data = list(map(lambda url: (attraction_id, url,), urls))
             cursor.executemany(query, data)
             cnx.commit()
 
-    @MySQLRepository.withConnection
+    @MySQLRepository.with_connection
     def get_by_attraction_id(self, attraction_id: int, cnx, cursor) -> List[str]:
-        query = 'SELECT url FROM {} WHERE attraction_id = %s'.format(self.tableName)
+        query = 'SELECT url FROM {} WHERE attraction_id = %s'.format(self.tablename)
         data = (attraction_id,)
         cursor.execute(query, data)
         return list(map(lambda x: x[0], cursor.fetchall()))
 
     @property
-    def tableName(self) -> str:
+    def tablename(self) -> str:
         if self.debug:
             return 'test_attraction_image'
         return 'attraction_image'
 
     @property
-    def createTableStatement(self) -> str:
+    def create_table_statement(self) -> str:
         return (
             'CREATE TABLE {attraction_image} ('
             '    attraction_id   bigint        NOT NULL,'
@@ -36,5 +36,5 @@ class MySQLAttractionImageRepository(MySQLRepository):
             '    PRIMARY KEY (attraction_id, url),'
             '    FOREIGN KEY (attraction_id) REFERENCES {attraction} (id)'
             ');'
-        ).format(attraction_image=self.tableName,
+        ).format(attraction_image=self.tablename,
                  attraction=self.attraction_table_name)
