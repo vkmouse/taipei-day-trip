@@ -59,6 +59,19 @@ def images_test_case(db: UnitOfWork):
     assert actual[0] == '123'
     assert actual[1] == '456'
 
+def null_mrt_test_case(db: UnitOfWork):
+    db.categories.add('category1')
+    assert db.attractions.add(name='attr1',
+                              description='desc1',
+                              address='addr',
+                              lat=50,
+                              lng=40,
+                              transport='trans',
+                              images=['123', '456'],
+                              category='category1',
+                              mrt=None) == True
+    assert db.attractions.get_all()[0].mrt == None
+
 def test_memory_based_repository():
     db = MemoryUnitOfWork()
     attraction_test_case(db)
@@ -66,6 +79,10 @@ def test_memory_based_repository():
 def test_memory_based_images():
     db = MemoryUnitOfWork()
     images_test_case(db)
+
+def test_memory_based_null_mrt():
+    db = MemoryUnitOfWork()
+    null_mrt_test_case(db)
 
 @pytest.mark.skipif(not MySQLUnitOfWork.is_available('config.json'), reason="database is not avaibable")
 def test_mysql_based_repository():
@@ -76,3 +93,8 @@ def test_mysql_based_repository():
 def test_mysql_based_images():
     db = MySQLUnitOfWork('config.json', debug=True)
     images_test_case(db)
+
+@pytest.mark.skipif(not MySQLUnitOfWork.is_available('config.json'), reason="database is not avaibable")
+def test_mysql_based_null_mrt():
+    db = MySQLUnitOfWork('config.json', debug=True)
+    null_mrt_test_case(db)
