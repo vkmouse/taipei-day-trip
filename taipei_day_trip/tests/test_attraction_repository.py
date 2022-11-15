@@ -7,6 +7,7 @@ from taipei_day_trip.repository import MySQLUnitOfWork
 def attraction_test_case(db: UnitOfWork):
     db.categories.add('category1')
     db.mrts.add('mrt1')
+    db.mrts.add('mrt2')
     assert len(db.attractions.get_all()) == 0
 
     assert db.attractions.add(name='attr1',
@@ -17,7 +18,7 @@ def attraction_test_case(db: UnitOfWork):
                               transport='trans',
                               images=[],
                               category='category1',
-                              mrt='mrt1') == True
+                              mrt='mrt2') == True
     all = db.attractions.get_all()
     assert len(all) == 1
     assert all[0].id == 1
@@ -29,7 +30,7 @@ def attraction_test_case(db: UnitOfWork):
     assert all[0].transport == 'trans'
     assert all[0].images == []
     assert all[0].category == 'category1'
-    assert all[0].mrt == 'mrt1'
+    assert all[0].mrt == 'mrt2'
 
     assert db.attractions.add(name='attr1',
                               description='desc1',
