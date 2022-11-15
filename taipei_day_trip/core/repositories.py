@@ -17,7 +17,9 @@ class AttractionRepository:
         return NotImplemented
     def get_all(self) -> List[Attraction]:
         return NotImplemented
-    def get_by_id(self, id) -> Attraction | None:
+    def get_by_id(self, id: int) -> Attraction | None:
+        return NotImplemented
+    def get_range(self, start: int, end: int) -> List[Attraction]:
         return NotImplemented
     def search_by_name(self, pattern: str, start: int, end: int) -> List[Attraction]:
         return NotImplemented
