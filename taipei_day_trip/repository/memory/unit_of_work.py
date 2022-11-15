@@ -26,9 +26,9 @@ class MemoryUnitOfWork(UnitOfWork):
         file.close()
         self.import_from_json(line)
 
-    def import_from_json(self, jsonStr):
-        jsonObj = json.loads(jsonStr)
-        for attr in jsonObj['result']['results']:
+    def import_from_json(self, json_str):
+        json_obj = json.loads(json_str)
+        for attr in json_obj['result']['results']:
             self.categories.add(attr['CAT'])
             self.mrts.add(attr['MRT'])
             self.attractions.add(name=attr['name'],
@@ -37,10 +37,10 @@ class MemoryUnitOfWork(UnitOfWork):
                                  lat=float(attr['latitude']),
                                  lng=float(attr['longitude']),
                                  transport=attr['direction'],
-                                 images=self.__parseImageProperty(attr['file']),
+                                 images=self.__parse_image_property(attr['file']),
                                  category=attr['CAT'],
                                  mrt=attr['MRT'])
 
-    def __parseImageProperty(self, urls: str) -> List[str]:
+    def __parse_image_property(self, urls: str) -> List[str]:
         iter = re.finditer(r'(http(s?):)([/|.|\w|\s|-])*\.(?:PNG|JPG|png|jpg)', urls)
         return list(map(lambda m: m.group(0), iter))
