@@ -56,6 +56,16 @@ def get_by_id_test_case(db: UnitOfWork):
     assert db.attractions.get_by_id(1).name == 'attr1'
     assert db.attractions.get_by_id(2).name == 'attr2'
 
+def get_range_test_case(db: UnitOfWork):
+    db.categories.add('category1')
+    assert add_attraction(db, name='attr1') == True
+    assert add_attraction(db, name='attr2') == True
+    assert add_attraction(db, name='attr3') == True
+    assert add_attraction(db, name='attr4') == True
+    actuals = db.attractions.get_range(1, 3)
+    assert actuals[0].name == 'attr2'
+    assert actuals[1].name == 'attr3'
+
 def test_memory_based_repository():
     db = MemoryUnitOfWork()
     attraction_test_case(db)
@@ -71,6 +81,10 @@ def test_memory_based_null_mrt():
 def test_memory_based_get_by_id():
     db = MemoryUnitOfWork()
     get_by_id_test_case(db)
+
+def test_memory_based_get_range():
+    db = MemoryUnitOfWork()
+    get_range_test_case(db)
 
 @pytest.mark.skipif(not MySQLUnitOfWork.is_available('config.json'), reason="database is not avaibable")
 def test_mysql_based_repository():
@@ -91,3 +105,8 @@ def test_mysql_based_null_mrt():
 def test_mysql_based_get_by_id():
     db = MySQLUnitOfWork('config.json', debug=True)
     get_by_id_test_case(db)
+
+@pytest.mark.skipif(not MySQLUnitOfWork.is_available('config.json'), reason="database is not avaibable")
+def test_mysql_based_get_range():
+    db = MySQLUnitOfWork('config.json', debug=True)
+    get_range_test_case(db)
