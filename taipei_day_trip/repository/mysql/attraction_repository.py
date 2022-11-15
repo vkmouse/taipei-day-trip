@@ -1,6 +1,7 @@
 from taipei_day_trip.core import Attraction
 from taipei_day_trip.core import AttractionRepository
 from taipei_day_trip.core import List
+from taipei_day_trip.repository.mysql.attraction_image_repository import MySQLAttractionImageRepository
 from taipei_day_trip.repository.mysql.repository import MySQLRepository
 
 class MySQLAttractionRepository(MySQLRepository, AttractionRepository):
@@ -8,6 +9,7 @@ class MySQLAttractionRepository(MySQLRepository, AttractionRepository):
         self.categoryTableName = categoryTableName
         self.mrtTableName = mrtTableName
         MySQLRepository.__init__(self, cnxpool, debug)
+        self.attraction_images = MySQLAttractionImageRepository(cnxpool, self.tableName, debug)
 
     @MySQLRepository.withConnection
     def add(self, 
@@ -31,6 +33,10 @@ class MySQLAttractionRepository(MySQLRepository, AttractionRepository):
         data = (name, description, address, lat, lng, transport, category, mrt,)
         cursor.execute(query, data)
         cnx.commit()
+
+        cursor.execute('SELECT LAST_INSERT_ID();')
+        (id,) = cursor.fetchone()
+        self.attraction_images.add(id, images)
         return True
 
     @MySQLRepository.withConnection
@@ -68,7 +74,7 @@ class MySQLAttractionRepository(MySQLRepository, AttractionRepository):
                                     transport=transport,
                                     category=category,
                                     mrt=mrt,
-                                    images=[])
+                                    images=self.attraction_images.get_by_attraction_id(id))
             output.append(attraction)
         return output
 
@@ -98,3 +104,7 @@ class MySQLAttractionRepository(MySQLRepository, AttractionRepository):
         ).format(attraction=self.tableName,
                  category=self.categoryTableName,
                  mrt=self.mrtTableName)
+
+    def dropTableIfExists(self):
+        self.attraction_images.dropTableIfExists()
+        super().dropTableIfExists()
