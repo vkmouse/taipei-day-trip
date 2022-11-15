@@ -28,3 +28,19 @@ class UnitOfWork:
 
     def _create_mrt_repository(self) -> MRTRepository:
         return NotImplemented
+
+def copy_db(src: UnitOfWork, dst: UnitOfWork):
+    for value in src.categories.get_all():
+        dst.categories.add(value.name)
+    for value in src.mrts.get_all():
+        dst.mrts.add(value.name)
+    for value in src.attractions.get_all():
+        dst.attractions.add(name=value.name,
+                            description=value.description,
+                            address=value.address,
+                            lat=value.lat,
+                            lng=value.lng,
+                            transport=value.transport,
+                            images=value.images,
+                            category=value.category,
+                            mrt=value.mrt)
