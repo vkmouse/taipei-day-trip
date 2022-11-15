@@ -54,6 +54,11 @@ class MemoryAttractionRepository(AttractionRepository):
             output.append(self.__db[i])
         return output
 
+    def search_by_name(self, pattern: str, start: int, stop: int) -> List[Attraction]:
+        pattern = pattern.replace('%', '')
+        output = self.get_range(start, stop)
+        return list(filter(lambda x: pattern in x.name, output))
+
     @property
     def __next_id(self):
         self.__id += 1

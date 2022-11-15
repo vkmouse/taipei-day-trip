@@ -95,6 +95,29 @@ class MySQLAttractionRepository(MySQLRepository, AttractionRepository):
                                      images=self.attraction_images.get_by_attraction_id(id)))
         return output
 
+    @MySQLRepository.with_connection
+    def search_by_name(self, pattern: str, start: int, stop: int, cnx, cursor) -> List[Attraction]:
+        query = self.get_all_statement() + (
+            " WHERE {attraction}.name LIKE %s "
+            ' LIMIT {offset}, {count};'
+        ).format(attraction=self.tablename, offset=start, count=stop - start)
+        cursor.execute(query, (pattern,))
+        rows = cursor.fetchall()
+        output = []
+        for row in rows:
+            (id, name, description, address, lat, lng, transport, category, mrt,) = row
+            output.append(Attraction(id=id,
+                                     name=name,
+                                     description=description,
+                                     address=address,
+                                     lat=lat,
+                                     lng=lng,
+                                     transport=transport,
+                                     category=category,
+                                     mrt=mrt,
+                                     images=self.attraction_images.get_by_attraction_id(id)))
+        return output
+
     @property
     def tablename(self) -> str:
         if self.debug:
