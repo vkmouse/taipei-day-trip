@@ -2,6 +2,7 @@ import pytest
 
 from taipei_day_trip.core import UnitOfWork
 from taipei_day_trip.repository import MemoryUnitOfWork
+from taipei_day_trip.repository import MySQLUnitOfWork
 
 def mrt_test_case(db: UnitOfWork):
     assert len(db.mrts.get_all()) == 0
@@ -15,4 +16,9 @@ def mrt_test_case(db: UnitOfWork):
 
 def test_memory_based_repository():
     db = MemoryUnitOfWork()
+    mrt_test_case(db)
+
+@pytest.mark.skipif(not MySQLUnitOfWork.isAvailable('config.json'), reason="database is not avaibable")
+def test_mysql_based_repository():
+    db = MySQLUnitOfWork('config.json', debug=True)
     mrt_test_case(db)
