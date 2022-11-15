@@ -6,6 +6,7 @@ from taipei_day_trip.repository import MySQLUnitOfWork
 
 def mrt_test_case(db: UnitOfWork):
     assert len(db.mrts.get_all()) == 0
+
     assert db.mrts.add('mrt1') == True
     all = db.mrts.get_all()
     assert len(all) == 1
@@ -13,6 +14,10 @@ def mrt_test_case(db: UnitOfWork):
     assert all[0].name == 'mrt1'
     assert db.mrts.add('mrt1') == False
     assert len(db.mrts.get_all()) == 1
+    
+    assert db.mrts.add(None) == True
+    assert len(db.mrts.get_all()) == 2
+    assert db.mrts.get_all()[1].name == None
 
 def test_memory_based_repository():
     db = MemoryUnitOfWork()
