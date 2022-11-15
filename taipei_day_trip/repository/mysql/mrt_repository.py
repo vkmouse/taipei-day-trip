@@ -6,7 +6,7 @@ from taipei_day_trip.repository.mysql.repository import MySQLRepository
 class MySQLMRTRepository(MySQLRepository, MRTRepository):
     @MySQLRepository.with_connection
     def add(self, name: str, cnx, cursor) -> bool:
-        if self.__nameExists(name):
+        if name == None or self.__nameExists(name):
             return False
         query = 'INSERT INTO {} (name) VALUES (%s)'.format(self.tablename)
         data = (name,)
@@ -44,7 +44,7 @@ class MySQLMRTRepository(MySQLRepository, MRTRepository):
         return (
             'CREATE TABLE {} ('
             '    id              bigint        NOT NULL  AUTO_INCREMENT,'
-            '    name            varchar(255),'
+            '    name            varchar(255)  NOT NULL,'
             '    PRIMARY KEY (id)'
             ');'
         ).format(self.tablename)

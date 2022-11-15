@@ -17,7 +17,6 @@ class MySQLRepository:
             return output
         return wrap
 
-
     def __init__(self, cnxpool: mysql.connector.pooling.MySQLConnectionPool, debug: bool):
         self.debug = debug
         self.cnxpool = cnxpool
