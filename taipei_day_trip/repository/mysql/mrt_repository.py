@@ -44,7 +44,7 @@ class MySQLMRTRepository(MySQLRepository, MRTRepository):
         return (
             'CREATE TABLE {} ('
             '    id              bigint        NOT NULL  AUTO_INCREMENT,'
-            '    name            varchar(255)  NOT NULL,'
+            '    name            varchar(255),'
             '    PRIMARY KEY (id)'
             ');'
         ).format(self.tableName)
