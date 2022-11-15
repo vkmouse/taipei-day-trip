@@ -1,15 +1,16 @@
 import mysql.connector
+import logging
 
 class MySQLRepository:
     def withConnection(func):
         def wrap(self, *args, **kwargs):
             cnx = self.cnxpool.get_connection()
             cursor = cnx.cursor()
-            output = None
+            output = False
             try:
                 output = func(self, *args, **kwargs, cnx=cnx, cursor=cursor)
-            except:
-                print('Error')
+            except mysql.connector.Error as err:
+                logging.error('Something went wrong: {}'.format(err))
             finally:
                 cursor.close()
                 cnx.close()

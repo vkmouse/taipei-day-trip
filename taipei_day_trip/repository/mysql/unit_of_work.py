@@ -1,9 +1,11 @@
 import json
 import mysql.connector
 
+from taipei_day_trip.core import AttractionRepository
 from taipei_day_trip.core import CategoryRepository
 from taipei_day_trip.core import MRTRepository
 from taipei_day_trip.core import UnitOfWork
+from taipei_day_trip.repository.mysql.attraction_repository import MySQLAttractionRepository
 from taipei_day_trip.repository.mysql.category_repository import MySQLCategoryRepository
 from taipei_day_trip.repository.mysql.mrt_repository import MySQLMRTRepository
 
@@ -17,8 +19,12 @@ class MySQLUnitOfWork(UnitOfWork):
 
     def __del__(self):
         if self.__debug:
+            self.attractions.dropTableIfExists()
             self.categories.dropTableIfExists()
             self.mrts.dropTableIfExists()
+
+    def _create_attraction_repository(self) -> AttractionRepository:
+        return MySQLAttractionRepository(self.__cnxpool, self.categories.tableName, self.mrts.tableName, self.__debug)
 
     def _create_category_repository(self) -> CategoryRepository:
         return MySQLCategoryRepository(self.__cnxpool, self.__debug)
