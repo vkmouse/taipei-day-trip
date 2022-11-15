@@ -2,8 +2,10 @@ import json
 import mysql.connector
 
 from taipei_day_trip.core import CategoryRepository
+from taipei_day_trip.core import MRTRepository
 from taipei_day_trip.core import UnitOfWork
 from taipei_day_trip.repository.mysql.category_repository import MySQLCategoryRepository
+from taipei_day_trip.repository.mysql.mrt_repository import MySQLMRTRepository
 
 class MySQLUnitOfWork(UnitOfWork):
     def __init__(self, configPath: str, debug=False):
@@ -19,6 +21,9 @@ class MySQLUnitOfWork(UnitOfWork):
 
     def _create_category_repository(self) -> CategoryRepository:
         return MySQLCategoryRepository(self.__cnxpool, self.__debug)
+
+    def _create_mrt_repository(self) -> MRTRepository:
+        return MySQLMRTRepository(self.__cnxpool, self.__debug)
 
     @staticmethod
     def isAvailable(configPath: str) -> bool:
