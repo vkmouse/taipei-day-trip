@@ -52,7 +52,7 @@ class MySQLAttractionRepository(MySQLRepository, AttractionRepository):
         return output
 
     @MySQLRepository.with_connection
-    def get_by_id(self, id, cnx, cursor) -> Attraction | None:
+    def get_by_id(self, id: int, cnx, cursor) -> Attraction | None:
         query = self.get_all_statement() + (
             ' WHERE {}.id = %s '
             ' LIMIT 1;'
@@ -72,6 +72,28 @@ class MySQLAttractionRepository(MySQLRepository, AttractionRepository):
                           category=category,
                           mrt=mrt,
                           images=self.attraction_images.get_by_attraction_id(id))
+
+    @MySQLRepository.with_connection
+    def get_range(self, start: int, stop: int, cnx, cursor) -> List[Attraction]:
+        query = self.get_all_statement() + (
+            ' LIMIT {offset}, {count};'
+        ).format(offset=start, count=stop - start)
+        cursor.execute(query)
+        rows = cursor.fetchall()
+        output = []
+        for row in rows:
+            (id, name, description, address, lat, lng, transport, category, mrt,) = row
+            output.append(Attraction(id=id,
+                                     name=name,
+                                     description=description,
+                                     address=address,
+                                     lat=lat,
+                                     lng=lng,
+                                     transport=transport,
+                                     category=category,
+                                     mrt=mrt,
+                                     images=self.attraction_images.get_by_attraction_id(id)))
+        return output
 
     @property
     def tablename(self) -> str:

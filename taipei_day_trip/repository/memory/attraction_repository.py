@@ -40,11 +40,19 @@ class MemoryAttractionRepository(AttractionRepository):
     def get_all(self) -> List[Attraction]:
         return self.__db
 
-    def get_by_id(self, id) -> Attraction | None:
+    def get_by_id(self, id: int) -> Attraction | None:
         output = list(filter(lambda i: i.id == id, self.__db))
         if len(output) == 0:
             return None
         return output[0]
+
+    def get_range(self, start: int, stop: int) -> List[Attraction]:
+        output: List[Attraction] = []
+        for i in range(start, stop):
+            if i >= len(self.__db):
+                break
+            output.append(self.__db[i])
+        return output
 
     @property
     def __next_id(self):
