@@ -23,7 +23,7 @@ def test_memory_based_repository():
     db = MemoryUnitOfWork()
     mrt_test_case(db)
 
-@pytest.mark.skipif(not MySQLUnitOfWork.isAvailable('config.json'), reason="database is not avaibable")
+@pytest.mark.skipif(not MySQLUnitOfWork.is_available('config.json'), reason="database is not avaibable")
 def test_mysql_based_repository():
     db = MySQLUnitOfWork('config.json', debug=True)
     mrt_test_case(db)
