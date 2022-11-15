@@ -11,8 +11,8 @@ from taipei_day_trip.repository.mysql.mrt_repository import MySQLMRTRepository
 
 class MySQLUnitOfWork(UnitOfWork):
     def __init__(self, configPath: str, debug=False):
-        config = self.loadConfig(configPath)
-        self.initDb(config)
+        config = self.load_config(configPath)
+        self.init_db(config)
         self.__debug = debug
         self.__cnxpool = mysql.connector.pooling.MySQLConnectionPool(pool_name='taipei_day_trip', pool_size=4, **config)
         UnitOfWork.__init__(self)
@@ -33,9 +33,9 @@ class MySQLUnitOfWork(UnitOfWork):
         return MySQLMRTRepository(self.__cnxpool, self.__debug)
 
     @staticmethod
-    def isAvailable(configPath: str) -> bool:
+    def is_available(configPath: str) -> bool:
         try:
-            config = MySQLUnitOfWork.loadConfig(configPath)
+            config = MySQLUnitOfWork.load_config(configPath)
             config['database'] = None
             mysql.connector.connect(**config)
             return True
@@ -43,12 +43,12 @@ class MySQLUnitOfWork(UnitOfWork):
             return False
 
     @staticmethod
-    def loadConfig(configPath: str):
+    def load_config(configPath: str):
         with open(configPath) as file:
             return json.load(file)
 
     @staticmethod
-    def initDb(config):
+    def init_db(config):
         database = config['database']
         config['database'] = None
         cnx = mysql.connector.connect(**config)
