@@ -9,7 +9,7 @@ class MemoryMRTRepository(MRTRepository):
 
     def add(self, name: str) -> bool:
         mrt_exists = len(list(filter(lambda i: i.name == name, self.__db))) > 0
-        if mrt_exists:
+        if name == None or mrt_exists:
             return False
         element = MRT(self.__next_id, name)
         self.__db.append(element)
