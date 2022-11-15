@@ -63,8 +63,12 @@ def get_range_test_case(db: UnitOfWork):
     assert add_attraction(db, name='attr3') == True
     assert add_attraction(db, name='attr4') == True
     actuals = db.attractions.get_range(1, 3)
+    assert len(actuals) == 2
     assert actuals[0].name == 'attr2'
     assert actuals[1].name == 'attr3'
+    actuals = db.attractions.get_range(3, 5)
+    assert len(actuals) == 1
+    assert actuals[0].name == 'attr4'
 
 def test_memory_based_repository():
     db = MemoryUnitOfWork()
