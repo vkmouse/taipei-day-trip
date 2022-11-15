@@ -18,6 +18,7 @@ class MySQLUnitOfWork(UnitOfWork):
     def __del__(self):
         if self.__debug:
             self.categories.dropTableIfExists()
+            self.mrts.dropTableIfExists()
 
     def _create_category_repository(self) -> CategoryRepository:
         return MySQLCategoryRepository(self.__cnxpool, self.__debug)
