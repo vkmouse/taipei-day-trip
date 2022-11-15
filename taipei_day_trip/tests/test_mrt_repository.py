@@ -14,10 +14,8 @@ def mrt_test_case(db: UnitOfWork):
     assert all[0].name == 'mrt1'
     assert db.mrts.add('mrt1') == False
     assert len(db.mrts.get_all()) == 1
-    
-    assert db.mrts.add(None) == True
-    assert len(db.mrts.get_all()) == 2
-    assert db.mrts.get_all()[1].name == None
+
+    assert db.mrts.add(None) == False
 
 def test_memory_based_repository():
     db = MemoryUnitOfWork()
