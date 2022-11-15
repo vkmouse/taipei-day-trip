@@ -32,25 +32,7 @@ class MySQLAttractionRepository(MySQLRepository, AttractionRepository):
 
     @MySQLRepository.with_connection
     def get_all(self, cnx, cursor) -> List[Attraction]:
-        query = (
-            'SELECT'
-            '    {attraction}.id,'
-            '    {attraction}.name,'
-            '    {attraction}.description,'
-            '    {attraction}.address,' 
-            '    {attraction}.lat,' 
-            '    {attraction}.lng,' 
-            '    {attraction}.transport,' 
-            '    {category}.name,' 
-            '    {mrt}.name '
-            'FROM {attraction} '
-            'INNER JOIN {category} '
-            '    ON {attraction}.category_id={category}.id '
-            'LEFT JOIN {mrt} '
-            '    ON {attraction}.mrt_id={mrt}.id'
-        ).format(attraction=self.tablename,
-                 category=self.category_tablename,
-                 mrt=self.mrt_tablename)
+        query = self.get_all_statement()
         cursor.execute(query)
         rows = cursor.fetchall()
         output: List[Attraction] = []
@@ -68,6 +50,28 @@ class MySQLAttractionRepository(MySQLRepository, AttractionRepository):
                                     images=self.attraction_images.get_by_attraction_id(id))
             output.append(attraction)
         return output
+
+    @MySQLRepository.with_connection
+    def get_by_id(self, id, cnx, cursor) -> Attraction | None:
+        query = self.get_all_statement() + (
+            ' WHERE {}.id = %s '
+            ' LIMIT 1;'
+        ).format(self.tablename)
+        cursor.execute(query, (id,))
+        rows = cursor.fetchall()
+        if len(rows) == 0:
+            return None
+        (id, name, description, address, lat, lng, transport, category, mrt,) = rows[0]
+        return Attraction(id=id,
+                          name=name,
+                          description=description,
+                          address=address,
+                          lat=lat,
+                          lng=lng,
+                          transport=transport,
+                          category=category,
+                          mrt=mrt,
+                          images=self.attraction_images.get_by_attraction_id(id))
 
     @property
     def tablename(self) -> str:
@@ -126,3 +130,24 @@ class MySQLAttractionRepository(MySQLRepository, AttractionRepository):
                      category=self.category_tablename)
             data = (name, description, address, lat, lng, transport, category,)
         return (query, data)
+
+    def get_all_statement(self):
+        return (
+            'SELECT'
+            '    {attraction}.id,'
+            '    {attraction}.name,'
+            '    {attraction}.description,'
+            '    {attraction}.address,' 
+            '    {attraction}.lat,' 
+            '    {attraction}.lng,' 
+            '    {attraction}.transport,' 
+            '    {category}.name,' 
+            '    {mrt}.name '
+            'FROM {attraction} '
+            'INNER JOIN {category} '
+            '    ON {attraction}.category_id={category}.id '
+            'LEFT JOIN {mrt} '
+            '    ON {attraction}.mrt_id={mrt}.id'
+        ).format(attraction=self.tablename,
+                 category=self.category_tablename,
+                 mrt=self.mrt_tablename)
