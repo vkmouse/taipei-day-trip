@@ -22,18 +22,9 @@ class MySQLAttractionRepository(MySQLRepository, AttractionRepository):
             images: List[str], 
             category: str, 
             mrt: str, cnx, cursor) -> bool:
-        query = (
-            'INSERT INTO {attraction} (name, description, address, lat, lng, transport, category_id, mrt_id)'
-            'VALUES (%s, %s, %s, %s, %s, %s,'
-            '    (SELECT id FROM {category} WHERE name = %s),'
-            '    (SELECT id FROM {mrt} WHERE name = %s));'
-        ).format(attraction=self.tablename,
-                 category=self.category_tablename,
-                 mrt=self.mrt_tablename)
-        data = (name, description, address, lat, lng, transport, category, mrt,)
+        (query, data) = self.add_operation(name, description, address, lat, lng, transport, category, mrt)
         cursor.execute(query, data)
         cnx.commit()
-
         cursor.execute('SELECT LAST_INSERT_ID();')
         (id,) = cursor.fetchone()
         self.attraction_images.add(id, images)
@@ -55,7 +46,7 @@ class MySQLAttractionRepository(MySQLRepository, AttractionRepository):
             'FROM {attraction} '
             'INNER JOIN {category} '
             '    ON {attraction}.category_id={category}.id '
-            'INNER JOIN {mrt} '
+            'LEFT JOIN {mrt} '
             '    ON {attraction}.mrt_id={mrt}.id'
         ).format(attraction=self.tablename,
                  category=self.category_tablename,
@@ -108,3 +99,30 @@ class MySQLAttractionRepository(MySQLRepository, AttractionRepository):
     def drop_table_if_exists(self):
         self.attraction_images.drop_table_if_exists()
         super().drop_table_if_exists()
+
+    def add_operation(self,
+                      name: str,
+                      description: str,
+                      address: str,
+                      lat: float,
+                      lng: float,
+                      transport: str,
+                      category: str,
+                      mrt: str):
+        query = (
+            'INSERT INTO {attraction} (name, description, address, lat, lng, transport, category_id, mrt_id)'
+            'VALUES (%s, %s, %s, %s, %s, %s,'
+            '    (SELECT id FROM {category} WHERE name = %s),'
+            '    (SELECT id FROM {mrt} WHERE name = %s));'
+        ).format(attraction=self.tablename,
+                 category=self.category_tablename,
+                 mrt=self.mrt_tablename)
+        data = (name, description, address, lat, lng, transport, category, mrt,)
+        if mrt == None:
+            query = (
+                'INSERT INTO {attraction} (name, description, address, lat, lng, transport, category_id, mrt_id)'
+                'VALUES (%s, %s, %s, %s, %s, %s, (SELECT id FROM {category} WHERE name = %s), null);'
+            ).format(attraction=self.tablename,
+                     category=self.category_tablename)
+            data = (name, description, address, lat, lng, transport, category,)
+        return (query, data)

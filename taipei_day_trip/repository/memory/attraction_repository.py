@@ -21,7 +21,8 @@ class MemoryAttractionRepository(AttractionRepository):
             images: List[str], 
             category: str, 
             mrt: str) -> bool:
-        if self.__categories.exists(category) and self.__mrts.exists(mrt):
+        is_valid = self.__categories.exists(category) and (mrt == None or self.__mrts.exists(mrt))
+        if is_valid:
             element = Attraction(self.__next_id, 
                                  name,
                                  description,
