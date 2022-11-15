@@ -34,13 +34,16 @@ def copy_db(src: UnitOfWork, dst: UnitOfWork):
         dst.categories.add(value.name)
     for value in src.mrts.get_all():
         dst.mrts.add(value.name)
+    dst_attractions = dst.attractions.get_all()
     for value in src.attractions.get_all():
-        dst.attractions.add(name=value.name,
-                            description=value.description,
-                            address=value.address,
-                            lat=value.lat,
-                            lng=value.lng,
-                            transport=value.transport,
-                            images=value.images,
-                            category=value.category,
-                            mrt=value.mrt)
+        is_existed = len(list(filter(lambda x: x.name == value.name, dst_attractions))) > 0
+        if not is_existed:
+            dst.attractions.add(name=value.name,
+                                description=value.description,
+                                address=value.address,
+                                lat=value.lat,
+                                lng=value.lng,
+                                transport=value.transport,
+                                images=value.images,
+                                category=value.category,
+                                mrt=value.mrt)
