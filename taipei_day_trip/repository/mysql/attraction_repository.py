@@ -56,7 +56,7 @@ class MySQLAttractionRepository(MySQLRepository, AttractionRepository):
             'INNER JOIN {category} '
             '    ON {attraction}.category_id={category}.id '
             'INNER JOIN {mrt} '
-            '    ON {attraction}.category_id={mrt}.id'
+            '    ON {attraction}.mrt_id={mrt}.id'
         ).format(attraction=self.tablename,
                  category=self.category_tablename,
                  mrt=self.mrt_tablename)
