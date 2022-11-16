@@ -3,24 +3,14 @@ import pytest
 from taipei_day_trip.core import UnitOfWork
 from taipei_day_trip.repository import MemoryUnitOfWork
 from taipei_day_trip.repository import MySQLUnitOfWork
-
-def add_attraction(db: UnitOfWork, name: str = None, category: str = None, mrt: str = None) -> bool:
-    return db.attractions.add(name='attr1' if name == None else name,
-                              description='desc1',
-                              address='addr',
-                              lat=50,
-                              lng=40,
-                              transport='trans',
-                              images=['123', '456'],
-                              category='category1' if category == None else category,
-                              mrt=mrt)
+from taipei_day_trip.tests import util
 
 def attraction_test_case(db: UnitOfWork):
     db.categories.add('category1')
     db.mrts.add('mrt1')
     db.mrts.add('mrt2')
     assert len(db.attractions.get_all()) == 0
-    assert add_attraction(db, mrt='mrt2') == True
+    assert util.add_attraction(db, mrt='mrt2') == True
     all = db.attractions.get_all()
     assert len(all) == 1
     assert all[0].id == 1
@@ -33,12 +23,12 @@ def attraction_test_case(db: UnitOfWork):
     assert all[0].images == ['123', '456']
     assert all[0].category == 'category1'
     assert all[0].mrt == 'mrt2'
-    assert add_attraction(db, mrt='mrt2', category='category2') == False
+    assert util.add_attraction(db, mrt='mrt2', category='category2') == False
 
 def images_test_case(db: UnitOfWork):
     db.categories.add('category1')
     db.mrts.add('mrt1')
-    assert add_attraction(db) == True
+    assert util.add_attraction(db) == True
     actual = db.attractions.get_all()[0].images
     assert len(actual) == 2
     assert actual[0] == '123'
@@ -46,22 +36,22 @@ def images_test_case(db: UnitOfWork):
 
 def null_mrt_test_case(db: UnitOfWork):
     db.categories.add('category1')
-    assert add_attraction(db, mrt=None) == True
+    assert util.add_attraction(db, mrt=None) == True
     assert db.attractions.get_all()[0].mrt == None
 
 def get_by_id_test_case(db: UnitOfWork):
     db.categories.add('category1')
-    assert add_attraction(db, name='attr1') == True
-    assert add_attraction(db, name='attr2') == True
+    assert util.add_attraction(db, name='attr1') == True
+    assert util.add_attraction(db, name='attr2') == True
     assert db.attractions.get_by_id(1).name == 'attr1'
     assert db.attractions.get_by_id(2).name == 'attr2'
 
 def get_range_test_case(db: UnitOfWork):
     db.categories.add('category1')
-    assert add_attraction(db, name='attr1') == True
-    assert add_attraction(db, name='attr2') == True
-    assert add_attraction(db, name='attr3') == True
-    assert add_attraction(db, name='attr4') == True
+    assert util.add_attraction(db, name='attr1') == True
+    assert util.add_attraction(db, name='attr2') == True
+    assert util.add_attraction(db, name='attr3') == True
+    assert util.add_attraction(db, name='attr4') == True
     actuals = db.attractions.get_range(1, 3)
     assert len(actuals) == 2
     assert actuals[0].name == 'attr2'
@@ -72,10 +62,10 @@ def get_range_test_case(db: UnitOfWork):
 
 def search_by_name_test_case(db: UnitOfWork):
     db.categories.add('category1')
-    assert add_attraction(db, name='月牙灣') == True
-    assert add_attraction(db, name='月牙刀') == True
-    assert add_attraction(db, name='月亮') == True
-    assert add_attraction(db, name='吃月餅') == True
+    assert util.add_attraction(db, name='月牙灣') == True
+    assert util.add_attraction(db, name='月牙刀') == True
+    assert util.add_attraction(db, name='月亮') == True
+    assert util.add_attraction(db, name='吃月餅') == True
     assert len(db.attractions.search_by_name('%月%', 0, 4)) == 4
     assert len(db.attractions.search_by_name('%月牙%', 0, 4)) == 2
     assert len(db.attractions.search_by_name('%月牙刀%', 0, 4)) == 1
