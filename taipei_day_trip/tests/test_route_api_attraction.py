@@ -21,9 +21,8 @@ def client(app: Flask):
 def init_db() -> MemoryUnitOfWork:
     db = MemoryUnitOfWork()
     db.categories.add('category1')
-    util.add_attraction(db, name='attr1')
-    util.add_attraction(db, name='attr2')
-    util.add_attraction(db, name='attr3')
+    for i in range(20):
+        util.add_attraction(db, name=f'attr{i + 1}')
     return db
 
 def test_attraction_id(client: FlaskClient):
@@ -45,9 +44,51 @@ def test_attraction_id(client: FlaskClient):
     }
 
 def test_attraction_id_if_not_exists(client: FlaskClient):
-    response = client.get(path='/api/attraction/4')
+    response = client.get(path='/api/attraction/999')
     assert response.status_code == 400
     assert response.get_json() == {
         'error': True,
-        'message': 'No attraction id 4'
+        'message': 'No attraction id 999'
     }
+
+def test_attractions_if_missing_requestment(client: FlaskClient):
+    response = client.get(path='/api/attractions')
+    assert response.status_code == 400
+    assert response.get_json() == {
+        'error': True,
+        'message': 'Missing required parameter "page"'
+    }
+
+def test_attractions_if_page_not_a_number(client: FlaskClient):
+    response = client.get(path='/api/attractions', query_string={ 'page': 'not a number' })
+    assert response.status_code == 400
+    assert response.get_json() == {
+        'error': True,
+        'message': '"page" parameter has error, it allow only integer number'
+    }
+
+def test_attractions_if_page_number_invalid(client: FlaskClient):
+    response = client.get(path='/api/attractions', query_string={ 'page': -10 })
+    assert response.status_code == 400
+    assert response.get_json() == {
+        'error': True,
+        'message': '"page" parameter has error, it allow only integer number'
+    }
+
+def test_attractions_if_having_next_page(client: FlaskClient):
+    response = client.get(path='/api/attractions', query_string={ 'page': 0 })
+    assert response.status_code == 200
+    body = response.get_json()
+    next_page = body['nextPage']
+    data = body['data']
+    assert next_page == 1
+    assert len(data) == 12
+
+def test_attractions_if_not_having_next_page(client: FlaskClient):
+    response = client.get(path='/api/attractions', query_string={ 'page': 1 })
+    assert response.status_code == 200
+    body = response.get_json()
+    next_page = body['nextPage']
+    data = body['data']
+    assert next_page == None
+    assert len(data) == 8
