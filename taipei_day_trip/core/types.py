@@ -25,6 +25,20 @@ class Attraction:
         self.category = category
         self.mrt = mrt
 
+    def to_json(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'category': self.category,
+            'description': self.description,
+            'address': self.address,
+            'transport': self.transport,
+            'mrt': self.mrt,
+            'lat': self.lat,
+            'lng': self.lng,
+            'images': self.images,
+        }
+
 class Category:
     def __init__(self, id: int, name: str):
         self.id = id

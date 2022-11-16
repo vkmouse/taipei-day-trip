@@ -29,18 +29,7 @@ def get_attraction_api(db: UnitOfWork):
                 next_page = None
             data = []
             for attraction in output[0:num_data_per_page]:
-                data.append({
-                    'id': attraction.id,
-                    'name': attraction.name,
-                    'category': attraction.category,
-                    'description': attraction.description,
-                    'address': attraction.address,
-                    'transport': attraction.transport,
-                    'mrt': attraction.mrt,
-                    'lat': attraction.lat,
-                    'lng': attraction.lng,
-                    'images': attraction.images,
-                })
+                data.append(attraction.to_json())
             return { 'nextPage': next_page, 'data': data }, 200
         except Exception as e:
             return { 'error': True, 'message': str(e) }, 500
@@ -51,19 +40,7 @@ def get_attraction_api(db: UnitOfWork):
             attraction = db.attractions.get_by_id(id)
             if attraction == None:
                 return { 'error': True, 'message': f'No attraction id {id}' }, 400
-            data = {
-                'id': attraction.id,
-                'name': attraction.name,
-                'category': attraction.category,
-                'description': attraction.description,
-                'address': attraction.address,
-                'transport': attraction.transport,
-                'mrt': attraction.mrt,
-                'lat': attraction.lat,
-                'lng': attraction.lng,
-                'images': attraction.images,
-            }
-            return { 'data': data }, 200
+            return { 'data': attraction.to_json() }, 200
         except Exception as e:
             return { 'error': True, 'message': str(e) }, 500
 
