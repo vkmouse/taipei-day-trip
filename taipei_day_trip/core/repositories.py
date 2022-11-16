@@ -21,7 +21,7 @@ class AttractionRepository:
         return NotImplemented
     def get_range(self, start: int, stop: int) -> List[Attraction]:
         return NotImplemented
-    def search_by_name(self, pattern: str, start: int, stop: int) -> List[Attraction]:
+    def search_by_category_or_name(self, keyword: str, start: int, stop: int) -> List[Attraction]:
         return NotImplemented
 
 class CategoryRepository:
