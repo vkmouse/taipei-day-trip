@@ -73,6 +73,30 @@ def search_by_name_test_case(db: UnitOfWork):
     assert len(db.attractions.search_by_category_or_name('月', 1, 3)) == 2
     assert len(db.attractions.search_by_category_or_name('月', 2, 10)) == 2
 
+def search_by_category_test_case(db: UnitOfWork):
+    db.categories.add('月牙灣')
+    db.categories.add('月牙刀')
+    db.categories.add('月亮')
+    db.categories.add('吃月餅')
+    assert util.add_attraction(db, category='月牙灣') == True
+    assert util.add_attraction(db, category='月牙刀') == True
+    assert util.add_attraction(db, category='月亮') == True
+    assert util.add_attraction(db, category='吃月餅') == True
+    assert len(db.attractions.search_by_category_or_name('月', 0, 4)) == 0
+    assert len(db.attractions.search_by_category_or_name('月牙', 0, 4)) == 0
+    assert len(db.attractions.search_by_category_or_name('月牙刀', 0, 4)) == 1
+    assert len(db.attractions.search_by_category_or_name('月餅', 0, 4)) == 0
+    assert len(db.attractions.search_by_category_or_name('月牙刀', 2, 10)) == 0
+
+def composite_search_test_case(db: UnitOfWork):
+    db.categories.add('藍色公路')
+    db.categories.add('公共藝術')
+    assert util.add_attraction(db, name='藍色公路', category='公共藝術') == True
+    assert util.add_attraction(db, name='黑色星期五', category='藍色公路') == True
+    assert len(db.attractions.search_by_category_or_name('公共藝術', 0, 2)) == 1
+    assert len(db.attractions.search_by_category_or_name('藍色公路', 0, 2)) == 2
+    assert len(db.attractions.search_by_category_or_name('公路', 0, 2)) == 1
+
 def test_memory_based_repository():
     db = MemoryUnitOfWork()
     attraction_test_case(db)
@@ -96,6 +120,14 @@ def test_memory_based_get_range():
 def test_memory_search_by_name():
     db = MemoryUnitOfWork()
     search_by_name_test_case(db)
+
+def test_memory_search_by_category():
+    db = MemoryUnitOfWork()
+    search_by_category_test_case(db)
+
+def test_memory_composite_search():
+    db = MemoryUnitOfWork()
+    composite_search_test_case(db)
 
 @pytest.mark.skipif(not MySQLUnitOfWork.is_available('config.json'), reason="database is not avaibable")
 def test_mysql_based_repository():
@@ -126,3 +158,13 @@ def test_mysql_based_get_range():
 def test_mysql_based_search_by_name():
     db = MySQLUnitOfWork('config.json', debug=True)
     search_by_name_test_case(db)
+
+@pytest.mark.skipif(not MySQLUnitOfWork.is_available('config.json'), reason="database is not avaibable")
+def test_mysql_based_search_by_category():
+    db = MySQLUnitOfWork('config.json', debug=True)
+    search_by_category_test_case(db)
+
+@pytest.mark.skipif(not MySQLUnitOfWork.is_available('config.json'), reason="database is not avaibable")
+def test_mysql_composite_search():
+    db = MemoryUnitOfWork()
+    composite_search_test_case(db)
