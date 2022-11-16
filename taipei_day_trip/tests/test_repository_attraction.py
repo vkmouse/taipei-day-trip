@@ -66,12 +66,12 @@ def search_by_name_test_case(db: UnitOfWork):
     assert util.add_attraction(db, name='月牙刀') == True
     assert util.add_attraction(db, name='月亮') == True
     assert util.add_attraction(db, name='吃月餅') == True
-    assert len(db.attractions.search_by_name('%月%', 0, 4)) == 4
-    assert len(db.attractions.search_by_name('%月牙%', 0, 4)) == 2
-    assert len(db.attractions.search_by_name('%月牙刀%', 0, 4)) == 1
-    assert len(db.attractions.search_by_name('%月餅%', 0, 4)) == 1
-    assert len(db.attractions.search_by_name('%月%', 1, 3)) == 2
-    assert len(db.attractions.search_by_name('%月%', 2, 10)) == 2
+    assert len(db.attractions.search_by_category_or_name('月', 0, 4)) == 4
+    assert len(db.attractions.search_by_category_or_name('月牙', 0, 4)) == 2
+    assert len(db.attractions.search_by_category_or_name('月牙刀', 0, 4)) == 1
+    assert len(db.attractions.search_by_category_or_name('月餅', 0, 4)) == 1
+    assert len(db.attractions.search_by_category_or_name('月', 1, 3)) == 2
+    assert len(db.attractions.search_by_category_or_name('月', 2, 10)) == 2
 
 def test_memory_based_repository():
     db = MemoryUnitOfWork()
