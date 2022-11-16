@@ -1,7 +1,7 @@
 {
     "user": "root",
     "password": "000000",
-    "host": "web-mysqldb",
+    "host": "tdt-mysql",
     "database": "taipei_day_trip",
     "raise_on_warnings": true,
     "connection_timeout": 1
