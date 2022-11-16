@@ -30,13 +30,14 @@ class UnitOfWork:
         return NotImplemented
 
 def copy_db(src: UnitOfWork, dst: UnitOfWork):
-    for value in src.categories.get_all():
-        dst.categories.add(value.name)
-    for value in src.mrts.get_all():
-        dst.mrts.add(value.name)
-    dst_attractions = dst.attractions.get_all()
+    copy_categories(src, dst)
+    copy_mrt(src, dst)
+    copy_attractions(src, dst)
+
+def copy_attractions(src: UnitOfWork, dst: UnitOfWork):
+    values = dst.attractions.get_all()
     for value in src.attractions.get_all():
-        is_existed = len(list(filter(lambda x: x.name == value.name, dst_attractions))) > 0
+        is_existed = len(list(filter(lambda x: x.name == value.name, values))) > 0
         if not is_existed:
             dst.attractions.add(name=value.name,
                                 description=value.description,
@@ -47,3 +48,17 @@ def copy_db(src: UnitOfWork, dst: UnitOfWork):
                                 images=value.images,
                                 category=value.category,
                                 mrt=value.mrt)
+
+def copy_categories(src: UnitOfWork, dst: UnitOfWork):
+    values = dst.categories.get_all()
+    for value in src.categories.get_all():
+        is_existed = len(list(filter(lambda x: x.name == value.name, values))) > 0
+        if not is_existed:
+            dst.categories.add(value.name)
+
+def copy_mrt(src: UnitOfWork, dst: UnitOfWork):
+    values = dst.mrts.get_all()
+    for value in src.mrts.get_all():
+        is_existed = len(list(filter(lambda x: x.name == value.name, values))) > 0
+        if not is_existed:
+            dst.mrts.add(value.name)
