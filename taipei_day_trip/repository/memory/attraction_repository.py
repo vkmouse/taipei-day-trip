@@ -55,9 +55,8 @@ class MemoryAttractionRepository(AttractionRepository):
         return output
 
     def search_by_category_or_name(self, keyword: str, start: int, stop: int) -> List[Attraction]:
-        keyword = keyword.replace('%', '')
         output = self.get_range(start, stop)
-        return list(filter(lambda x: keyword in x.name, output))
+        return list(filter(lambda x: keyword in x.name or x.category == keyword, output))
 
     @property
     def __next_id(self):

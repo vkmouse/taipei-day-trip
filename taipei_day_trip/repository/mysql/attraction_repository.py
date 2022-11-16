@@ -98,13 +98,14 @@ class MySQLAttractionRepository(MySQLRepository, AttractionRepository):
     @MySQLRepository.with_connection
     def search_by_category_or_name(self, keyword: str, start: int, stop: int, cnx, cursor) -> List[Attraction]:
         query = self.get_all_statement() + (
-            " WHERE {attraction}.name LIKE {keyword} "
+            " WHERE {attraction}.name LIKE %s OR {category}.name = %s "
             ' LIMIT {offset}, {count};'
         ).format(attraction=self.tablename,
-                 offset=start,
+                 category=self.category_tablename,
                  count=stop - start,
-                 keyword=f"\'%{keyword}%'")
-        cursor.execute(query)
+                 offset=start)
+        data = (f'%{keyword}%', keyword)
+        cursor.execute(query, data)
         rows = cursor.fetchall()
         output = []
         for row in rows:
