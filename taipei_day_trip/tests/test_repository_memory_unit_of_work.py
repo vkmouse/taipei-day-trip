@@ -16,7 +16,7 @@ def test_import_from_json():
                             category = 'category',
                             mrt = 'mrt')
 
-    jsonStr = (
+    json_str = (
         '{'
         '  "result": {'
         '    "limit": 1000,'
@@ -50,20 +50,20 @@ def test_import_from_json():
         '    ]'
         '  }'
         '}')
-    jsonStr = jsonStr.replace('{name}', attraction.name)
-    jsonStr = jsonStr.replace('{description}', attraction.description)
-    jsonStr = jsonStr.replace('{address}', attraction.address)
-    jsonStr = jsonStr.replace('{lat}', str(attraction.lat))
-    jsonStr = jsonStr.replace('{lng}', str(attraction.lng))
-    jsonStr = jsonStr.replace('{transport}', attraction.transport)
-    jsonStr = jsonStr.replace('{image1}', attraction.images[0])
-    jsonStr = jsonStr.replace('{image2}', attraction.images[1])
-    jsonStr = jsonStr.replace('{category}', attraction.category)
-    jsonStr = jsonStr.replace('{mrt}', attraction.mrt)
-    jsonStr = jsonStr.replace('{mp3}', 'https://www.travel.taipei/d_upload_ttn/sceneadmin/pic/10784.mp3')
+    json_str = json_str.replace('{name}', attraction.name)
+    json_str = json_str.replace('{description}', attraction.description)
+    json_str = json_str.replace('{address}', attraction.address)
+    json_str = json_str.replace('{lat}', str(attraction.lat))
+    json_str = json_str.replace('{lng}', str(attraction.lng))
+    json_str = json_str.replace('{transport}', attraction.transport)
+    json_str = json_str.replace('{image1}', attraction.images[0])
+    json_str = json_str.replace('{image2}', attraction.images[1])
+    json_str = json_str.replace('{category}', attraction.category)
+    json_str = json_str.replace('{mrt}', attraction.mrt)
+    json_str = json_str.replace('{mp3}', 'https://www.travel.taipei/d_upload_ttn/sceneadmin/pic/10784.mp3')
 
     db = MemoryUnitOfWork()
-    db.import_from_json(jsonStr)
+    db.import_from_json(json_str)
 
     assert len(db.categories.get_all()) == 1
     assert len(db.mrts.get_all()) == 1
