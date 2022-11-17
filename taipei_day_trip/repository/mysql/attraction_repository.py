@@ -32,95 +32,43 @@ class MySQLAttractionRepository(MySQLRepository, AttractionRepository):
 
     @MySQLRepository.with_connection
     def get_all(self, cnx, cursor) -> List[Attraction]:
-        query = self.get_all_statement()
+        query = self.all_attraction_images_statement
         cursor.execute(query)
         rows = cursor.fetchall()
-        output: List[Attraction] = []
-        for row in rows:
-            (id, name, description, address, lat, lng, transport, category, mrt,) = row
-            attraction = Attraction(id=id,
-                                    name=name,
-                                    description=description,
-                                    address=address,
-                                    lat=lat,
-                                    lng=lng,
-                                    transport=transport,
-                                    category=category,
-                                    mrt=mrt,
-                                    images=self.attraction_images.get_by_attraction_id(id))
-            output.append(attraction)
-        return output
+        receiver = AttractionRecevier()
+        receiver.appendmany(rows)
+        return receiver.all
 
     @MySQLRepository.with_connection
     def get_by_id(self, id: int, cnx, cursor) -> Attraction | None:
-        query = self.get_all_statement() + (
-            ' WHERE {}.id = %s '
-            ' LIMIT 1;'
-        ).format(self.tablename)
+        query = f'{self.all_attraction_images_statement} WHERE {self.tablename}.id = %s;'
         cursor.execute(query, (id,))
         rows = cursor.fetchall()
-        if len(rows) == 0:
-            return None
-        (id, name, description, address, lat, lng, transport, category, mrt,) = rows[0]
-        return Attraction(id=id,
-                          name=name,
-                          description=description,
-                          address=address,
-                          lat=lat,
-                          lng=lng,
-                          transport=transport,
-                          category=category,
-                          mrt=mrt,
-                          images=self.attraction_images.get_by_attraction_id(id))
+        receiver = AttractionRecevier()
+        receiver.appendmany(rows)
+        return receiver.first
 
     @MySQLRepository.with_connection
     def get_range(self, start: int, stop: int, cnx, cursor) -> List[Attraction]:
-        query = self.get_all_statement() + (
-            ' LIMIT {offset}, {count};'
-        ).format(offset=start, count=stop - start)
+        query = self.get_range_statement(f'LIMIT {start}, {stop - start}')
         cursor.execute(query)
         rows = cursor.fetchall()
-        output = []
-        for row in rows:
-            (id, name, description, address, lat, lng, transport, category, mrt,) = row
-            output.append(Attraction(id=id,
-                                     name=name,
-                                     description=description,
-                                     address=address,
-                                     lat=lat,
-                                     lng=lng,
-                                     transport=transport,
-                                     category=category,
-                                     mrt=mrt,
-                                     images=self.attraction_images.get_by_attraction_id(id)))
-        return output
+        receiver = AttractionRecevier()
+        receiver.appendmany(rows)
+        return receiver.all
 
     @MySQLRepository.with_connection
     def search_by_category_or_name(self, keyword: str, start: int, stop: int, cnx, cursor) -> List[Attraction]:
-        query = self.get_all_statement() + (
-            " WHERE {attraction}.name LIKE %s OR {category}.name = %s "
-            ' LIMIT {offset}, {count};'
-        ).format(attraction=self.tablename,
-                 category=self.category_tablename,
-                 count=stop - start,
-                 offset=start)
+        query = self.get_range_statement(
+            f' WHERE {self.tablename}.name LIKE %s OR {self.category_tablename}.name = %s '
+            f' LIMIT {start}, {stop - start}'
+        )
         data = (f'%{keyword}%', keyword)
         cursor.execute(query, data)
         rows = cursor.fetchall()
-        output = []
-        for row in rows:
-            (id, name, description, address, lat, lng, transport, category, mrt,) = row
-            output.append(Attraction(id=id,
-                                     name=name,
-                                     description=description,
-                                     address=address,
-                                     lat=lat,
-                                     lng=lng,
-                                     transport=transport,
-                                     category=category,
-                                     mrt=mrt,
-                                     images=self.attraction_images.get_by_attraction_id(id)))
-        return output
+        receiver = AttractionRecevier()
+        receiver.appendmany(rows)
+        return receiver.all
 
     @property
     def tablename(self) -> str:
@@ -180,7 +128,8 @@ class MySQLAttractionRepository(MySQLRepository, AttractionRepository):
             data = (name, description, address, lat, lng, transport, category,)
         return (query, data)
 
-    def get_all_statement(self):
+    @property
+    def all_attraction_images_statement(self):
         return (
             'SELECT'
             '    {attraction}.id,'
@@ -191,12 +140,95 @@ class MySQLAttractionRepository(MySQLRepository, AttractionRepository):
             '    {attraction}.lng,' 
             '    {attraction}.transport,' 
             '    {category}.name,' 
-            '    {mrt}.name '
+            '    {mrt}.name,'
+            '    {attraction_image}.url '
             'FROM {attraction} '
             'INNER JOIN {category} '
             '    ON {attraction}.category_id={category}.id '
             'LEFT JOIN {mrt} '
-            '    ON {attraction}.mrt_id={mrt}.id'
+            '    ON {attraction}.mrt_id={mrt}.id '
+            'LEFT JOIN {attraction_image} '
+            '    ON {attraction_image}.attraction_id={attraction}.id'
         ).format(attraction=self.tablename,
+                 attraction_image='test_attraction_image',
                  category=self.category_tablename,
                  mrt=self.mrt_tablename)
+
+    def get_range_statement(self, attraction_condition):
+        return (
+            'SELECT '
+            '    tb.id,'
+            '    tb.name,'
+            '    tb.description,'
+            '    tb.address,'
+            '    tb.lat,'
+            '    tb.lng,'
+            '    tb.transport,'
+            '    tb.category,'
+            '    tb.mrt,'
+            '    {attraction_image}.url '
+            'FROM {attraction_image}'
+            '    INNER JOIN ('
+            '        SELECT '
+            '            {attraction}.id,'
+            '            {attraction}.name,'
+            '            {attraction}.description,'
+            '            {attraction}.address,'
+            '            {attraction}.lat,'
+            '            {attraction}.lng,'
+            '            {attraction}.transport,'
+            '            {category}.name AS category,'
+            '            {mrt}.name AS mrt'
+            '        FROM {attraction} '
+            '        INNER JOIN {category} '
+            '            ON {attraction}.category_id={category}.id '
+            '        LEFT JOIN {mrt} '
+            '            ON {attraction}.mrt_id={mrt}.id'
+            '        {attraction_condition}'
+            '    ) tb'
+            '        ON {attraction_image}.attraction_id=tb.id;'
+        ).format(attraction = self.tablename,
+                 attraction_condition = attraction_condition,
+                 attraction_image = 'test_attraction_image',
+                 category = self.category_tablename,
+                 mrt=self.mrt_tablename)
+
+class AttractionRecevier:
+    def __init__(self):
+        self.__all = dict()
+
+    def append(self, row):
+        attraction = self.__parseRow(row)
+        if attraction.id in self.__all:
+            self.__all[attraction.id].images.append(attraction.images[0])
+        else:
+            self.__all[attraction.id] = self.__parseRow(row)
+
+    def appendmany(self, rows):
+        for row in rows:
+            self.append(row)
+
+    @property
+    def all(self):
+        return list(self.__all.values())
+
+    @property
+    def first(self):
+        items = list(self.__all.values())
+        if len(items) == 0:
+            return None
+        else:
+            return items[0]
+
+    def __parseRow(self, row) -> Attraction:
+        (id, name, description, address, lat, lng, transport, category, mrt, url,) = row
+        return Attraction(id=id,
+                          name=name,
+                          description=description,
+                          address=address,
+                          lat=lat,
+                          lng=lng,
+                          transport=transport,
+                          category=category,
+                          mrt=mrt,
+                          images=[] if url == None else [url])
