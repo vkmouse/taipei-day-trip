@@ -20,7 +20,6 @@ class MySQLRepository:
     def __init__(self, cnxpool: mysql.connector.pooling.MySQLConnectionPool, debug: bool):
         self.debug = debug
         self.cnxpool = cnxpool
-        self.create_table()
 
     @with_connection
     def create_table(self, cnx, cursor):

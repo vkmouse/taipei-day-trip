@@ -97,6 +97,10 @@ class MySQLAttractionRepository(MySQLRepository, AttractionRepository):
                  category=self.category_tablename,
                  mrt=self.mrt_tablename)
 
+    def create_table(self):
+        super().create_table()
+        self.attraction_images.create_table()
+
     def drop_table_if_exists(self):
         self.attraction_images.drop_table_if_exists()
         super().drop_table_if_exists()
@@ -149,10 +153,10 @@ class MySQLAttractionRepository(MySQLRepository, AttractionRepository):
             '    ON {attraction}.mrt_id={mrt}.id '
             'LEFT JOIN {attraction_image} '
             '    ON {attraction_image}.attraction_id={attraction}.id'
-        ).format(attraction=self.tablename,
-                 attraction_image='test_attraction_image',
-                 category=self.category_tablename,
-                 mrt=self.mrt_tablename)
+        ).format(attraction = self.tablename,
+                 attraction_image = self.attraction_images.tablename,
+                 category = self.category_tablename,
+                 mrt = self.mrt_tablename)
 
     def get_range_statement(self, attraction_condition):
         return (
@@ -189,7 +193,7 @@ class MySQLAttractionRepository(MySQLRepository, AttractionRepository):
             '        ON {attraction_image}.attraction_id=tb.id;'
         ).format(attraction = self.tablename,
                  attraction_condition = attraction_condition,
-                 attraction_image = 'test_attraction_image',
+                 attraction_image = self.attraction_images.tablename,
                  category = self.category_tablename,
                  mrt=self.mrt_tablename)
 

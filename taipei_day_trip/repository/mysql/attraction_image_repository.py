@@ -2,8 +2,8 @@ from taipei_day_trip.core import List
 from taipei_day_trip.repository.mysql.repository import MySQLRepository
 
 class MySQLAttractionImageRepository(MySQLRepository):
-    def __init__(self, cnxpool, attraction_table_name: str, debug: bool):
-        self.attraction_table_name = attraction_table_name
+    def __init__(self, cnxpool, attraction_tablename: str, debug: bool):
+        self.attraction_tablename = attraction_tablename
         MySQLRepository.__init__(self, cnxpool, debug)
 
     @MySQLRepository.with_connection
@@ -30,4 +30,4 @@ class MySQLAttractionImageRepository(MySQLRepository):
             '    FOREIGN KEY (attraction_id) REFERENCES {attraction} (id)'
             ');'
         ).format(attraction_image=self.tablename,
-                 attraction=self.attraction_table_name)
+                 attraction=self.attraction_tablename)

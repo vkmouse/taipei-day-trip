@@ -16,6 +16,9 @@ class MySQLUnitOfWork(UnitOfWork):
         self.__debug = debug
         self.__cnxpool = mysql.connector.pooling.MySQLConnectionPool(pool_name='taipei_day_trip', pool_size=4, **config)
         UnitOfWork.__init__(self)
+        self.categories.create_table()
+        self.mrts.create_table()
+        self.attractions.create_table()
 
     def __del__(self):
         if self.__debug:
