@@ -1,5 +1,6 @@
-import json
+import dotenv
 import mysql.connector
+import os
 
 from taipei_day_trip.core import AttractionRepository
 from taipei_day_trip.core import CategoryRepository
@@ -10,11 +11,12 @@ from taipei_day_trip.repository.mysql.category_repository import MySQLCategoryRe
 from taipei_day_trip.repository.mysql.mrt_repository import MySQLMRTRepository
 
 class MySQLUnitOfWork(UnitOfWork):
-    def __init__(self, configPath: str, debug=False):
-        config = self.load_config(configPath)
-        self.init_db(config)
+    def __init__(self, debug=False, load_dotenv=True):
         self.__debug = debug
-        self.__cnxpool = mysql.connector.pooling.MySQLConnectionPool(pool_name='taipei_day_trip', pool_size=4, **config)
+        if load_dotenv:
+            dotenv.load_dotenv()
+        self.create_database()
+        self.__cnxpool = self.create_connectpool()
         UnitOfWork.__init__(self)
         self.categories.create_table()
         self.mrts.create_table()
@@ -35,30 +37,58 @@ class MySQLUnitOfWork(UnitOfWork):
     def _create_mrt_repository(self) -> MRTRepository:
         return MySQLMRTRepository(self.__cnxpool, self.__debug)
 
-    @staticmethod
-    def is_available(configPath: str) -> bool:
+    def is_available(self) -> bool:
         try:
-            config = MySQLUnitOfWork.load_config(configPath)
-            config['database'] = None
+            config = MySQLConfig.config_without_database()
             mysql.connector.connect(**config)
             return True
         except:
             return False
 
+    def create_database(self):
+        database = MySQLConfig.database()
+        config = MySQLConfig.config_without_database()
+        with mysql.connector.connect(**config) as cnx:
+            with cnx.cursor() as cursor:
+                cursor.execute(f'CREATE DATABASE IF NOT EXISTS {database}')
+
+    def create_connectpool(self) -> mysql.connector.pooling.MySQLConnectionPool:
+        return mysql.connector.pooling.MySQLConnectionPool(
+            pool_name='taipei_day_trip', 
+            pool_size=4, 
+            **MySQLConfig.config()
+        )
+
+class MySQLConfig:
     @staticmethod
-    def load_config(configPath: str):
-        with open(configPath) as file:
-            return json.load(file)
+    def host():
+        return os.getenv('MYSQL_HOST')
 
     @staticmethod
-    def init_db(config):
-        database = config['database']
-        config['database'] = None
-        cnx = mysql.connector.connect(**config)
-        cursor = cnx.cursor()
-        cursor.execute('SHOW DATABASES;')
-        if not (database,) in cursor.fetchall():
-            cursor.execute('CREATE DATABASE ' + database)
-        cursor.close()
-        cnx.close()
-        config['database'] = database
+    def user():
+        return os.getenv('MYSQL_USER')
+
+    @staticmethod
+    def password():
+        return os.getenv('MYSQL_PASSWORD')
+
+    @staticmethod
+    def database():
+        return os.getenv('MYSQL_DATABASE')
+
+    @staticmethod
+    def config():
+        return {
+            'host': MySQLConfig.host(),
+            'user': MySQLConfig.user(),
+            'password': MySQLConfig.password(),
+            'database': MySQLConfig.database()
+        }
+
+    @staticmethod
+    def config_without_database():
+        return {
+            'host': MySQLConfig.host(),
+            'user': MySQLConfig.user(),
+            'password': MySQLConfig.password(),
+        }

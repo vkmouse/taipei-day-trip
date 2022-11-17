@@ -129,42 +129,42 @@ def test_memory_composite_search():
     db = MemoryUnitOfWork()
     composite_search_test_case(db)
 
-@pytest.mark.skipif(not MySQLUnitOfWork.is_available('config.json'), reason="database is not avaibable")
+@pytest.mark.skipif(not MySQLUnitOfWork(debug=True).is_available(), reason="database is not avaibable")
 def test_mysql_based_repository():
-    db = MySQLUnitOfWork('config.json', debug=True)
+    db = MySQLUnitOfWork(debug=True)
     attraction_test_case(db)
 
-@pytest.mark.skipif(not MySQLUnitOfWork.is_available('config.json'), reason="database is not avaibable")
+@pytest.mark.skipif(not MySQLUnitOfWork(debug=True).is_available(), reason="database is not avaibable")
 def test_mysql_based_images():
-    db = MySQLUnitOfWork('config.json', debug=True)
+    db = MySQLUnitOfWork(debug=True)
     images_test_case(db)
 
-@pytest.mark.skipif(not MySQLUnitOfWork.is_available('config.json'), reason="database is not avaibable")
+@pytest.mark.skipif(not MySQLUnitOfWork(debug=True).is_available(), reason="database is not avaibable")
 def test_mysql_based_null_mrt():
-    db = MySQLUnitOfWork('config.json', debug=True)
+    db = MySQLUnitOfWork(debug=True)
     null_mrt_test_case(db)
 
-@pytest.mark.skipif(not MySQLUnitOfWork.is_available('config.json'), reason="database is not avaibable")
+@pytest.mark.skipif(not MySQLUnitOfWork(debug=True).is_available(), reason="database is not avaibable")
 def test_mysql_based_get_by_id():
-    db = MySQLUnitOfWork('config.json', debug=True)
+    db = MySQLUnitOfWork(debug=True)
     get_by_id_test_case(db)
 
-@pytest.mark.skipif(not MySQLUnitOfWork.is_available('config.json'), reason="database is not avaibable")
+@pytest.mark.skipif(not MySQLUnitOfWork(debug=True).is_available(), reason="database is not avaibable")
 def test_mysql_based_get_range():
-    db = MySQLUnitOfWork('config.json', debug=True)
+    db = MySQLUnitOfWork(debug=True)
     get_range_test_case(db)
 
-@pytest.mark.skipif(not MySQLUnitOfWork.is_available('config.json'), reason="database is not avaibable")
+@pytest.mark.skipif(not MySQLUnitOfWork(debug=True).is_available(), reason="database is not avaibable")
 def test_mysql_based_search_by_name():
-    db = MySQLUnitOfWork('config.json', debug=True)
+    db = MySQLUnitOfWork(debug=True)
     search_by_name_test_case(db)
 
-@pytest.mark.skipif(not MySQLUnitOfWork.is_available('config.json'), reason="database is not avaibable")
+@pytest.mark.skipif(not MySQLUnitOfWork(debug=True).is_available(), reason="database is not avaibable")
 def test_mysql_based_search_by_category():
-    db = MySQLUnitOfWork('config.json', debug=True)
+    db = MySQLUnitOfWork(debug=True)
     search_by_category_test_case(db)
 
-@pytest.mark.skipif(not MySQLUnitOfWork.is_available('config.json'), reason="database is not avaibable")
+@pytest.mark.skipif(not MySQLUnitOfWork(debug=True).is_available(), reason="database is not avaibable")
 def test_mysql_composite_search():
     db = MemoryUnitOfWork()
     composite_search_test_case(db)

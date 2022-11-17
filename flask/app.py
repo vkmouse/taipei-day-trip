@@ -6,7 +6,7 @@ from taipei_day_trip.route import get_attraction_api
 from taipei_day_trip.route import get_category_api
 
 mem = MemoryUnitOfWork()
-db = MySQLUnitOfWork('config.json')
+db = MySQLUnitOfWork()
 mem.import_from_json_file('data/taipei-attractions.json')
 copy_db(mem, db)
 
