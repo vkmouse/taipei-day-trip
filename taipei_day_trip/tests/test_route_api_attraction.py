@@ -56,7 +56,7 @@ def test_attractions_if_missing_requestment(client: FlaskClient):
     assert response.status_code == 400
     assert response.get_json() == {
         'error': True,
-        'message': 'Missing required parameter "page"'
+        'message': 'Missing required parameter page'
     }
 
 def test_attractions_if_page_not_a_number(client: FlaskClient):
@@ -64,7 +64,7 @@ def test_attractions_if_page_not_a_number(client: FlaskClient):
     assert response.status_code == 400
     assert response.get_json() == {
         'error': True,
-        'message': '"page" parameter has error, it allow only integer number'
+        'message': 'page is invalid, it allow only integer number'
     }
 
 def test_attractions_if_page_number_invalid(client: FlaskClient):
@@ -72,7 +72,7 @@ def test_attractions_if_page_number_invalid(client: FlaskClient):
     assert response.status_code == 400
     assert response.get_json() == {
         'error': True,
-        'message': '"page" parameter has error, it allow only integer number'
+        'message': 'page is invalid, it allow only integer number'
     }
 
 def test_attractions_if_having_next_page(client: FlaskClient):
