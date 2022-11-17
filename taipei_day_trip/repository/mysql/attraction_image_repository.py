@@ -14,13 +14,6 @@ class MySQLAttractionImageRepository(MySQLRepository):
             cursor.executemany(query, data)
             cnx.commit()
 
-    @MySQLRepository.with_connection
-    def get_by_attraction_id(self, attraction_id: int, cnx, cursor) -> List[str]:
-        query = 'SELECT url FROM {} WHERE attraction_id = %s'.format(self.tablename)
-        data = (attraction_id,)
-        cursor.execute(query, data)
-        return list(map(lambda x: x[0], cursor.fetchall()))
-
     @property
     def tablename(self) -> str:
         if self.debug:
