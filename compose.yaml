@@ -1,11 +1,22 @@
 services:
-  main:
-    build:
-      context: ./flask
-    image: tdt-main-docker
+  nginx:
+    build: 
+      context: ./nginx
+    image: tdt-nginx-docker
+    container_name: tdt-nginx
     ports:
       - 3000:3000
-    container_name: tdt-main
+    networks:
+      - tdt-network
+    depends_on:
+      db:
+        condition: service_healthy
+
+  flask:
+    build:
+      context: ./flask
+    image: tdt-flask-docker
+    container_name: tdt-flask
     networks:
       - tdt-network
     depends_on:
