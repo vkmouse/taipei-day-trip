@@ -1,7 +1,7 @@
 services:
   main:
     build:
-      context: ../
+      context: ./flask
     image: tdt-main-docker
     ports:
       - 3000:3000
@@ -9,10 +9,10 @@ services:
     networks:
       - tdt-network
     depends_on:
-      mysqldb:
+      db:
         condition: service_healthy
 
-  mysqldb:
+  db:
     image: mysql
     environment:
       - MYSQL_ROOT_PASSWORD=000000
@@ -21,8 +21,8 @@ services:
       - tdt-network
     healthcheck:
       test: mysqladmin ping -h 127.0.0.1 -uroot --password=$$MYSQL_ROOT_PASSWORD
-      timeout: 3s
-      retries: 10
+      timeout: 5s
+      retries: 20
 
 networks:
   tdt-network:
