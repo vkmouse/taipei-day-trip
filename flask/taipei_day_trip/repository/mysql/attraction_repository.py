@@ -32,6 +32,7 @@ class MySQLAttractionRepository(MySQLRepository, AttractionRepository):
 
     @MySQLRepository.with_connection
     def get_all(self, cnx, cursor) -> List[Attraction]:
+        cursor = cnx.cursor(dictionary=True)
         query = self.all_attraction_images_statement
         cursor.execute(query)
         rows = cursor.fetchall()
@@ -41,6 +42,7 @@ class MySQLAttractionRepository(MySQLRepository, AttractionRepository):
 
     @MySQLRepository.with_connection
     def get_by_id(self, id: int, cnx, cursor) -> Attraction | None:
+        cursor = cnx.cursor(dictionary=True)
         query = f'{self.all_attraction_images_statement} WHERE {self.tablename}.id = %s;'
         cursor.execute(query, (id,))
         rows = cursor.fetchall()
@@ -50,6 +52,7 @@ class MySQLAttractionRepository(MySQLRepository, AttractionRepository):
 
     @MySQLRepository.with_connection
     def get_range(self, start: int, stop: int, cnx, cursor) -> List[Attraction]:
+        cursor = cnx.cursor(dictionary=True)
         query = self.get_range_statement(f'LIMIT {start}, {stop - start}')
         cursor.execute(query)
         rows = cursor.fetchall()
@@ -59,6 +62,7 @@ class MySQLAttractionRepository(MySQLRepository, AttractionRepository):
 
     @MySQLRepository.with_connection
     def search_by_category_or_name(self, keyword: str, start: int, stop: int, cnx, cursor) -> List[Attraction]:
+        cursor = cnx.cursor(dictionary=True)
         query = self.get_range_statement(
             f' WHERE {self.tablename}.name LIKE %s OR {self.category_tablename}.name = %s '
             f' LIMIT {start}, {stop - start}'
@@ -143,8 +147,8 @@ class MySQLAttractionRepository(MySQLRepository, AttractionRepository):
             '    {attraction}.lat,' 
             '    {attraction}.lng,' 
             '    {attraction}.transport,' 
-            '    {category}.name,' 
-            '    {mrt}.name,'
+            '    {category}.name AS category,'
+            '    {mrt}.name AS mrt,'
             '    {attraction_image}.url '
             'FROM {attraction} '
             'INNER JOIN {category} '
@@ -206,7 +210,7 @@ class AttractionRecevier:
         if attraction.id in self.__all:
             self.__all[attraction.id].images.append(attraction.images[0])
         else:
-            self.__all[attraction.id] = self.__parseRow(row)
+            self.__all[attraction.id] = attraction
 
     def appendmany(self, rows):
         for row in rows:
@@ -225,14 +229,13 @@ class AttractionRecevier:
             return items[0]
 
     def __parseRow(self, row) -> Attraction:
-        (id, name, description, address, lat, lng, transport, category, mrt, url,) = row
-        return Attraction(id=id,
-                          name=name,
-                          description=description,
-                          address=address,
-                          lat=lat,
-                          lng=lng,
-                          transport=transport,
-                          category=category,
-                          mrt=mrt,
-                          images=[] if url == None else [url])
+        return Attraction(id=row['id'],
+                          name=row['name'],
+                          description=row['description'],
+                          address=row['address'],
+                          lat=row['lat'],
+                          lng=row['lng'],
+                          transport=row['transport'],
+                          category=row['category'],
+                          mrt=row['mrt'],
+                          images=[] if row['url'] == None else [row['url']])
