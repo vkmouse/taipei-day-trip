@@ -8,4 +8,8 @@ const Secondery = css`
   color: #666666
 `;
 
-export { Primary, Secondery };
+const Secondery10 = css`
+  color: #F8F8F8;
+`;
+
+export { Primary, Secondery, Secondery10 };
