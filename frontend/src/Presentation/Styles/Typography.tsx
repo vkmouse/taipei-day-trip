@@ -29,6 +29,8 @@ const H2 = styled.h2`
   font-style: normal;
   font-weight: 700;
   font-size: 30px;
+  margin-block-start: 0;
+  margin-block-end: 0;
 `;
 
 export { BodyBold, BodyMedium, H1, H2 };

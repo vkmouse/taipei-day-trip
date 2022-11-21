@@ -13,6 +13,7 @@ const NavigationStyle = styled.div`
 
 const Title = styled(H2)`
   ${Primary};
+  cursor: pointer;
 `;
 
 const Items = styled.div`
