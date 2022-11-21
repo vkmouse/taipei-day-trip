@@ -1,4 +1,5 @@
 import React from 'react';
+import Banner from '../Components/Banner';
 import Navigation from '../Components/Navigation';
 import { Header } from '../Styles/SemanticStyles';
 
@@ -7,6 +8,7 @@ function HomeView() {
     <>
       <Header>
         <Navigation />
+        <Banner />
       </Header>
     </>
   );
