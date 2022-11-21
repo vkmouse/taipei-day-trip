@@ -16,8 +16,9 @@ const BannerStyle = styled.div`
 
 const Content = styled.div`
   height: 149px;
-  width: 1180px;
+  margin: 0 10px 0 10px;
   padding: 10px;
+  width: 1180px;
 `;
 
 const Container = styled.div`

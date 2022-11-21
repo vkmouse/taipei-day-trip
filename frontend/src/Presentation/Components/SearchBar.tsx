@@ -6,10 +6,8 @@ import { BodyBold } from '../Styles/Typography';
 const Container = styled.div`
   display: flex;
   height: 46px;
-  width: 460px;
-  @media (max-width: 511px) {
-    width: 90%;
-  }
+  width: 89%;
+  max-width: 460px;
 `;
 
 const Input = styled.input`
@@ -18,6 +16,7 @@ const Input = styled.input`
   border-width: 0;
   height: 100%;
   flex-grow: 1;
+  min-width: 200px;
   padding: 0;
   padding-left: 15px;
   &:focus {

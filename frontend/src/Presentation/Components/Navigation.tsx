@@ -9,6 +9,7 @@ const NavigationStyle = styled.div`
   height: 54px;
   justify-content: space-between;
   width: 1200px;
+  margin: 0 10px 0 10px;
 `;
 
 const Title = styled(H2)`
@@ -23,11 +24,13 @@ const Items = styled.div`
 const Item = styled.button`
   ${BodyMedium};
   ${Secondery};
-  
   background-color: white;
   border-width: 0px;
   cursor: pointer;
   padding: 10px;
+  &:last-child {
+    padding-right: 0;
+  }
 `;
 
 const Navigation = () => {
