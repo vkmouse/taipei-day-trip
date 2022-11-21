@@ -9,12 +9,16 @@ const NavigationStyle = styled.div`
   height: 54px;
   justify-content: space-between;
   width: 1200px;
-  margin: 0 10px 0 10px;
+  margin: 0 10px 0 10px;  
 `;
 
-const Title = styled(H2)`
-  ${Primary};
+const Title = styled.button`
+  ${H2};
+  background-color: transparent;
+  border-width: 0px;
+  color: ${Primary};
   cursor: pointer;
+  padding: 0;
 `;
 
 const Items = styled.div`
@@ -23,13 +27,15 @@ const Items = styled.div`
 
 const Item = styled.button`
   ${BodyMedium};
-  ${Secondery};
-  background-color: white;
+  background-color: transparent;
   border-width: 0px;
+  color: ${Secondery};
   cursor: pointer;
   padding: 10px;
-  &:last-child {
-    padding-right: 0;
+  @media (max-width: 1200px) {
+    &:last-child {
+      padding-right: 0;
+    }
   }
 `;
 

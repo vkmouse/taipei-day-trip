@@ -26,7 +26,7 @@ const Input = styled.input`
 
 const Button = styled.button`
   align-items: center;
-  background-color: #448899;
+  background-color: ${Primary};
   border-radius: 0 5px 5px 0;
   border-width: 0;
   cursor: pointer;

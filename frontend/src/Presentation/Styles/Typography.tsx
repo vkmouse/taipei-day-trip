@@ -1,5 +1,4 @@
 import { css } from '@emotion/react';
-import styled from '@emotion/styled';
 
 const BodyBold = css`
   font-family: 'Noto Sans TC';
@@ -15,22 +14,18 @@ const BodyMedium = css`
   font-size: 16px;
 `;
 
-const H1 = styled.h1`
+const H1 = css`
   font-family: 'Noto Sans TC';
   font-style: normal;
   font-weight: 700;
   font-size: 28px;
-  margin-block-start: 0;
-  margin-block-end: 0;
 `;
 
-const H2 = styled.h2`
+const H2 = css`
   font-family: 'Noto Sans TC';
   font-style: normal;
   font-weight: 700;
   font-size: 30px;
-  margin-block-start: 0;
-  margin-block-end: 0;
 `;
 
 export { BodyBold, BodyMedium, H1, H2 };

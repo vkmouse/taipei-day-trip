@@ -35,15 +35,16 @@ const Slogal = styled.div`
   width: 100%;
 `;
 
-const Title = styled(H1)`
-  ${Secondery10};
+const Title = styled.div`
+  ${H1};
+  color: ${Secondery10};
   display: flex;
   align-items: center;
 `;
 
 const Description = styled.span`
   ${BodyBold};
-  ${Secondery10};
+  color: ${Secondery10};
   align-items: end;
   display: flex;
   flex-grow: 1;
