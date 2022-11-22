@@ -1,6 +1,6 @@
 import { Attraction } from "../../Core/Core";
 
-const getAttractions = async (page: number) : Promise<{ data: Attraction[], nextPage: number | null }> => {
+const getAttractions = async (page: number, keyword: string = '') : Promise<{ data: Attraction[], nextPage: number | null }> => {
     let data: Attraction[] = [];
     let nextPage: number | null = page + 1;
 
@@ -21,7 +21,7 @@ const getAttractions = async (page: number) : Promise<{ data: Attraction[], next
       data.push(attraction);
     }
 
-    if (page === 4) {
+    if (page > 3 || (keyword !== '' && page > 1)) {
       nextPage = null;
       data = data.slice(1, 6);
     }

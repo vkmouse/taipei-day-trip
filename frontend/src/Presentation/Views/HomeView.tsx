@@ -10,13 +10,19 @@ import { Header, Main } from '../Styles/SemanticStyles';
 function HomeView() {
   const [nextPage, setNextPage] = useState<number | null>(0);
   const [attractions, setAttractions] = useState<Attraction[]>([]);
+  const [keyword, setKeyword] = useState('');
 
   const getNextPage = async () => {
     if (nextPage !== null) {
-      const body = await getAttractions(nextPage);
+      const body = await getAttractions(nextPage, keyword);
       setAttractions(attractions.concat(body.data));
       setNextPage(body.nextPage);
     }
+  };
+
+  const resetPage = () => {
+    setNextPage(0);
+    setAttractions([]);
   };
 
   const registerOberserver = (target: Element) => {
@@ -37,6 +43,10 @@ function HomeView() {
     }
   };
 
+  const keywordChanged = (text: string) => {
+    setKeyword(text);
+  };
+
   useEffect(() => {
     handleIntersection();
   }, [attractions]);
@@ -45,7 +55,10 @@ function HomeView() {
     <>
       <Header>
         <Navigation />
-        <Banner />
+        <Banner 
+          onSearchButtonClick={resetPage} 
+          onSearchTextChanged={keywordChanged}
+        />
       </Header>
       <Main>
         <AttractionListComponent {...{ attractions }} />
