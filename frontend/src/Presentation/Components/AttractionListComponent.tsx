@@ -1,6 +1,7 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
+import { Attraction } from '../../Core/Core';
 import AttractionComponent from './AttractionComponent';
 
 const Grid = css`
@@ -27,13 +28,16 @@ const Container = styled.div`
   width: 1170px;
 `;
 
-const AttractionListComponent = () => {
+interface IProps {
+  attractions: Attraction[]
+}
+
+const AttractionListComponent = (props: IProps) => {
   return (
     <Container>
-      <AttractionComponent />
-      <AttractionComponent />
-      <AttractionComponent />
-      <AttractionComponent />
+      {props.attractions.map(p => {
+        return <AttractionComponent key={p.id} {...p} />;
+      })}
     </Container>
   );
 };
