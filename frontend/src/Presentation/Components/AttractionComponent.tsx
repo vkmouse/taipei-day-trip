@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import React from 'react';
+import { Attraction } from '../../Core/Core';
 import { Secondery50 } from '../Styles/Colors';
 import { CenterCropped } from '../Styles/ImageCropped';
 import { AbsoluteBottom, AbsoluteFull, RatioContainer } from '../Styles/Ratio';
@@ -74,15 +75,12 @@ const Text = styled.div`
   padding: 0 10px 0 10px;
 `;
 
-const Attraction = () => {
-  const imgUrl = "https://www.travel.taipei/content/images/attractions/221371/1024x768_attractions-image-jyms0r6aquqilooahyiw8w.jpg";
-  const name = '樹河';
-  const mrt = '忠孝復興';
-  const category = '公共藝術';
+const AttractionComponent = (props: Attraction) => {
+  const { name, category, mrt, images } = props;
   return (
     <Container>
       <ImageContainer>
-        <Image src={imgUrl}></Image>
+        <Image src={images[0]}></Image>
         <AttractionTitle>{name}</AttractionTitle>
       </ImageContainer>
       <DescriptionContainer>
@@ -93,4 +91,4 @@ const Attraction = () => {
   );
 };
 
-export default Attraction;
+export default AttractionComponent;

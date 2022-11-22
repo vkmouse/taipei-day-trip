@@ -56,7 +56,10 @@ const SearchBarContainer = styled.div`
   flex-grow: 1;
 `;
 
-const Banner = () => {
+const Banner = (props: { 
+  onSearchButtonClick?: () => void
+  onSearchTextChanged?: (text: string) => void
+}) => {
   return (
     <BannerStyle>
       <Content>
@@ -66,7 +69,7 @@ const Banner = () => {
             <Description>探索每個角落，體驗城市的深度旅遊行程</Description>
           </Slogal>
           <SearchBarContainer>
-            <SearchBar />
+            <SearchBar {...props} />
           </SearchBarContainer>
         </Container>
       </Content>

@@ -36,11 +36,19 @@ const Button = styled.button`
   width: 60px;
 `;
 
-const SearchBar = () => {
+const SearchBar = (props: { 
+  onSearchButtonClick?: () => void
+  onSearchTextChanged?: (text: string) => void
+}) => {
+  const handleSearchTextChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const onChange = props.onSearchTextChanged ?? (() => void 0);
+    onChange(event.target.value);
+  };
+
   return (
     <Container>
-      <Input placeholder="輸入景點名稱查詢" />
-      <Button>
+      <Input placeholder="輸入景點名稱查詢" onChange={handleSearchTextChange} />
+      <Button onClick={props.onSearchButtonClick}>
         <img src='search_icon.svg'/>
       </Button>
     </Container>
