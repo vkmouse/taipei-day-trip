@@ -74,7 +74,7 @@ const Text = styled.div`
   padding: 0 10px 0 10px;
 `;
 
-const Attraction = () => {
+const AttractionComponent = () => {
   const imgUrl = "https://www.travel.taipei/content/images/attractions/221371/1024x768_attractions-image-jyms0r6aquqilooahyiw8w.jpg";
   const name = '樹河';
   const mrt = '忠孝復興';
@@ -93,4 +93,4 @@ const Attraction = () => {
   );
 };
 
-export default Attraction;
+export default AttractionComponent;

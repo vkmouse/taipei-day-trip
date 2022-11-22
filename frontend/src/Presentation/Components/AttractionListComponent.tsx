@@ -1,7 +1,7 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
-import Attraction from './Attraction';
+import AttractionComponent from './AttractionComponent';
 
 const Grid = css`
   display: grid;
@@ -27,15 +27,15 @@ const Container = styled.div`
   width: 1170px;
 `;
 
-const Attractions = () => {
+const AttractionListComponent = () => {
   return (
     <Container>
-      <Attraction />
-      <Attraction />
-      <Attraction />
-      <Attraction />
+      <AttractionComponent />
+      <AttractionComponent />
+      <AttractionComponent />
+      <AttractionComponent />
     </Container>
   );
 };
 
-export default Attractions;
+export default AttractionListComponent;

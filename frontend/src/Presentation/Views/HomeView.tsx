@@ -1,5 +1,5 @@
 import React from 'react';
-import Attractions from '../Components/Attractions';
+import AttractionListComponent from '../Components/AttractionListComponent';
 import Banner from '../Components/Banner';
 import Footer from '../Components/Footer';
 import Navigation from '../Components/Navigation';
@@ -13,7 +13,7 @@ function HomeView() {
         <Banner />
       </Header>
       <Main>
-        <Attractions />
+        <AttractionListComponent />
       </Main>
       <Footer />
     </>
