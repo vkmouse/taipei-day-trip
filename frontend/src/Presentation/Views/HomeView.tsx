@@ -1,7 +1,8 @@
 import React from 'react';
+import Attractions from '../Components/Attractions';
 import Banner from '../Components/Banner';
 import Navigation from '../Components/Navigation';
-import { Header } from '../Styles/SemanticStyles';
+import { Header, Main } from '../Styles/SemanticStyles';
 
 function HomeView() {
   return (
@@ -10,6 +11,9 @@ function HomeView() {
         <Navigation />
         <Banner />
       </Header>
+      <Main>
+        <Attractions />
+      </Main>
     </>
   );
 }

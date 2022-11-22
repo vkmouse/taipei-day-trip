@@ -6,4 +6,9 @@ const Header = styled.header`
   justify-content: center;
 `;
 
-export { Header };
+const Main = styled.main`
+  display: flex;
+  justify-content: center;
+`;
+
+export { Header, Main };
