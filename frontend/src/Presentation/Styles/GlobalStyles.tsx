@@ -6,6 +6,12 @@ const GlobalStyles = css`
   body {
     margin: 0;
   }
+
+  #root, #root > div {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
 `;
 
 export default GlobalStyles;

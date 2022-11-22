@@ -22,7 +22,7 @@ const Grid = css`
 
 const Container = styled.div`
   ${Grid};
-  margin: 40px 4px 0 4px;
+  margin: 40px 4px 40px 4px;
   padding: 15px;
   width: 1170px;
 `;
