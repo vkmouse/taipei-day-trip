@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Attraction } from '../../Core/Core';
-import { getAttractions } from '../../Data/DataSource/MockAPI';
+import { getAttractions } from '../../Data/DataSource/API';
 import AttractionListComponent from '../Components/AttractionListComponent';
 import Banner from '../Components/Banner';
 import Footer from '../Components/Footer';
@@ -10,6 +10,7 @@ import { Header, Main } from '../Styles/SemanticStyles';
 function HomeView() {
   const [nextPage, setNextPage] = useState<number | null>(0);
   const [attractions, setAttractions] = useState<Attraction[]>([]);
+  const [searchBarText, setSearchBarText] = useState('');
   const [keyword, setKeyword] = useState('');
 
   const getNextPage = async () => {
@@ -20,9 +21,10 @@ function HomeView() {
     }
   };
 
-  const resetPage = () => {
+  const handleSearchBarClicked = () => {
     setNextPage(0);
     setAttractions([]);
+    setKeyword(searchBarText);
   };
 
   const registerOberserver = (target: Element) => {
@@ -43,8 +45,8 @@ function HomeView() {
     }
   };
 
-  const keywordChanged = (text: string) => {
-    setKeyword(text);
+  const handleSearchBarTextChanged = (text: string) => {
+    setSearchBarText(text);
   };
 
   useEffect(() => {
@@ -53,11 +55,11 @@ function HomeView() {
 
   return (
     <>
+      <Navigation />
       <Header>
-        <Navigation />
         <Banner 
-          onSearchButtonClick={resetPage} 
-          onSearchTextChanged={keywordChanged}
+          onSearchButtonClick={handleSearchBarClicked} 
+          onSearchTextChanged={handleSearchBarTextChanged}
         />
       </Header>
       <Main>

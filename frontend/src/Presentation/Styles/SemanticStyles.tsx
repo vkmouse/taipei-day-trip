@@ -4,6 +4,7 @@ const Header = styled.header`
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  margin-top: 54px;
 `;
 
 const Main = styled.main`

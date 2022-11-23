@@ -7,7 +7,7 @@ const GlobalStyles = css`
     margin: 0;
   }
 
-  #root, #root > div {
+  #root {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
