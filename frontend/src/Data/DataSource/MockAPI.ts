@@ -1,26 +1,13 @@
+import { API } from "../../Core/API";
 import { Attraction } from "../../Core/Core";
 
-const getMockAttraction = (id: number) : Attraction => {
-  return {
-    id: id,
-    name: `樹河${id}`,
-    description: '',
-    address: '',
-    lat: 0,
-    lng: 0,
-    transport: '',
-    images: ['https://www.travel.taipei/content/images/attractions/221371/1024x768_attractions-image-jyms0r6aquqilooahyiw8w.jpg'],
-    category: `公共藝術${id}`,
-    mrt: `忠孝復興${id}`
-  };
-};
-
-const getAttractions = async (page: number, keyword: string = '') : Promise<{ data: Attraction[], nextPage: number | null }> => {
+class MockAPI implements API {
+  getAttractions = (page: number, keyword: string) : Promise<{ data: Attraction[], nextPage: number | null }> => {
     let data: Attraction[] = [];
     let nextPage: number | null = page + 1;
     for (let i = 0; i < 12; i++) {
       const id = i + 12 * page;
-      data.push(getMockAttraction(id));
+      data.push(this.createAttraction(id));
     }
 
     if (keyword === '' && page > 3) {
@@ -34,21 +21,37 @@ const getAttractions = async (page: number, keyword: string = '') : Promise<{ da
       data = data.slice(1, 5);
     }
 
-  return new Promise((resolve, reject) => {
-    setTimeout(() => resolve({ data, nextPage }), 1000);
-  });
-};
+    return new Promise((resolve, reject) => {
+      setTimeout(() => resolve({ data, nextPage }), 1000);
+    });
+  };
 
-const getCategories = async () : Promise<{ data: string[] }> => {
-  const data = [
-    '綠野現蹤', '你是笨蛋', '哈哈哈哈', '輸入景點',
-    '綠野現蹤', '你是笨蛋', '哈哈哈哈', '輸入景點',
-    '綠野現蹤', '你是笨蛋', '哈哈哈哈', '輸入景點',
-    '綠野現蹤', '你是笨蛋', '哈哈哈哈', '輸入景點',
-  ];
-  return new Promise((resolve, reject) => {
-    setTimeout(() => resolve({ data }), 1000);
-  });
-};
+  getCategories = () : Promise<{ data: string[] }> => {
+    const data = [
+      '綠野現蹤', '你是笨蛋', '哈哈哈哈', '輸入景點',
+      '綠野現蹤', '你是笨蛋', '哈哈哈哈', '輸入景點',
+      '綠野現蹤', '你是笨蛋', '哈哈哈哈', '輸入景點',
+      '綠野現蹤', '你是笨蛋', '哈哈哈哈', '輸入景點',
+    ];
+    return new Promise((resolve, reject) => {
+      setTimeout(() => resolve({ data }), 1000);
+    });
+  };
 
-export { getAttractions, getCategories };
+  private createAttraction = (id: number) : Attraction => {
+    return {
+      id: id,
+      name: `樹河${id}`,
+      description: '',
+      address: '',
+      lat: 0,
+      lng: 0,
+      transport: '',
+      images: ['https://www.travel.taipei/content/images/attractions/221371/1024x768_attractions-image-jyms0r6aquqilooahyiw8w.jpg'],
+      category: `公共藝術${id}`,
+      mrt: `忠孝復興${id}`
+    };
+  };
+}
+
+export default MockAPI;

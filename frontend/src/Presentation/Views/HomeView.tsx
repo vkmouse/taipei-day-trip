@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import { api } from '../../Core/API';
 import { Attraction } from '../../Core/Core';
-import { getAttractions } from '../../Data/DataSource/API';
 import AttractionListComponent from '../Components/AttractionListComponent';
 import Banner from '../Components/Banner';
 import Footer from '../Components/Footer';
@@ -15,7 +15,7 @@ function HomeView() {
 
   const getNextPage = async () => {
     if (nextPage !== null) {
-      const body = await getAttractions(nextPage, keyword);
+      const body = await api.getAttractions(nextPage, keyword);
       setAttractions(attractions.concat(body.data));
       setNextPage(body.nextPage);
     }

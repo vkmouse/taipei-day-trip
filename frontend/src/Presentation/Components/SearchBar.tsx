@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import React, { useEffect, useState } from 'react';
-import { getCategories } from '../../Data/DataSource/API';
+import { api } from '../../Core/API';
 import { Primary } from '../Styles/Colors';
 import { BodyBold } from '../Styles/Typography';
 import CategoryList from './CategoryList';
@@ -74,7 +74,7 @@ const SearchBar = (props: {
   };
 
   const initCategories = async () => {
-    const body = await getCategories();
+    const body = await api.getCategories();
     setCategories(body.data);
   };
 
