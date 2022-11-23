@@ -1,3 +1,4 @@
+import styled from '@emotion/styled';
 import React, { useEffect } from 'react';
 import { api } from '../../Core/API';
 import { setData, setNextPage } from '../../Data/Slices/attractionSlice';
@@ -7,6 +8,13 @@ import Banner from '../Components/Banner';
 import Footer from '../Components/Footer';
 import Navigation from '../Components/Navigation';
 import { Header, Main } from '../Styles/SemanticStyles';
+
+const AttractionNotFound = styled.img`
+  width: 100%;
+  height: 100%;
+  max-width: 600px;
+  content: url("attraction_not_found.png");
+`;
 
 function HomeView() {
   const attractions = useAppSelector(state => state.attraction.data);
@@ -51,7 +59,7 @@ function HomeView() {
         <Banner />
       </Header>
       <Main>
-        <AttractionListComponent />
+        {attractions.length > 0 ? <AttractionListComponent /> : <AttractionNotFound />}
       </Main>
       <Footer />
     </>
