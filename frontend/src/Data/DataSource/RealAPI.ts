@@ -1,8 +1,8 @@
 import { API } from "../../Core/API";
-import { Attraction } from "../../Core/Core";
+import { AttractionState } from "../../Core/Core";
 
 class RealAPI implements API {
-  getAttractions = async (page: number, keyword: string = '') : Promise<{ data: Attraction[], nextPage: number | null }> => {
+  getAttractions = async (page: number, keyword: string = '') : Promise<AttractionState> => {
     let url = '';
     if (keyword === '') {
       url = `/api/attractions?page=${page}`;
