@@ -53,8 +53,8 @@ function HomeView() {
 
   return (
     <>
+      <Navigation />
       <Header>
-        <Navigation />
         <Banner 
           onSearchButtonClick={resetPage} 
           onSearchTextChanged={keywordChanged}
