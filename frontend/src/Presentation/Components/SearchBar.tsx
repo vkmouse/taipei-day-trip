@@ -1,7 +1,8 @@
 import styled from '@emotion/styled';
 import React, { useEffect, useState } from 'react';
 import { api } from '../../Core/API';
-import { setSearchBarText } from '../../Data/Slices/keywordSlice';
+import { setData, setNextPage } from '../../Data/Slices/attractionSlice';
+import { setSearchBarText, updateKeyword } from '../../Data/Slices/keywordSlice';
 import { useAppDispatch, useAppSelector } from '../../Data/Store/hooks';
 import { Primary } from '../Styles/Colors';
 import { BodyBold } from '../Styles/Typography';
@@ -44,13 +45,17 @@ const Button = styled.button`
   border-width: 0;
 `;
 
-const SearchBar = (props: { 
-  onSearchButtonClick?: () => void
-}) => {
+const SearchBar = () => {
   const [categories, setCategories] = useState<string[]>([]);
   const [categoryListVisible, setCategoryListVisible] = useState(false);
   const searchBarText = useAppSelector(state => state.keyword.searchBarText);
   const dispatch = useAppDispatch();
+
+  const handleSearchBarClicked = () => {
+    dispatch(setNextPage(0));
+    dispatch(setData([]));
+    dispatch(updateKeyword());
+  };
 
   useEffect(() => {
     async () => {
@@ -69,7 +74,7 @@ const SearchBar = (props: {
           onBlur={() => setCategoryListVisible(false)}
           value={searchBarText}
         />
-        <Button onClick={props.onSearchButtonClick}>
+        <Button onClick={() => handleSearchBarClicked()}>
           <img src='search_icon.svg'/>
         </Button>
       </SearchBarContainer>

@@ -1,7 +1,7 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
-import { Attraction } from '../../Core/Core';
+import { useAppSelector } from '../../Data/Store/hooks';
 import AttractionComponent from './AttractionComponent';
 
 const Grid = css`
@@ -26,14 +26,11 @@ const Container = styled.div`
   margin: 40px 4px 40px 4px;
 `;
 
-interface IProps {
-  attractions: Attraction[]
-}
-
-const AttractionListComponent = (props: IProps) => {
+const AttractionListComponent = () => {
+  const attractions = useAppSelector(state => state.attraction.data);
   return (
     <Container>
-      {props.attractions.map(p => {
+      {attractions.map(p => {
         return <AttractionComponent key={p.id} {...p} />;
       })}
     </Container>

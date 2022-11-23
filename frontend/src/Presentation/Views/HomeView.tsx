@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { api } from '../../Core/API';
-import { Attraction } from '../../Core/Core';
-import { updateKeyword } from '../../Data/Slices/keywordSlice';
+import { setData, setNextPage } from '../../Data/Slices/attractionSlice';
 import { useAppDispatch, useAppSelector } from '../../Data/Store/hooks';
 import AttractionListComponent from '../Components/AttractionListComponent';
 import Banner from '../Components/Banner';
@@ -10,23 +9,17 @@ import Navigation from '../Components/Navigation';
 import { Header, Main } from '../Styles/SemanticStyles';
 
 function HomeView() {
-  const [nextPage, setNextPage] = useState<number | null>(0);
-  const [attractions, setAttractions] = useState<Attraction[]>([]);
+  const attractions = useAppSelector(state => state.attraction.data);
+  const nextPage = useAppSelector(state => state.attraction.nextPage);
   const keyword = useAppSelector(state => state.keyword.keyword);
   const dispatch = useAppDispatch();
 
   const getNextPage = async () => {
     if (nextPage !== null) {
       const body = await api.getAttractions(nextPage, keyword);
-      setAttractions(attractions.concat(body.data));
-      setNextPage(body.nextPage);
+      dispatch(setData(attractions.concat(body.data)));
+      dispatch(setNextPage(body.nextPage));
     }
-  };
-
-  const handleSearchBarClicked = () => {
-    setNextPage(0);
-    setAttractions([]);
-    dispatch(updateKeyword());
   };
 
   const registerOberserver = (target: Element) => {
@@ -55,12 +48,10 @@ function HomeView() {
     <>
       <Navigation />
       <Header>
-        <Banner 
-          onSearchButtonClick={handleSearchBarClicked}
-        />
+        <Banner />
       </Header>
       <Main>
-        <AttractionListComponent {...{ attractions }} />
+        <AttractionListComponent />
       </Main>
       <Footer />
     </>

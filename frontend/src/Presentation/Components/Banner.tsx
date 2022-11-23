@@ -56,9 +56,7 @@ const SearchBarContainer = styled.div`
   align-items: end;
 `;
 
-const Banner = (props: { 
-  onSearchButtonClick?: () => void
-}) => {
+const Banner = () => {
   return (
     <BannerStyle>
       <Content>
@@ -68,7 +66,7 @@ const Banner = (props: {
             <Description>探索每個角落，體驗城市的深度旅遊行程</Description>
           </Slogal>
           <SearchBarContainer>
-            <SearchBar {...props} />
+            <SearchBar />
           </SearchBarContainer>
         </Container>
       </Content>
