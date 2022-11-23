@@ -1,9 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
+import attractionReducer from '../Slices/attractionSlice';
 import keywordReducer from '../Slices/keywordSlice';
 
 const store = configureStore({
   reducer: {
-    keyword: keywordReducer
+    keyword: keywordReducer,
+    attraction: attractionReducer,
   },
 });
 
