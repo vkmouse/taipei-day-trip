@@ -1,9 +1,16 @@
 import styled from '@emotion/styled';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { getCategories } from '../../Data/DataSource/MockAPI';
 import { Primary } from '../Styles/Colors';
 import { BodyBold } from '../Styles/Typography';
+import CategoryList from './CategoryList';
 
 const Container = styled.div`
+  position: relative;
+  width: 100%;
+`;
+
+const SearchBarContainer = styled.div`
   display: flex;
   height: 46px;
   width: 89%;
@@ -40,17 +47,57 @@ const SearchBar = (props: {
   onSearchButtonClick?: () => void
   onSearchTextChanged?: (text: string) => void
 }) => {
+  const [categories, setCategories] = useState<string[]>([]);
+  const [categoryListVisible, setCategoryListVisible] = useState(false);
+  const [keyword, setKeyword] = useState('');
+
   const handleSearchTextChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const onChange = props.onSearchTextChanged ?? (() => void 0);
-    onChange(event.target.value);
+    const newKeyword = event.target.value;
+    setKeyword(newKeyword);
+    onChange(newKeyword);
   };
+
+  const handleFocused = () => {
+    setCategoryListVisible(true);
+  };
+
+  const handleBlur = () => {
+    setCategoryListVisible(false);
+  };
+
+  const handleSelect = (category: string) => {
+    setKeyword(category);
+  };
+
+  const initCategories = async () => {
+    const body = await getCategories();
+    setCategories(body.data);
+  };
+
+  useEffect(() => {
+    initCategories();
+  }, []);
 
   return (
     <Container>
-      <Input placeholder="輸入景點名稱查詢" onChange={handleSearchTextChange} />
-      <Button onClick={props.onSearchButtonClick}>
-        <img src='search_icon.svg'/>
-      </Button>
+      <SearchBarContainer>
+        <Input 
+          placeholder="輸入景點名稱查詢"
+          onChange={handleSearchTextChange}
+          onFocus={handleFocused}
+          onBlur={handleBlur}
+          value={keyword}
+        />
+        <Button onClick={props.onSearchButtonClick}>
+          <img src='search_icon.svg'/>
+        </Button>
+      </SearchBarContainer>
+      <CategoryList 
+        categories={categories}
+        visible={categoryListVisible}
+        onSelected={handleSelect}
+      />
     </Container>
   );
 };
