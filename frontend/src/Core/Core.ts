@@ -10,3 +10,8 @@ export interface Attraction {
   category: string
   mrt?: string
 }
+
+export interface AttractionState { 
+  data: Attraction[],
+  nextPage: number | null 
+}

@@ -1,30 +1,33 @@
-import React, { useEffect, useState } from 'react';
-import { Attraction } from '../../Core/Core';
-import { getAttractions } from '../../Data/DataSource/API';
+import styled from '@emotion/styled';
+import React, { useEffect } from 'react';
+import { api } from '../../Core/API';
+import { setData, setNextPage } from '../../Data/Slices/attractionSlice';
+import { useAppDispatch, useAppSelector } from '../../Data/Store/hooks';
 import AttractionListComponent from '../Components/AttractionListComponent';
 import Banner from '../Components/Banner';
 import Footer from '../Components/Footer';
 import Navigation from '../Components/Navigation';
 import { Header, Main } from '../Styles/SemanticStyles';
 
+const AttractionNotFound = styled.img`
+  width: 100%;
+  height: 100%;
+  max-width: 600px;
+  content: url("attraction_not_found.png");
+`;
+
 function HomeView() {
-  const [nextPage, setNextPage] = useState<number | null>(0);
-  const [attractions, setAttractions] = useState<Attraction[]>([]);
-  const [searchBarText, setSearchBarText] = useState('');
-  const [keyword, setKeyword] = useState('');
+  const attractions = useAppSelector(state => state.attraction.data);
+  const nextPage = useAppSelector(state => state.attraction.nextPage);
+  const keyword = useAppSelector(state => state.keyword.keyword);
+  const dispatch = useAppDispatch();
 
   const getNextPage = async () => {
     if (nextPage !== null) {
-      const body = await getAttractions(nextPage, keyword);
-      setAttractions(attractions.concat(body.data));
-      setNextPage(body.nextPage);
+      const body = await api.getAttractions(nextPage, keyword);
+      dispatch(setData(attractions.concat(body.data)));
+      dispatch(setNextPage(body.nextPage));
     }
-  };
-
-  const handleSearchBarClicked = () => {
-    setNextPage(0);
-    setAttractions([]);
-    setKeyword(searchBarText);
   };
 
   const registerOberserver = (target: Element) => {
@@ -45,10 +48,6 @@ function HomeView() {
     }
   };
 
-  const handleSearchBarTextChanged = (text: string) => {
-    setSearchBarText(text);
-  };
-
   useEffect(() => {
     handleIntersection();
   }, [attractions]);
@@ -57,13 +56,10 @@ function HomeView() {
     <>
       <Navigation />
       <Header>
-        <Banner 
-          onSearchButtonClick={handleSearchBarClicked} 
-          onSearchTextChanged={handleSearchBarTextChanged}
-        />
+        <Banner />
       </Header>
       <Main>
-        <AttractionListComponent {...{ attractions }} />
+        {attractions.length > 0 ? <AttractionListComponent /> : <AttractionNotFound />}
       </Main>
       <Footer />
     </>

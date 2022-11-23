@@ -3,16 +3,16 @@ import React from 'react';
 import { Secondery20 } from '../Styles/Colors';
 import { CategoryMedium } from '../Styles/Typography';
 
-const CategoryListContainer = styled.div`
-  background-color: white;
-  border-radius: 5px;
-  box-shadow: 0px 0px 20px #AABBCC;
-  margin-top: 5px;
-  max-width: 400px;
+const Container = styled.div`
   position: absolute;
   top: 46px;
-  width: 100%;
   z-index: 3;
+  width: 100%;
+  max-width: 400px;
+  background-color: white;
+  margin-top: 5px;
+  box-shadow: 0px 0px 20px #AABBCC;
+  border-radius: 5px;
 `;
 
 const Items = styled.div`
@@ -23,8 +23,8 @@ const Items = styled.div`
 `;
 
 const Item = styled.div`
-  border-radius: 5px;
   cursor: pointer;
+  border-radius: 5px;
   &:hover {
     background-color: ${Secondery20};
   }
@@ -43,14 +43,14 @@ const CategoryList = (props: { categories: string[], visible: boolean, onSelecte
   };
 
   return (
-    <CategoryListContainer style={{ visibility: props.visible ? 'visible' : 'hidden' }}  >
+    <Container style={{ visibility: props.visible ? 'visible' : 'hidden' }}  >
       <Items>
         {props.categories.map((p, i) => 
         <Item key={i} onMouseDown={() => handleSelect(p)}>
           <Text>{p}</Text>
         </Item>)}
       </Items>
-    </CategoryListContainer>
+    </Container>
   );
 };
 

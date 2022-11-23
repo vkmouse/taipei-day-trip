@@ -5,61 +5,58 @@ import { BodyBold, H1 } from '../Styles/Typography';
 import SearchBar from './SearchBar';
 
 const BannerStyle = styled.div`
+  display: flex;  
   align-items: center;
-  background: url("welcome.png");
-  background-size: cover;
-  display: flex;
-  height: 320px;
   justify-content: center;
   width: 100%;
+  height: 320px;
+  background: url("welcome.png");
+  background-size: cover;
 `;
 
 const Content = styled.div`
+  width: 1180px;
   height: 149px;
   margin: 0 10px 0 10px;
   padding: 10px;
-  width: 1180px;
 `;
 
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  height: 100%;
   width: 100%;
+  height: 100%;
 `;
 
 const Slogal = styled.div`
   display: flex;
   flex-direction: column;
-  height: 78px;
   width: 100%;
+  height: 78px;
 `;
 
 const Title = styled.div`
   ${H1};
-  color: ${Secondery10};
   display: flex;
   align-items: center;
+  color: ${Secondery10};
 `;
 
 const Description = styled.span`
   ${BodyBold};
-  color: ${Secondery10};
-  align-items: end;
   display: flex;
+  align-items: end;
   flex-grow: 1;
+  color: ${Secondery10};
 `;
 
 const SearchBarContainer = styled.div`
-  align-items: end;
   display: flex;
-  flex-grow: 1;
+  flex-grow: 1;  
+  align-items: end;
 `;
 
-const Banner = (props: { 
-  onSearchButtonClick?: () => void
-  onSearchTextChanged?: (text: string) => void
-}) => {
+const Banner = () => {
   return (
     <BannerStyle>
       <Content>
@@ -69,7 +66,7 @@ const Banner = (props: {
             <Description>探索每個角落，體驗城市的深度旅遊行程</Description>
           </Slogal>
           <SearchBarContainer>
-            <SearchBar {...props} />
+            <SearchBar />
           </SearchBarContainer>
         </Container>
       </Content>

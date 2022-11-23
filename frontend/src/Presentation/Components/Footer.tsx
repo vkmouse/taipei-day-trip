@@ -3,27 +3,26 @@ import React from 'react';
 import { BodyBold } from '../Styles/Typography';
 
 const Container = styled.footer`
+  display: flex;  
   align-items: end;
-  display: flex;
   flex-grow: 1;
 `;
 
-const FooterStyle = styled.div`
+const Text = styled.div`
   ${BodyBold}
-  background: #757575;
   display: flex;
   justify-content: center;
-  padding-top: 45px;
-  padding-bottom: 45px;
-  color: white;
   width: 100%;
+  padding: 45px 0 45px 0;
+  background: #757575;
+  color: white;
 `;
 
 const Footer = () => (
   <Container>
-    <FooterStyle>
+    <Text>
       COPYRIGHT © 2022 台北一日遊
-    </FooterStyle>
+    </Text>
   </Container>
 );
 
