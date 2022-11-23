@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import React, { useEffect, useState } from 'react';
-import { getCategories } from '../../Data/DataSource/MockAPI';
+import { getCategories } from '../../Data/DataSource/API';
 import { Primary } from '../Styles/Colors';
 import { BodyBold } from '../Styles/Typography';
 import CategoryList from './CategoryList';

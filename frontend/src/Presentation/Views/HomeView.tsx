@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Attraction } from '../../Core/Core';
-import { getAttractions } from '../../Data/DataSource/MockAPI';
+import { getAttractions } from '../../Data/DataSource/API';
 import AttractionListComponent from '../Components/AttractionListComponent';
 import Banner from '../Components/Banner';
 import Footer from '../Components/Footer';
