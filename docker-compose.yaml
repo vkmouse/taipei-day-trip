@@ -57,6 +57,14 @@ services:
       db:
         condition: service_healthy
 
+  frontend:
+    build:
+      context: ./frontend
+    image: tdt-frontend-docker
+    container_name: tdt-frontend
+    networks:
+      - tdt-network
+
   db:
     image: mysql
     environment:
