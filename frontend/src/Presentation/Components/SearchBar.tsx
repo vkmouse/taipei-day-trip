@@ -1,6 +1,8 @@
 import styled from '@emotion/styled';
 import React, { useEffect, useState } from 'react';
 import { api } from '../../Core/API';
+import { setSearchBarText } from '../../Data/Slices/keywordSlice';
+import { useAppDispatch, useAppSelector } from '../../Data/Store/hooks';
 import { Primary } from '../Styles/Colors';
 import { BodyBold } from '../Styles/Typography';
 import CategoryList from './CategoryList';
@@ -44,41 +46,17 @@ const Button = styled.button`
 
 const SearchBar = (props: { 
   onSearchButtonClick?: () => void
-  onSearchTextChanged?: (text: string) => void
 }) => {
   const [categories, setCategories] = useState<string[]>([]);
   const [categoryListVisible, setCategoryListVisible] = useState(false);
-  const [keyword, setKeyword] = useState('');
-
-  const handleSearchTextChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const onChange = props.onSearchTextChanged ?? (() => void 0);
-    const newKeyword = event.target.value;
-    setKeyword(newKeyword);
-    onChange(newKeyword);
-  };
-
-  const handleFocused = () => {
-    setCategoryListVisible(true);
-  };
-
-  const handleBlur = () => {
-    setCategoryListVisible(false);
-  };
-
-  const handleSelect = (category: string) => {
-    const onChange = props.onSearchTextChanged ?? (() => void 0);
-    const newKeyword = category;
-    setKeyword(newKeyword);
-    onChange(newKeyword);
-  };
-
-  const initCategories = async () => {
-    const body = await api.getCategories();
-    setCategories(body.data);
-  };
+  const searchBarText = useAppSelector(state => state.keyword.searchBarText);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
-    initCategories();
+    async () => {
+      const body = await api.getCategories();
+      setCategories(body.data);
+    };
   }, []);
 
   return (
@@ -86,10 +64,10 @@ const SearchBar = (props: {
       <SearchBarContainer>
         <Input 
           placeholder="輸入景點名稱查詢"
-          onChange={handleSearchTextChange}
-          onFocus={handleFocused}
-          onBlur={handleBlur}
-          value={keyword}
+          onChange={e => dispatch(setSearchBarText(e.target.value))}
+          onFocus={() => setCategoryListVisible(true)}
+          onBlur={() => setCategoryListVisible(false)}
+          value={searchBarText}
         />
         <Button onClick={props.onSearchButtonClick}>
           <img src='search_icon.svg'/>
@@ -98,7 +76,7 @@ const SearchBar = (props: {
       <CategoryList 
         categories={categories}
         visible={categoryListVisible}
-        onSelected={handleSelect}
+        onSelected={text => dispatch(setSearchBarText(text))}
       />
     </Container>
   );

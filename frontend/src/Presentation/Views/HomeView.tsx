@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { api } from '../../Core/API';
 import { Attraction } from '../../Core/Core';
+import { updateKeyword } from '../../Data/Slices/keywordSlice';
+import { useAppDispatch, useAppSelector } from '../../Data/Store/hooks';
 import AttractionListComponent from '../Components/AttractionListComponent';
 import Banner from '../Components/Banner';
 import Footer from '../Components/Footer';
@@ -10,8 +12,8 @@ import { Header, Main } from '../Styles/SemanticStyles';
 function HomeView() {
   const [nextPage, setNextPage] = useState<number | null>(0);
   const [attractions, setAttractions] = useState<Attraction[]>([]);
-  const [searchBarText, setSearchBarText] = useState('');
-  const [keyword, setKeyword] = useState('');
+  const keyword = useAppSelector(state => state.keyword.keyword);
+  const dispatch = useAppDispatch();
 
   const getNextPage = async () => {
     if (nextPage !== null) {
@@ -24,7 +26,7 @@ function HomeView() {
   const handleSearchBarClicked = () => {
     setNextPage(0);
     setAttractions([]);
-    setKeyword(searchBarText);
+    dispatch(updateKeyword());
   };
 
   const registerOberserver = (target: Element) => {
@@ -45,10 +47,6 @@ function HomeView() {
     }
   };
 
-  const handleSearchBarTextChanged = (text: string) => {
-    setSearchBarText(text);
-  };
-
   useEffect(() => {
     handleIntersection();
   }, [attractions]);
@@ -58,8 +56,7 @@ function HomeView() {
       <Navigation />
       <Header>
         <Banner 
-          onSearchButtonClick={handleSearchBarClicked} 
-          onSearchTextChanged={handleSearchBarTextChanged}
+          onSearchButtonClick={handleSearchBarClicked}
         />
       </Header>
       <Main>

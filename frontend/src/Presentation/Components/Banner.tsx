@@ -58,7 +58,6 @@ const SearchBarContainer = styled.div`
 
 const Banner = (props: { 
   onSearchButtonClick?: () => void
-  onSearchTextChanged?: (text: string) => void
 }) => {
   return (
     <BannerStyle>
