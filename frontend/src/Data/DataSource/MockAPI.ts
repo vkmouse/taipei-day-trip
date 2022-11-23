@@ -20,7 +20,7 @@ const getAttractions = async (page: number, keyword: string = '') : Promise<{ da
     let nextPage: number | null = page + 1;
     for (let i = 0; i < 12; i++) {
       const id = i + 12 * page;
-      data.push(getMockAttraction(i));
+      data.push(getMockAttraction(id));
     }
 
     if (keyword === '' && page > 3) {

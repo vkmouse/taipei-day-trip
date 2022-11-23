@@ -67,7 +67,10 @@ const SearchBar = (props: {
   };
 
   const handleSelect = (category: string) => {
-    setKeyword(category);
+    const onChange = props.onSearchTextChanged ?? (() => void 0);
+    const newKeyword = category;
+    setKeyword(newKeyword);
+    onChange(newKeyword);
   };
 
   const initCategories = async () => {
