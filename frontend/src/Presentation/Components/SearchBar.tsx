@@ -1,6 +1,5 @@
 import styled from '@emotion/styled';
-import React, { useEffect, useState } from 'react';
-import { api } from '../../Core/API';
+import React, { useState } from 'react';
 import { setData, setNextPage } from '../../Data/Slices/attractionSlice';
 import { setSearchBarText, updateKeyword } from '../../Data/Slices/keywordSlice';
 import { useAppDispatch, useAppSelector } from '../../Data/Store/hooks';
@@ -46,7 +45,6 @@ const Button = styled.button`
 `;
 
 const SearchBar = () => {
-  const [categories, setCategories] = useState<string[]>([]);
   const [categoryListVisible, setCategoryListVisible] = useState(false);
   const searchBarText = useAppSelector(state => state.keyword.searchBarText);
   const dispatch = useAppDispatch();
@@ -56,13 +54,6 @@ const SearchBar = () => {
     dispatch(setData([]));
     dispatch(updateKeyword());
   };
-
-  useEffect(() => {
-    async () => {
-      const body = await api.getCategories();
-      setCategories(body.data);
-    };
-  }, []);
 
   return (
     <Container>
@@ -78,11 +69,7 @@ const SearchBar = () => {
           <img src='search_icon.svg'/>
         </Button>
       </SearchBarContainer>
-      <CategoryList 
-        categories={categories}
-        visible={categoryListVisible}
-        onSelected={text => dispatch(setSearchBarText(text))}
-      />
+      <CategoryList visible={categoryListVisible} />
     </Container>
   );
 };

@@ -1,5 +1,8 @@
 import styled from '@emotion/styled';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { api } from '../../Core/API';
+import { setSearchBarText } from '../../Data/Slices/keywordSlice';
+import { useAppDispatch } from '../../Data/Store/hooks';
 import { Secondery20 } from '../Styles/Colors';
 import { CategoryMedium } from '../Styles/Typography';
 
@@ -35,18 +38,24 @@ const Text = styled.div`
   user-select:none;
 `;
 
-const CategoryList = (props: { categories: string[], visible: boolean, onSelected?: (category: string) => void }) => {
-  const handleSelect = (category: string) => {
-    if (props.onSelected !== undefined) {
-      props.onSelected(category);
-    }
+const CategoryList = (props: { visible: boolean }) => {
+  const [categories, setCategories] = useState<string[]>([]);
+  const dispatch = useAppDispatch();
+  
+  const getCategories = async () => {
+    const body = await api.getCategories();
+    setCategories(body.data);
   };
+
+  useEffect(() => {
+    getCategories();
+  }, []);
 
   return (
     <Container style={{ visibility: props.visible ? 'visible' : 'hidden' }}  >
       <Items>
-        {props.categories.map((p, i) => 
-        <Item key={i} onMouseDown={() => handleSelect(p)}>
+        {categories.map((p, i) => 
+        <Item key={i} onMouseDown={() => dispatch(setSearchBarText(p))}>
           <Text>{p}</Text>
         </Item>)}
       </Items>
