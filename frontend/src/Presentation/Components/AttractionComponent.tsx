@@ -17,21 +17,21 @@ const AttractionTitleContent = styled.div`
 
 const AttractionTitleOverlay = styled.div`
   ${AbsoluteFull}
-  align-items: center;
-  background: black;
   display: flex;
-  opacity: 0.6;
+  align-items: center;
   z-index: 1;
+  background: black;
+  opacity: 0.6;
 `;
 
 const Title = styled.div`
   ${AbsoluteFull}
   ${BodyBold};
-  align-items: center;
-  color: white;
   display: flex;
-  padding: 0 10px 0 10px;
+  align-items: center;
   z-index: 2;
+  padding: 0 10px 0 10px;
+  color: white;
 `;
 
 const AttractionTitle = (props: { children: string } ) => (
@@ -62,17 +62,17 @@ const Image = styled.img`
 `;
 
 const DescriptionContainer = styled.div`
-  align-items: center;
   display: flex;
-  height: 45px;
+  align-items: center;
   justify-content: space-between;
   width: 100%;
+  height: 45px;
 `;
 
 const Text = styled.div`
   ${BodyMedium};
-  color: ${Secondery50};
   padding: 0 10px 0 10px;
+  color: ${Secondery50};
 `;
 
 const AttractionComponent = (props: Attraction) => {

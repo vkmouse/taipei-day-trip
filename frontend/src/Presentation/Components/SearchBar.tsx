@@ -12,35 +12,34 @@ const Container = styled.div`
 
 const SearchBarContainer = styled.div`
   display: flex;
-  height: 46px;
   width: 89%;
+  height: 46px;
   max-width: 460px;
 `;
 
 const Input = styled.input`
   ${BodyBold}
+  flex-grow: 1;
+  height: 100%;
+  min-width: 200px;
+  padding: 0 0 0 15px;
   border-radius: 5px 0 0 5px;
   border-width: 0;
-  height: 100%;
-  flex-grow: 1;
-  min-width: 200px;
-  padding: 0;
-  padding-left: 15px;
   &:focus {
     outline-width: 0;
   }
 `;
 
 const Button = styled.button`
+  display: flex;  
   align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 100%;
   background-color: ${Primary};
+  cursor: pointer;
   border-radius: 0 5px 5px 0;
   border-width: 0;
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  height: 100%;
-  width: 60px;
 `;
 
 const SearchBar = (props: { 
