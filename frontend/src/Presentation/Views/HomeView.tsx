@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import React, { useEffect, useRef } from 'react';
 import { api } from '../../Core/API';
-import { setData, setNextPage } from '../../Data/Slices/attractionSlice';
+import { setData, setIsLoading, setNextPage } from '../../Data/Slices/attractionSlice';
 import { useAppDispatch, useAppSelector } from '../../Data/Store/hooks';
 import AttractionListComponent from '../Components/AttractionListComponent';
 import Banner from '../Components/Banner';
@@ -16,18 +16,26 @@ const AttractionNotFound = styled.img`
   content: url("attraction_not_found.png");
 `;
 
+const Loading = styled.img`
+  content: url("loading.gif");
+`;
+
 function HomeView() {
   const attractions = useAppSelector(state => state.attraction.data);
   const nextPage = useAppSelector(state => state.attraction.nextPage);
+  const isLoading = useAppSelector(state => state.attraction.isLoading);
   const keyword = useAppSelector(state => state.keyword.keyword);
   const dispatch = useAppDispatch();
 
   const getNextPage = async () => {
     // state of "nextPage" should be monitor
-    if (nextPage !== null) {
+    const hasNext = nextPage !== null;
+    if (hasNext && !isLoading) {
+      dispatch(setIsLoading(true));
       const body = await api.getAttractions(nextPage, keyword);
       dispatch(setData(attractions.concat(body.data)));
       dispatch(setNextPage(body.nextPage));
+      dispatch(setIsLoading(false));
     }
   };
 
@@ -63,11 +71,16 @@ function HomeView() {
         <Banner />
       </Header>
       <Main>
-        {attractions.length > 0 ? <AttractionListComponent /> : <AttractionNotFound />}
+        <AttractionListComponent />
+        {isLoading ? <Loading /> : <></>}
+        {attractions.length === 0 && nextPage === null ? <AttractionNotFound /> : <></>}
       </Main>
       <Footer />
     </>
   );
 }
+
+
+
 
 export default HomeView;
