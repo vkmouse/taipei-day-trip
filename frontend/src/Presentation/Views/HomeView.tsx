@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { api } from '../../Core/API';
 import { setData, setNextPage } from '../../Data/Slices/attractionSlice';
 import { useAppDispatch, useAppSelector } from '../../Data/Store/hooks';
@@ -23,6 +23,7 @@ function HomeView() {
   const dispatch = useAppDispatch();
 
   const getNextPage = async () => {
+    // state of "nextPage" should be monitor
     if (nextPage !== null) {
       const body = await api.getAttractions(nextPage, keyword);
       dispatch(setData(attractions.concat(body.data)));
@@ -30,26 +31,29 @@ function HomeView() {
     }
   };
 
-  const registerOberserver = (target: Element) => {
-    const callback = (entries: IntersectionObserverEntry[], observer: IntersectionObserver) => {
-      if (entries[0].isIntersecting) {
-        observer.unobserve(target);
-        getNextPage();
-      }
-    };
-    const observer = new IntersectionObserver(callback, { threshold: [0.1] });
-    observer.observe(target);
-  };
-
-  const handleIntersection = () => {
-    const target = document.querySelector('footer');
-    if (nextPage !== null && target !== null) {
-      registerOberserver(target);
+  const callback = (entries: IntersectionObserverEntry[]) => {
+    if (entries[0].isIntersecting) {
+      getNextPage();
     }
   };
 
+  const createObserver = () => {
+    return new IntersectionObserver(callback, { threshold: 0.5 });
+  };
+
+  // create persist observer variable
+  const observer = useRef<IntersectionObserver>(createObserver());
+
   useEffect(() => {
-    handleIntersection();
+    // remove and create new observer when attractions changed
+    // we need to re-create because next page variable should be updated
+    // if we do not re-create, next page variable is always zero
+    observer.current.disconnect();
+    observer.current = createObserver();
+    const target = document.querySelector('footer');
+    if (target !== null) {
+      observer.current.observe(target);
+    }
   }, [attractions]);
 
   return (
