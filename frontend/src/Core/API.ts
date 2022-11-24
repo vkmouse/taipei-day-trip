@@ -1,7 +1,7 @@
-import { AttractionState } from "./Core";
+import { Attractions } from "./Core";
 
 export interface API {
-  getAttractions : (page: number, keyword: string) => Promise<AttractionState>
+  getAttractions : (page: number, keyword: string) => Promise<Attractions>
   getCategories: () => Promise<{ data: string[] }>
 }
 

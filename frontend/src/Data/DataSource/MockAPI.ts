@@ -1,8 +1,8 @@
 import { API } from "../../Core/API";
-import { Attraction, AttractionState } from "../../Core/Core";
+import { Attraction, Attractions } from "../../Core/Core";
 
 class MockAPI implements API {
-  getAttractions = (page: number, keyword: string) : Promise<AttractionState> => {
+  getAttractions = (page: number, keyword: string) : Promise<Attractions> => {
     let data: Attraction[] = [];
     let nextPage: number | null = page + 1;
     for (let i = 0; i < 12; i++) {

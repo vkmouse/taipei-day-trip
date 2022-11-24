@@ -11,7 +11,7 @@ export interface Attraction {
   mrt?: string
 }
 
-export interface AttractionState { 
-  data: Attraction[],
-  nextPage: number | null 
+export interface Attractions { 
+  data: Attraction[]
+  nextPage: number | null
 }
