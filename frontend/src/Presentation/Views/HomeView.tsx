@@ -20,22 +20,31 @@ const Loading = styled.img`
   content: url("loading.gif");
 `;
 
+const Container = styled.div`
+  display: flex;
+  justify-content: center;
+  flex-basis: 100%;
+`;
+
 function HomeView() {
   const attractions = useAppSelector(state => state.attraction.data);
   const nextPage = useAppSelector(state => state.attraction.nextPage);
   const isLoading = useAppSelector(state => state.attraction.isLoading);
   const keyword = useAppSelector(state => state.keyword.keyword);
   const dispatch = useAppDispatch();
+  const isLoadingRef = useRef<boolean>(false);
 
   const getNextPage = async () => {
     // state of "nextPage" should be monitor
     const hasNext = nextPage !== null;
-    if (hasNext && !isLoading) {
+    if (hasNext && !isLoadingRef.current) {
+      isLoadingRef.current = true;
       dispatch(setIsLoading(true));
       const body = await api.getAttractions(nextPage, keyword);
       dispatch(setData(attractions.concat(body.data)));
       dispatch(setNextPage(body.nextPage));
       dispatch(setIsLoading(false));
+      isLoadingRef.current = false;
     }
   };
 
@@ -72,8 +81,10 @@ function HomeView() {
       </Header>
       <Main>
         <AttractionListComponent />
-        {isLoading ? <Loading /> : <></>}
-        {attractions.length === 0 && nextPage === null ? <AttractionNotFound /> : <></>}
+        <Container>
+          {isLoading ? <Loading /> : <></>}
+          {attractions.length === 0 && nextPage === null ? <AttractionNotFound /> : <></>}
+        </Container>
       </Main>
       <Footer />
     </>

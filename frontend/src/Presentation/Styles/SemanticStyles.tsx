@@ -9,8 +9,8 @@ const Header = styled.header`
 
 const Main = styled.main`
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  justify-content: center;
+  flex-flow: wrap;
 `;
 
 export { Header, Main };
