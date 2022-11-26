@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import React from 'react';
 import { BodyMedium, H2 } from '../Styles/Typography';
 import { Primary, Secondery } from '../Styles/Colors';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 const Container = styled.nav`
   display: flex;  
@@ -52,10 +52,18 @@ const NavItem = styled.button`
 `;
 
 const Navigation = () => {
+  const location = useLocation();
+  
+  const handleBrandClicked = () => {
+    if (location.pathname === '/') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
   return (
     <Container>
       <Navbar>
-        <NavBrand to="/">台北一日遊</NavBrand>
+        <NavBrand to="/" onClick={handleBrandClicked}>台北一日遊</NavBrand>
         <NavItems>
           <NavItem>預定行程</NavItem>
           <NavItem>登入/註冊</NavItem>
