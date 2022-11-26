@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import React, { useEffect, useRef } from 'react';
 import { api } from '../../Core/API';
+import { Attractions } from '../../Core/Core';
 import { setData, setIsLoading, setNextPage } from '../../Data/Slices/attractionSlice';
 import { useAppDispatch, useAppSelector } from '../../Data/Store/hooks';
 import AttractionListComponent from '../Components/AttractionListComponent';
@@ -34,17 +35,29 @@ function HomeView() {
   const dispatch = useAppDispatch();
   const isLoadingRef = useRef<boolean>(false);
 
+  const startLoading = () => {
+    isLoadingRef.current = true;
+    dispatch(setIsLoading(true));
+  };
+
+  const finishLoading = () => {
+    dispatch(setIsLoading(false));
+    isLoadingRef.current = false;
+  };
+
+  const setAttractions = (body: Attractions) => {
+    dispatch(setData(attractions.concat(body.data)));
+    dispatch(setNextPage(body.nextPage));
+  };
+
   const getNextPage = async () => {
     // state of "nextPage" should be monitor
     const hasNext = nextPage !== null;
     if (hasNext && !isLoadingRef.current) {
-      isLoadingRef.current = true;
-      dispatch(setIsLoading(true));
+      startLoading();
       const body = await api.getAttractions(nextPage, keyword);
-      dispatch(setData(attractions.concat(body.data)));
-      dispatch(setNextPage(body.nextPage));
-      dispatch(setIsLoading(false));
-      isLoadingRef.current = false;
+      setAttractions(body);
+      finishLoading();
     }
   };
 
@@ -72,6 +85,12 @@ function HomeView() {
       observer.current.observe(target);
     }
   }, [attractions]);
+
+  useEffect(() => {
+    if (isLoading) {
+      window.scrollTo({ top: document.body.scrollHeight });
+    }
+  }, [isLoading]);
 
   return (
     <>
