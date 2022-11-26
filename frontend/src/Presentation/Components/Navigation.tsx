@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import React from 'react';
 import { BodyMedium, H2 } from '../Styles/Typography';
 import { Primary, Secondery } from '../Styles/Colors';
+import { Link } from 'react-router-dom';
 
 const Container = styled.nav`
   display: flex;  
@@ -13,7 +14,7 @@ const Container = styled.nav`
   background: white;
 `;
 
-const Content = styled.div`
+const Navbar = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -22,20 +23,21 @@ const Content = styled.div`
   margin: 0 10px 0 10px;
 `;
 
-const Title = styled.button`
+const NavBrand = styled(Link)`
   ${H2};
   padding: 0;
   background-color: transparent;
   cursor: pointer;
   color: ${Primary};
   border-width: 0px;
+  text-decoration: none;
 `;
 
-const Items = styled.div`
+const NavItems = styled.div`
   display: flex;
 `;
 
-const Item = styled.button`
+const NavItem = styled.button`
   ${BodyMedium};
   padding: 10px;
   background-color: transparent;
@@ -52,13 +54,13 @@ const Item = styled.button`
 const Navigation = () => {
   return (
     <Container>
-      <Content>
-        <Title>台北一日遊</Title>
-        <Items>
-          <Item>預定行程</Item>
-          <Item>登入/註冊</Item>
-        </Items>
-      </Content>
+      <Navbar>
+        <NavBrand to="/">台北一日遊</NavBrand>
+        <NavItems>
+          <NavItem>預定行程</NavItem>
+          <NavItem>登入/註冊</NavItem>
+        </NavItems>
+      </Navbar>
     </Container>
   );
 };
