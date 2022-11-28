@@ -1,13 +1,21 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React, { useState } from 'react';
+import { Attraction } from '../../Core/Core';
+import { Secondery50 } from '../Styles/Colors';
 import { CenterCropped } from '../Styles/ImageCropped';
 
 const Container = styled.div`
   position: relative;
   width: 100%;
-  height: 406px;
+  height: 400px;
   max-width: 540px;
+  margin: 0 15px 0 15px;
+  @media (max-width: 800px) {
+    height: 350px;
+    max-width: 600px;
+    margin: 0 0 20px 0;
+  }
 `;
 
 const Image = styled.img`
@@ -83,8 +91,12 @@ const SelectedDot = styled.div`
   cursor: pointer;
 `;
 
-const Carousel = (props: { images: string[] }) => {
-  const { images } = props;
+const Carousel = (props: { attraction?: Attraction }) => {
+  if (props.attraction === undefined) {
+    return <Container style={{ backgroundColor: Secondery50 }} />;
+  }
+
+  const { images } = props.attraction;
   const length = images.length;
   const [selectedImage, setSelectedImage] = useState(0);
 
