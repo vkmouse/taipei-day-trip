@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { api } from '../../Core/API';
 import { Attraction } from '../../Core/Core';
+import Carousel from '../Components/Carousel';
 import Navigation from '../Components/Navigation';
 import { Header } from '../Styles/SemanticStyles';
 
@@ -11,33 +12,23 @@ function AttractionView() {
     return <></>;
   }
 
-  const [attraction, setAttraction] = useState<Attraction | null>(null);
   const id = parseInt(params.attractionId);
-  const getAttraction = async () => {
+  const [images, setImages] = useState<string[]>([]);
+
+  const getAttraction = async (id: number) => {
     const attraction = await api.getAttraction(id);
-    setAttraction(attraction);
+    setImages(attraction.images);
   };
 
   useEffect(() => {
-    getAttraction();
+    getAttraction(id);
   }, []);
 
   return (
     <>
       <Navigation />
       <Header>
-        <div>
-          <div>{attraction?.id}</div>
-          <div>{attraction?.name}</div>
-          <div>{attraction?.description}</div>
-          <div>{attraction?.address}</div>
-          <div>{attraction?.lat}</div>
-          <div>{attraction?.lng}</div>
-          <div>{attraction?.transport}</div>
-          <div>{attraction?.images}</div>
-          <div>{attraction?.category}</div>
-          <div>{attraction?.mrt}</div>
-        </div>
+        <Carousel images={images}></Carousel>
       </Header>
     </>
   );
