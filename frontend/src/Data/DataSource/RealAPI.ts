@@ -6,7 +6,7 @@ class RealAPI implements API {
     let url = `/api/attraction/${id}`;
     const response = await fetch(url);
     const body = await response.json();
-    return body;
+    return body.data;
   };
 
   getAttractions = async (page: number, keyword: string = '') : Promise<Attractions> => {
