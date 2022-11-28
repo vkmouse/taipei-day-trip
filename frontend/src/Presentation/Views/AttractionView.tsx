@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import Navigation from '../Components/Navigation';
 import { Header } from '../Styles/SemanticStyles';
 
-function AttractionsView() {
+function AttractionView() {
   const params = useParams();
   return (
     <>
@@ -15,4 +15,4 @@ function AttractionsView() {
   );
 }
 
-export default AttractionsView;
+export default AttractionView;
