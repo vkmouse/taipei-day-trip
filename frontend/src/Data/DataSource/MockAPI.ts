@@ -2,6 +2,12 @@ import { API } from "../../Core/API";
 import { Attraction, Attractions } from "../../Core/Core";
 
 class MockAPI implements API {
+  getAttraction = (id: number) : Promise<Attraction> => {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => resolve(this.createAttraction(id)), 1000);
+    });
+  };
+
   getAttractions = (page: number, keyword: string) : Promise<Attractions> => {
     let data: Attraction[] = [];
     let nextPage: number | null = page + 1;
