@@ -1,10 +1,12 @@
 import { API } from "../../Core/API";
 import { Attraction, Attractions } from "../../Core/Core";
 
+const ms = 1000;
+
 class MockAPI implements API {
   getAttraction = (id: number) : Promise<Attraction> => {
     return new Promise((resolve, reject) => {
-      setTimeout(() => resolve(this.createAttraction(id)), 1000);
+      setTimeout(() => resolve(this.createAttraction(id)), ms);
     });
   };
 
@@ -28,7 +30,7 @@ class MockAPI implements API {
     }
 
     return new Promise((resolve, reject) => {
-      setTimeout(() => resolve({ data, nextPage }), 1000);
+      setTimeout(() => resolve({ data, nextPage }), ms);
     });
   };
 
@@ -40,7 +42,7 @@ class MockAPI implements API {
       '綠野現蹤', '你是笨蛋', '哈哈哈哈', '輸入景點',
     ];
     return new Promise((resolve, reject) => {
-      setTimeout(() => resolve({ data }), 1000);
+      setTimeout(() => resolve({ data }), ms);
     });
   };
 
