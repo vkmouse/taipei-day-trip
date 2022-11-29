@@ -7,7 +7,7 @@ import { setAPI } from './Core/API';
 import API from './Data/DataSource/RealAPI';
 import store from './Data/Store/store';
 import GlobalStyles from './Presentation/Styles/GlobalStyles';
-import AttractionsView from './Presentation/Views/AttractionsView';
+import AttractionView from './Presentation/Views/AttractionView';
 import HomeView from './Presentation/Views/HomeView';
 
 function App() {
@@ -19,8 +19,8 @@ function App() {
         <Routes>
           <Route path='/'>
             <Route index element={<HomeView />} />
-            <Route path='attractions'>
-              <Route path=":attractionId"  element={<AttractionsView />} />
+            <Route path='attraction'>
+              <Route path=":attractionId"  element={<AttractionView />} />
             </Route>
           </Route>
         </Routes>

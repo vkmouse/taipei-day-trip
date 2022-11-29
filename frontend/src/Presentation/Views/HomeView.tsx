@@ -1,8 +1,8 @@
 import styled from '@emotion/styled';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { api } from '../../Core/API';
 import { Attractions } from '../../Core/Core';
-import { setData, setIsLoading, setNextPage } from '../../Data/Slices/attractionSlice';
+import { setData, setNextPage } from '../../Data/Slices/attractionSlice';
 import { useAppDispatch, useAppSelector } from '../../Data/Store/hooks';
 import AttractionListComponent from '../Components/AttractionListComponent';
 import Banner from '../Components/Banner';
@@ -30,65 +30,43 @@ const Container = styled.div`
 function HomeView() {
   const attractions = useAppSelector(state => state.attraction.data);
   const nextPage = useAppSelector(state => state.attraction.nextPage);
-  const isLoading = useAppSelector(state => state.attraction.isLoading);
   const keyword = useAppSelector(state => state.keyword.keyword);
   const dispatch = useAppDispatch();
-  const isLoadingRef = useRef<boolean>(false);
-
-  const startLoading = () => {
-    isLoadingRef.current = true;
-    dispatch(setIsLoading(true));
-  };
-
-  const finishLoading = () => {
-    dispatch(setIsLoading(false));
-    isLoadingRef.current = false;
-  };
+  const [isLoading, setIsLoading] = useState(false);
 
   const setAttractions = (body: Attractions) => {
     dispatch(setData(attractions.concat(body.data)));
     dispatch(setNextPage(body.nextPage));
   };
 
-  const getNextPage = async () => {
-    // state of "nextPage" should be monitor
+  const getNextPage = async (isLoading: boolean) => {
     const hasNext = nextPage !== null;
-    if (hasNext && !isLoadingRef.current) {
-      startLoading();
+    if (hasNext && !isLoading) {
+      setIsLoading(true);
       const body = await api.getAttractions(nextPage, keyword);
       setAttractions(body);
-      finishLoading();
+      setIsLoading(false);
     }
   };
 
-  const callback = (entries: IntersectionObserverEntry[]) => {
-    if (entries[0].isIntersecting) {
-      getNextPage();
-    }
-  };
-
-  const createObserver = () => {
-    return new IntersectionObserver(callback, { threshold: 0.5 });
-  };
-
-  // create persist observer variable
-  const observer = useRef<IntersectionObserver>(createObserver());
-
-  useEffect(() => {
-    // remove and create new observer when attractions changed
-    // we need to re-create because next page variable should be updated
-    // if we do not re-create, next page variable is always zero
-    observer.current.disconnect();
-    observer.current = createObserver();
+  const createOberserver = () => {
     const target = document.querySelector('footer');
     if (target !== null) {
-      observer.current.observe(target);
+      const observer = new IntersectionObserver((entries, observer) => {
+        if (entries[0].isIntersecting) {
+          observer.disconnect();
+          getNextPage(isLoading);
+        }
+      }, { threshold: 0.5 });
+      observer.observe(target);  
     }
-  }, [attractions]);
+  };
 
   useEffect(() => {
     if (isLoading) {
       window.scrollTo({ top: document.body.scrollHeight });
+    } else {
+      createOberserver();
     }
   }, [isLoading]);
 

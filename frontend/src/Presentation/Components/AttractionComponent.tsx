@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Attraction } from '../../Core/Core';
 import { Secondery50 } from '../Styles/Colors';
 import { CenterCropped } from '../Styles/ImageCropped';
@@ -43,9 +44,10 @@ const AttractionTitle = (props: { children: string } ) => (
   </AttractionTitleContainer>
 );
 
-const Container = styled.div`
+const Container = styled(Link)`
   border: 1px solid #E8E8E8;
   border-radius: 5px;
+  text-decoration: none;
 `;
 
 const ImageContainer = styled.div`
@@ -76,9 +78,9 @@ const Text = styled.div`
 `;
 
 const AttractionComponent = (props: Attraction) => {
-  const { name, category, mrt, images } = props;
+  const { id, name, category, mrt, images } = props;
   return (
-    <Container>
+    <Container to={`/attraction/${id}`}>
       <ImageContainer>
         <Image src={images[0]}></Image>
         <AttractionTitle>{name}</AttractionTitle>

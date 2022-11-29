@@ -12,6 +12,7 @@ const BodyMedium = css`
   font-style: normal;
   font-weight: 500;
   font-size: 16px;
+  line-height: 23px;
 `;
 
 const CategoryMedium = css`
@@ -35,4 +36,12 @@ const H2 = css`
   font-size: 30px;
 `;
 
-export { BodyBold, BodyMedium, CategoryMedium, H1, H2 };
+const H3 = css`
+  font-family: 'Noto Sans TC';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 32px;
+`;
+
+export { BodyBold, BodyMedium, CategoryMedium, H1, H2, H3 };
