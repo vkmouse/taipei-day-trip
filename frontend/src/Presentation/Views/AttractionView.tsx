@@ -12,7 +12,7 @@ const Section = styled.section`
   display: flex;
   justify-content: center;
   width: 100%;
-  padding: 40px 15px;
+  padding: 39px 15px 40px 15px;
   border-top: 1px solid #E8E8E8;
   border-width: 1px;
   @media (max-width: 800px) {

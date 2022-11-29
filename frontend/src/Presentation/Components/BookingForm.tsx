@@ -45,6 +45,29 @@ const Form = styled.form`
   color: ${Secondery70}
 `;
 
+const RowTitle = styled.span`
+  padding-right: 6px;
+`;
+
+const Date = styled.input`
+  position: relative;
+  padding: 10px;
+  width: 173px;
+  height: 15px;
+  border-width: 0;
+  ${BodyMedium}
+  color: black;
+  ::-webkit-calendar-picker-indicator {
+    position: absolute;
+    background-image: url(/icon_calendar.png);
+    background-position: 80px;
+    cursor: pointer;
+    width: 100px;
+    height: 24px;
+    left: 77px;
+  }
+`;
+
 const Button = styled.button`
   margin: 25px 0 0 0;
   padding: 10px 20px;
@@ -75,7 +98,10 @@ const BookingForm = (props: { attraction?: Attraction }) => {
       <Form>
         <BoldRow>訂購導覽行程</BoldRow>
         <Row>以此景點為中心的一日行程，帶您探索城市角落故事</Row>
-        <BoldRow>選擇日期：</BoldRow>
+        <BoldRow>
+          <RowTitle>選擇日期：</RowTitle>
+          <Date type="date" ></Date>
+        </BoldRow>
         <BoldRow>選擇時間：</BoldRow>
         <BoldRow>導覽費用：</BoldRow>
         <Button>開始預約行程</Button>
