@@ -3,6 +3,7 @@ import React, { useRef, useState } from 'react';
 import { Attraction } from '../../Core/Core';
 import { Primary, Secondery20, Secondery50, Secondery70 } from '../Styles/Colors';
 import { BodyBold, BodyMedium, H3 } from '../Styles/Typography';
+import Calendar from './Calendar';
 import { Radio, RadioGroup } from './RadioButton';
 
 const Container = styled.div`
@@ -52,25 +53,6 @@ const RowTitle = styled.span`
   padding-right: 6px;
 `;
 
-const InputDate = styled.input`
-  position: relative;
-  padding: 10px;
-  width: 173px;
-  height: 15px;
-  border-width: 0;
-  ${BodyMedium}
-  color: black;
-  ::-webkit-calendar-picker-indicator {
-    position: absolute;
-    background-image: url(/icon_calendar.png);
-    background-position: 80px;
-    cursor: pointer;
-    width: 100px;
-    height: 24px;
-    left: 77px;
-  }
-`;
-
 const Button = styled.button`
   margin: 25px 0 0 0;
   padding: 10px 20px;
@@ -117,11 +99,10 @@ const BookingForm = (props: { attraction?: Attraction }) => {
   const timeRef = useRef('morning');
   
   const handleRadioChanged = (val: string) => {
+    timeRef.current = val;
     if (val === 'morning') {
-      timeRef.current = 'morning';
       setPrice(2000);
     } else if (val === 'afternoon') {
-      timeRef.current = 'afternoon';
       setPrice(2500);
     }
   };
@@ -145,12 +126,11 @@ const BookingForm = (props: { attraction?: Attraction }) => {
         <Row>以此景點為中心的一日行程，帶您探索城市角落故事</Row>
         <BoldRow>
           <RowTitle>選擇日期：</RowTitle>
-          <InputDate
-            type='date'
+          <Calendar
             min={getDay(1)}
             max={getDay(90)}
             value={date}
-            onChange={(e) => setDate(e.target.value)}
+            onChange={value => setDate(value)}
           />
         </BoldRow>
         <BoldRow>
