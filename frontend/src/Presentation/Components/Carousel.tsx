@@ -1,8 +1,8 @@
-import { css } from '@emotion/react';
+import { css, keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
 import React, { useState } from 'react';
 import { Attraction } from '../../Core/Core';
-import { Secondery50 } from '../Styles/Colors';
+import { Secondery20 } from '../Styles/Colors';
 import { CenterCropped } from '../Styles/ImageCropped';
 
 const Container = styled.div`
@@ -18,12 +18,22 @@ const Container = styled.div`
   }
 `;
 
+const bounce = keyframes`
+  0% {
+    opacity: 0.0;
+  }
+  100% {
+    opacity: 1.0;
+  }
+`;
+
 const Image = styled.img`
   ${CenterCropped}
   position: absolute;
   width: 100%;
   height: 100%;
   border-radius: 5px;
+  animation: ${bounce} 1s;
   @media (max-width: 540px) {
     border-radius: 0;
   }
@@ -48,6 +58,7 @@ const ControlPanel = styled.div`
 const ArrowContainer = styled.div`
   display: flex;
   align-items: center;
+  user-select: none;
   cursor: pointer;
 `;
 
@@ -93,7 +104,7 @@ const SelectedDot = styled.div`
 
 const Carousel = (props: { attraction?: Attraction }) => {
   if (props.attraction === undefined) {
-    return <Container style={{ backgroundColor: Secondery50 }} />;
+    return <Container style={{ backgroundColor: Secondery20 }} />;
   }
 
   const { images } = props.attraction;

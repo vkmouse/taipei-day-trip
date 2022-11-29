@@ -30,15 +30,18 @@ const SubTitle = styled.div`
 `;
 
 const Row = styled.div`
-  ${BodyMedium}
-  padding-top: 15px;
-`;
-
-const BoldRow = styled(Row)`
   display: flex;
   align-items: center;
-  ${BodyBold}
   padding-top: 15px;
+  ${BodyMedium}
+`;
+
+const Bold = styled.div`
+  ${BodyBold}
+`;
+
+const RowTitle = styled(Bold)`
+  padding-right: 6px;
 `;
 
 const Form = styled.div`
@@ -47,10 +50,6 @@ const Form = styled.div`
   background-color: ${Secondery20};
   border-radius: 5px;
   color: ${Secondery70}
-`;
-
-const RowTitle = styled.span`
-  padding-right: 6px;
 `;
 
 const Button = styled.button`
@@ -63,10 +62,6 @@ const Button = styled.button`
   border-radius: 5px;
   border-width: 0;
   cursor: pointer;
-`;
-
-const TextMedium = styled.div`
-  ${BodyMedium}
 `;
 
 const getDay = (offsetDay: number) => {
@@ -86,9 +81,10 @@ const getDay = (offsetDay: number) => {
 const BookingForm = (props: { attraction?: Attraction }) => {
   if (props.attraction === undefined) {
     return (
-      <Container style={{ backgroundColor: Secondery20 }}>
-        <Title style={{ backgroundColor: Secondery50 }}>&nbsp;</Title>
-        <SubTitle style={{ backgroundColor: Secondery50 }}>&nbsp;</SubTitle>
+      <Container>
+        <Title style={{ backgroundColor: Secondery20 }}>&nbsp;</Title>
+        <SubTitle style={{ backgroundColor: Secondery20 }}>&nbsp;</SubTitle>
+        <Form />
       </Container>
     );
   }
@@ -122,9 +118,9 @@ const BookingForm = (props: { attraction?: Attraction }) => {
       <Title>{name}</Title>
       <SubTitle>{mrt ? `${category} at ${mrt}` : category}</SubTitle>
       <Form>
-        <BoldRow>訂購導覽行程</BoldRow>
+        <Row><Bold>訂購導覽行程</Bold></Row>
         <Row>以此景點為中心的一日行程，帶您探索城市角落故事</Row>
-        <BoldRow>
+        <Row>
           <RowTitle>選擇日期：</RowTitle>
           <Calendar
             min={getDay(1)}
@@ -132,18 +128,18 @@ const BookingForm = (props: { attraction?: Attraction }) => {
             value={date}
             onChange={value => setDate(value)}
           />
-        </BoldRow>
-        <BoldRow>
+        </Row>
+        <Row>
           <RowTitle>選擇時間：</RowTitle>
           <RadioGroup onChanged={handleRadioChanged}>
             <Radio value='morning' label='上半天' />
             <Radio value='afternoon' label='下半天' />
           </RadioGroup>
-        </BoldRow>
-        <BoldRow>
+        </Row>
+        <Row>
           <RowTitle>導覽費用：</RowTitle>
-          <TextMedium>新台幣 {price} 元</TextMedium>
-        </BoldRow>
+          新台幣 {price} 元
+        </Row>
         <Button onClick={startBooking}>開始預約行程</Button>
       </Form>
     </Container>

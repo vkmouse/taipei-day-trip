@@ -57,16 +57,17 @@ const RadioGroup = (props: { children: JSX.Element[], onChanged: (value: string)
     <RadioGroupContainer>
       {getList().map((checked, i) => {
         const { value, label } = props.children[i].props;
-        return <Radio 
-          key={i} 
-          value={value} 
-          label={label} 
-          checked={checked}
-          onClick={() => {
-            setSelected(i);
-            props.onChanged(value);
-          }}
-        />;
+        return (
+          <Radio key={i} 
+            value={value} 
+            label={label} 
+            checked={checked}
+            onClick={() => {
+              setSelected(i);
+              props.onChanged(value);
+            }}
+          />
+        );
       })}
     </RadioGroupContainer>
   );
