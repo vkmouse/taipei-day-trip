@@ -3,10 +3,13 @@ import { useParams } from 'react-router-dom';
 import { api } from '../../Core/API';
 import Carousel from '../Components/Carousel';
 import Navigation from '../Components/Navigation';
-import { Header } from '../Styles/SemanticStyles';
+import { Header, Main } from '../Styles/SemanticStyles';
 import BookingForm from '../Components/BookingForm';
 import { Attraction } from '../../Core/Core';
 import styled from '@emotion/styled';
+import { BodyBold, BodyMedium } from '../Styles/Typography';
+import { Secondery } from '../Styles/Colors';
+import Footer from '../Components/Footer';
 
 const Section = styled.section`
   display: flex;
@@ -19,6 +22,27 @@ const Section = styled.section`
     flex-wrap: wrap;
     padding: 0 0 40px 0;
   }
+`;
+
+const Article = styled.article`
+  width: 100%;
+  max-width: 1180px;
+  border-top: 1px solid #E8E8E8;
+  padding: 50px 10px 80px 10px;
+  margin-bottom: 40px;
+`;
+
+const Text = styled.div`
+  ${BodyMedium}
+  color: ${Secondery};
+  line-height: 24px;
+`;
+
+const TextBold = styled.div`
+  ${BodyBold}
+  color: ${Secondery};
+  padding-top: 20px;
+  line-height: 28px;
 `;
 
 function AttractionView() {
@@ -48,6 +72,16 @@ function AttractionView() {
           <BookingForm attraction={attraction} />
         </Section>
       </Header>
+      <Main>
+        <Article>
+          <Text>{attraction?.description}</Text>
+          <TextBold>景點地址：</TextBold>
+          <Text>{attraction?.address}</Text>
+          <TextBold>交通方式：</TextBold>
+          <Text>{attraction?.transport}</Text>
+        </Article>
+      </Main>
+      <Footer />
     </>
   );
 }
