@@ -3,6 +3,7 @@ import React from 'react';
 import { Attraction } from '../../Core/Core';
 import { Primary, Secondery20, Secondery50, Secondery70 } from '../Styles/Colors';
 import { BodyBold, BodyMedium, H3 } from '../Styles/Typography';
+import { Radio, RadioGroup } from './RadioButton';
 
 const Container = styled.div`
   display: flex;
@@ -33,6 +34,8 @@ const Row = styled.div`
 `;
 
 const BoldRow = styled(Row)`
+  display: flex;
+  align-items: center;
   ${BodyBold}
   padding-top: 15px;
 `;
@@ -100,9 +103,15 @@ const BookingForm = (props: { attraction?: Attraction }) => {
         <Row>以此景點為中心的一日行程，帶您探索城市角落故事</Row>
         <BoldRow>
           <RowTitle>選擇日期：</RowTitle>
-          <Date type="date" ></Date>
+          <Date type='date' />
         </BoldRow>
-        <BoldRow>選擇時間：</BoldRow>
+        <BoldRow>
+          <RowTitle>選擇時間：</RowTitle>
+          <RadioGroup onChanged={(val) => console.log(val)}>
+            <Radio value='am' label='上半天' />
+            <Radio value='pm' label='下半天' />
+          </RadioGroup>
+        </BoldRow>
         <BoldRow>導覽費用：</BoldRow>
         <Button>開始預約行程</Button>
       </Form>
