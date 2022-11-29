@@ -17,6 +17,7 @@ const Input = styled.input`
   width: 22px;
   height: 22px;
   margin: 0 4px 0 0;
+  cursor: pointer;
   :checked {
     background-color: ${Primary};
     border: 2px solid white;
@@ -25,6 +26,7 @@ const Input = styled.input`
 
 const Text =  styled.label`
   ${BodyMedium}
+  cursor: pointer;
 `;
 
 const Radio = (props: { label: string, value: string, checked?: boolean, onClick?: () => void }) => {
