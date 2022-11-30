@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { api } from '../../Core/API';
 import { Attractions } from '../../Core/Core';
 import { setData, setNextPage } from '../../Data/Slices/attractionSlice';
@@ -31,6 +31,7 @@ function HomeView() {
   const attractions = useAppSelector(state => state.attraction.data);
   const nextPage = useAppSelector(state => state.attraction.nextPage);
   const keyword = useAppSelector(state => state.keyword.keyword);
+  const observer = useRef<IntersectionObserver>();
   const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -39,9 +40,9 @@ function HomeView() {
     dispatch(setNextPage(body.nextPage));
   };
 
-  const getNextPage = async (isLoading: boolean) => {
+  const getPage = async (nextPage: number | null, keyword: string) => {
     const hasNext = nextPage !== null;
-    if (hasNext && !isLoading) {
+    if (hasNext) {
       setIsLoading(true);
       const body = await api.getAttractions(nextPage, keyword);
       setAttractions(body);
@@ -49,24 +50,28 @@ function HomeView() {
     }
   };
 
-  const createOberserver = () => {
+  const createOberserver = (nextPage: number | null, keyword: string) => {
     const target = document.querySelector('footer');
     if (target !== null) {
-      const observer = new IntersectionObserver((entries, observer) => {
+      observer.current = new IntersectionObserver((entries, observer) => {
         if (entries[0].isIntersecting) {
           observer.disconnect();
-          getNextPage(isLoading);
+          getPage(nextPage, keyword);
         }
       }, { threshold: 0.5 });
-      observer.observe(target);  
+      observer.current.observe(target);  
     }
   };
 
   useEffect(() => {
+    // Updating observer when "nextPage" or "keyword" changed.
+    observer.current?.disconnect();
+    createOberserver(nextPage, keyword);
+  }, [nextPage, keyword]);
+
+  useEffect(() => {
     if (isLoading) {
       window.scrollTo({ top: document.body.scrollHeight });
-    } else {
-      createOberserver();
     }
   }, [isLoading]);
 
