@@ -1,7 +1,14 @@
 import { API } from "../../Core/API";
-import { Attractions } from "../../Core/Core";
+import { Attraction, Attractions } from "../../Core/Core";
 
 class RealAPI implements API {
+  getAttraction = async (id: number) : Promise<Attraction> => {
+    let url = `/api/attraction/${id}`;
+    const response = await fetch(url);
+    const body = await response.json();
+    return body.data;
+  };
+
   getAttractions = async (page: number, keyword: string = '') : Promise<Attractions> => {
     let url = '';
     if (keyword === '') {
