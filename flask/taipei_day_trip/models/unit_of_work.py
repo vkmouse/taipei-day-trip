@@ -1,6 +1,6 @@
-from taipei_day_trip.core.repositories import AttractionRepository
-from taipei_day_trip.core.repositories import CategoryRepository
-from taipei_day_trip.core.repositories import MRTRepository
+from taipei_day_trip.models.attraction_model import AttractionModel
+from taipei_day_trip.models.category_model import CategoryModel
+from taipei_day_trip.models.mrt_model import MRTModel
 
 class UnitOfWork:
     def __init__(self):
@@ -9,24 +9,24 @@ class UnitOfWork:
         self.__attractions = self._create_attraction_repository()
 
     @property
-    def attractions(self) -> AttractionRepository:
+    def attractions(self) -> AttractionModel:
         return self.__attractions
 
     @property
-    def categories(self) -> CategoryRepository:
+    def categories(self) -> CategoryModel:
         return self.__categories
 
     @property
-    def mrts(self) -> MRTRepository:
+    def mrts(self) -> MRTModel:
         return self.__mrts
 
-    def _create_attraction_repository(self) -> AttractionRepository:
+    def _create_attraction_repository(self) -> AttractionModel:
         return NotImplemented
 
-    def _create_category_repository(self) -> CategoryRepository:
+    def _create_category_repository(self) -> CategoryModel:
         return NotImplemented
 
-    def _create_mrt_repository(self) -> MRTRepository:
+    def _create_mrt_repository(self) -> MRTModel:
         return NotImplemented
 
 def copy_db(src: UnitOfWork, dst: UnitOfWork):

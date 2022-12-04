@@ -1,7 +1,7 @@
 import pytest
 
 from taipei_day_trip.core import Attraction
-from taipei_day_trip.repository import MemoryUnitOfWork
+from taipei_day_trip.models import MemoryUnitOfWork
 
 def test_import_from_json():
     attraction = Attraction(id = 1,

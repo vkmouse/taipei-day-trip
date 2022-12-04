@@ -1,7 +1,7 @@
 from flask import *
-from taipei_day_trip.core import copy_db
-from taipei_day_trip.repository import MemoryUnitOfWork
-from taipei_day_trip.repository import MySQLUnitOfWork
+from taipei_day_trip.models import copy_db
+from taipei_day_trip.models import MemoryUnitOfWork
+from taipei_day_trip.models import MySQLUnitOfWork
 from taipei_day_trip.routes import attraction_bp
 from taipei_day_trip.routes import category_bp
 

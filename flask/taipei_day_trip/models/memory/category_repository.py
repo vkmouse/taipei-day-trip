@@ -1,21 +1,21 @@
-from taipei_day_trip.core import MRT
-from taipei_day_trip.core import MRTRepository
+from taipei_day_trip.core import Category
 from taipei_day_trip.core import List
+from taipei_day_trip.models.category_model import CategoryModel
 
-class MemoryMRTRepository(MRTRepository):
+class MemoryCategoryRepository(CategoryModel):
     def __init__(self):
-        self.__db: List[MRT] = []
+        self.__db: List[Category] = []
         self.__id: int = 0
 
     def add(self, name: str) -> bool:
-        mrt_exists = len(list(filter(lambda i: i.name == name, self.__db))) > 0
-        if name == None or mrt_exists:
+        category_exists = len(list(filter(lambda i: i.name == name, self.__db))) > 0
+        if category_exists:
             return False
-        element = MRT(self.__next_id, name)
+        element = Category(self.__next_id, name)
         self.__db.append(element)
         return True
 
-    def get_all(self) -> List[MRT]:
+    def get_all(self) -> List[Category]:
         return self.__db
 
     def exists(self, name: str) -> bool:

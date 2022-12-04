@@ -1,8 +1,8 @@
 import pytest
 
-from taipei_day_trip.core import UnitOfWork
-from taipei_day_trip.repository import MemoryUnitOfWork
-from taipei_day_trip.repository import MySQLUnitOfWork
+from taipei_day_trip.models import MemoryUnitOfWork
+from taipei_day_trip.models import MySQLUnitOfWork
+from taipei_day_trip.models import UnitOfWork
 from taipei_day_trip.tests import util
 
 def attraction_test_case(db: UnitOfWork):

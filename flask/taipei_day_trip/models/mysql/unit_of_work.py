@@ -2,13 +2,13 @@ import dotenv
 import mysql.connector
 import os
 
-from taipei_day_trip.core import AttractionRepository
-from taipei_day_trip.core import CategoryRepository
-from taipei_day_trip.core import MRTRepository
-from taipei_day_trip.core import UnitOfWork
-from taipei_day_trip.repository.mysql.attraction_repository import MySQLAttractionRepository
-from taipei_day_trip.repository.mysql.category_repository import MySQLCategoryRepository
-from taipei_day_trip.repository.mysql.mrt_repository import MySQLMRTRepository
+from taipei_day_trip.models.attraction_model import AttractionModel
+from taipei_day_trip.models.category_model import CategoryModel
+from taipei_day_trip.models.mrt_model import MRTModel
+from taipei_day_trip.models.mysql.attraction_repository import MySQLAttractionRepository
+from taipei_day_trip.models.mysql.category_repository import MySQLCategoryRepository
+from taipei_day_trip.models.mysql.mrt_repository import MySQLMRTRepository
+from taipei_day_trip.models.unit_of_work import UnitOfWork
 
 class MySQLUnitOfWork(UnitOfWork):
     def __init__(self, debug=False, load_dotenv=True):
@@ -28,13 +28,13 @@ class MySQLUnitOfWork(UnitOfWork):
             self.categories.drop_table_if_exists()
             self.mrts.drop_table_if_exists()
 
-    def _create_attraction_repository(self) -> AttractionRepository:
+    def _create_attraction_repository(self) -> AttractionModel:
         return MySQLAttractionRepository(self.__cnxpool, self.categories.tablename, self.mrts.tablename, self.__debug)
 
-    def _create_category_repository(self) -> CategoryRepository:
+    def _create_category_repository(self) -> CategoryModel:
         return MySQLCategoryRepository(self.__cnxpool, self.__debug)
 
-    def _create_mrt_repository(self) -> MRTRepository:
+    def _create_mrt_repository(self) -> MRTModel:
         return MySQLMRTRepository(self.__cnxpool, self.__debug)
 
     def is_available(self) -> bool:

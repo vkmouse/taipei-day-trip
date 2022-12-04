@@ -2,7 +2,7 @@ import pytest
 
 from flask import Flask
 from flask.testing import FlaskClient
-from taipei_day_trip.repository import MemoryUnitOfWork
+from taipei_day_trip.models import MemoryUnitOfWork
 from taipei_day_trip.routes import category_bp
 
 @pytest.fixture()

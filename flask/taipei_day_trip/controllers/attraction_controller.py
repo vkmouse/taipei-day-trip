@@ -1,5 +1,5 @@
 from flask import request
-from taipei_day_trip.core import UnitOfWork
+from taipei_day_trip.models import UnitOfWork
 
 class AttractionController:
     def __init__(self, db: UnitOfWork, num_data_per_page: int):

@@ -1,8 +1,8 @@
 import pytest
 
-from taipei_day_trip.core import UnitOfWork
-from taipei_day_trip.repository import MemoryUnitOfWork
-from taipei_day_trip.repository import MySQLUnitOfWork
+from taipei_day_trip.models import MemoryUnitOfWork
+from taipei_day_trip.models import MySQLUnitOfWork
+from taipei_day_trip.models import UnitOfWork
 
 def mrt_test_case(db: UnitOfWork):
     assert len(db.mrts.get_all()) == 0

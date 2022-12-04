@@ -1,7 +1,7 @@
 from flask import Blueprint
 
 from taipei_day_trip.controllers import AttractionController
-from taipei_day_trip.core import UnitOfWork
+from taipei_day_trip.models import UnitOfWork
 
 def attraction_bp(db: UnitOfWork):
     bp = Blueprint('attraction', __name__)

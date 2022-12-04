@@ -1,6 +1,6 @@
 from flask import Blueprint
 from taipei_day_trip.controllers import CategoryController
-from taipei_day_trip.core import UnitOfWork
+from taipei_day_trip.models import UnitOfWork
 
 def category_bp(db: UnitOfWork):
     bp = Blueprint('category', __name__)

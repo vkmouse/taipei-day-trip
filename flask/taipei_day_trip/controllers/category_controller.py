@@ -1,4 +1,4 @@
-from taipei_day_trip.core import UnitOfWork
+from taipei_day_trip.models import UnitOfWork
 
 class CategoryController:
     def __init__(self, db: UnitOfWork):

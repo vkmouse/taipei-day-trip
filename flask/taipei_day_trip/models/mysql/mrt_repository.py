@@ -1,12 +1,12 @@
-from taipei_day_trip.core import Category
-from taipei_day_trip.core import CategoryRepository
+from taipei_day_trip.core import MRT
 from taipei_day_trip.core import List
-from taipei_day_trip.repository.mysql.repository import MySQLRepository
+from taipei_day_trip.models.mrt_model import MRTModel
+from taipei_day_trip.models.mysql.repository import MySQLRepository
 
-class MySQLCategoryRepository(MySQLRepository, CategoryRepository):
+class MySQLMRTRepository(MySQLRepository, MRTModel):
     @MySQLRepository.with_connection
     def add(self, name: str, cnx, cursor) -> bool:
-        if self.__nameExists(name):
+        if name == None or self.__nameExists(name):
             return False
         query = 'INSERT INTO {} (name) VALUES (%s)'.format(self.tablename)
         data = (name,)
@@ -15,14 +15,14 @@ class MySQLCategoryRepository(MySQLRepository, CategoryRepository):
         return True
 
     @MySQLRepository.with_connection
-    def get_all(self, cnx, cursor) -> List[Category]:
+    def get_all(self, cnx, cursor) -> List[MRT]:
         query = 'SELECT * FROM {}'.format(self.tablename)
         cursor.execute(query)
         rows = cursor.fetchall()
-        output: List[Category] = []
+        output: List[MRT] = []
         for row in rows:
             (id, name,) = row
-            output.append(Category(id, name))
+            output.append(MRT(id, name))
         return output
 
     @MySQLRepository.with_connection
@@ -36,8 +36,8 @@ class MySQLCategoryRepository(MySQLRepository, CategoryRepository):
     @property
     def tablename(self) -> str:
         if self.debug:
-            return 'test_category'
-        return 'category'
+            return 'test_mrt'
+        return 'mrt'
 
     @property
     def create_table_statement(self) -> str:
