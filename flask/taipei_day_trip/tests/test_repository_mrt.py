@@ -1,7 +1,7 @@
 import pytest
 
-from taipei_day_trip.models import MemoryUnitOfWork
-from taipei_day_trip.models import MySQLUnitOfWork
+from taipei_day_trip.models import MemoryDatabase
+from taipei_day_trip.models import MySQLDatabase
 from taipei_day_trip.models import Database
 
 def mrt_test_case(db: Database):
@@ -18,10 +18,10 @@ def mrt_test_case(db: Database):
     assert db.mrts.add(None) == False
 
 def test_memory_based_repository():
-    db = MemoryUnitOfWork()
+    db = MemoryDatabase()
     mrt_test_case(db)
 
-@pytest.mark.skipif(not MySQLUnitOfWork(debug=True).is_available(), reason="database is not avaibable")
+@pytest.mark.skipif(not MySQLDatabase(debug=True).is_available(), reason="database is not avaibable")
 def test_mysql_based_repository():
-    db = MySQLUnitOfWork(debug=True)
+    db = MySQLDatabase(debug=True)
     mrt_test_case(db)

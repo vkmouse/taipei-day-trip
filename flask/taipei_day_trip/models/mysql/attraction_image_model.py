@@ -1,12 +1,12 @@
-from taipei_day_trip.models.mysql.repository import MySQLRepository
+from taipei_day_trip.models.mysql.mysql_model import MySQLModel
 from taipei_day_trip.models.types import List
 
-class MySQLAttractionImageRepository(MySQLRepository):
+class MySQLAttractionImageModel(MySQLModel):
     def __init__(self, cnxpool, attraction_tablename: str, debug: bool):
         self.attraction_tablename = attraction_tablename
-        MySQLRepository.__init__(self, cnxpool, debug)
+        MySQLModel.__init__(self, cnxpool, debug)
 
-    @MySQLRepository.with_connection
+    @MySQLModel.with_connection
     def add(self, attraction_id: int, urls: List[str], cnx, cursor):
         if len(urls) > 0:
             query = 'INSERT INTO {} (attraction_id, url) VALUES (%s, %s)'.format(self.tablename)

@@ -1,10 +1,10 @@
 from taipei_day_trip.models.mrt_model import MRTModel
-from taipei_day_trip.models.mysql.repository import MySQLRepository
+from taipei_day_trip.models.mysql.mysql_model import MySQLModel
 from taipei_day_trip.models.types import List
 from taipei_day_trip.models.types import MRT
 
-class MySQLMRTRepository(MySQLRepository, MRTModel):
-    @MySQLRepository.with_connection
+class MySQLMRTModel(MySQLModel, MRTModel):
+    @MySQLModel.with_connection
     def add(self, name: str, cnx, cursor) -> bool:
         if name == None or self.__nameExists(name):
             return False
@@ -14,7 +14,7 @@ class MySQLMRTRepository(MySQLRepository, MRTModel):
         cnx.commit()
         return True
 
-    @MySQLRepository.with_connection
+    @MySQLModel.with_connection
     def get_all(self, cnx, cursor) -> List[MRT]:
         query = 'SELECT * FROM {}'.format(self.tablename)
         cursor.execute(query)
@@ -25,7 +25,7 @@ class MySQLMRTRepository(MySQLRepository, MRTModel):
             output.append(MRT(id, name))
         return output
 
-    @MySQLRepository.with_connection
+    @MySQLModel.with_connection
     def __nameExists(self, __id: int, cnx, cursor) -> bool:
         query = 'SELECT COUNT(*) FROM {} WHERE name=%s'.format(self.tablename)
         data = (__id,)

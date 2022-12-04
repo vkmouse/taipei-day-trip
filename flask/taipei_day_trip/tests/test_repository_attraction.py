@@ -1,7 +1,7 @@
 import pytest
 
-from taipei_day_trip.models import MemoryUnitOfWork
-from taipei_day_trip.models import MySQLUnitOfWork
+from taipei_day_trip.models import MemoryDatabase
+from taipei_day_trip.models import MySQLDatabase
 from taipei_day_trip.models import Database
 from taipei_day_trip.tests import util
 
@@ -98,73 +98,73 @@ def composite_search_test_case(db: Database):
     assert len(db.attractions.search_by_category_or_name('公路', 0, 2)) == 1
 
 def test_memory_based_repository():
-    db = MemoryUnitOfWork()
+    db = MemoryDatabase()
     attraction_test_case(db)
 
 def test_memory_based_images():
-    db = MemoryUnitOfWork()
+    db = MemoryDatabase()
     images_test_case(db)
 
 def test_memory_based_null_mrt():
-    db = MemoryUnitOfWork()
+    db = MemoryDatabase()
     null_mrt_test_case(db)
 
 def test_memory_based_get_by_id():
-    db = MemoryUnitOfWork()
+    db = MemoryDatabase()
     get_by_id_test_case(db)
 
 def test_memory_based_get_range():
-    db = MemoryUnitOfWork()
+    db = MemoryDatabase()
     get_range_test_case(db)
 
 def test_memory_search_by_name():
-    db = MemoryUnitOfWork()
+    db = MemoryDatabase()
     search_by_name_test_case(db)
 
 def test_memory_search_by_category():
-    db = MemoryUnitOfWork()
+    db = MemoryDatabase()
     search_by_category_test_case(db)
 
 def test_memory_composite_search():
-    db = MemoryUnitOfWork()
+    db = MemoryDatabase()
     composite_search_test_case(db)
 
-@pytest.mark.skipif(not MySQLUnitOfWork(debug=True).is_available(), reason="database is not avaibable")
+@pytest.mark.skipif(not MySQLDatabase(debug=True).is_available(), reason="database is not avaibable")
 def test_mysql_based_repository():
-    db = MySQLUnitOfWork(debug=True)
+    db = MySQLDatabase(debug=True)
     attraction_test_case(db)
 
-@pytest.mark.skipif(not MySQLUnitOfWork(debug=True).is_available(), reason="database is not avaibable")
+@pytest.mark.skipif(not MySQLDatabase(debug=True).is_available(), reason="database is not avaibable")
 def test_mysql_based_images():
-    db = MySQLUnitOfWork(debug=True)
+    db = MySQLDatabase(debug=True)
     images_test_case(db)
 
-@pytest.mark.skipif(not MySQLUnitOfWork(debug=True).is_available(), reason="database is not avaibable")
+@pytest.mark.skipif(not MySQLDatabase(debug=True).is_available(), reason="database is not avaibable")
 def test_mysql_based_null_mrt():
-    db = MySQLUnitOfWork(debug=True)
+    db = MySQLDatabase(debug=True)
     null_mrt_test_case(db)
 
-@pytest.mark.skipif(not MySQLUnitOfWork(debug=True).is_available(), reason="database is not avaibable")
+@pytest.mark.skipif(not MySQLDatabase(debug=True).is_available(), reason="database is not avaibable")
 def test_mysql_based_get_by_id():
-    db = MySQLUnitOfWork(debug=True)
+    db = MySQLDatabase(debug=True)
     get_by_id_test_case(db)
 
-@pytest.mark.skipif(not MySQLUnitOfWork(debug=True).is_available(), reason="database is not avaibable")
+@pytest.mark.skipif(not MySQLDatabase(debug=True).is_available(), reason="database is not avaibable")
 def test_mysql_based_get_range():
-    db = MySQLUnitOfWork(debug=True)
+    db = MySQLDatabase(debug=True)
     get_range_test_case(db)
 
-@pytest.mark.skipif(not MySQLUnitOfWork(debug=True).is_available(), reason="database is not avaibable")
+@pytest.mark.skipif(not MySQLDatabase(debug=True).is_available(), reason="database is not avaibable")
 def test_mysql_based_search_by_name():
-    db = MySQLUnitOfWork(debug=True)
+    db = MySQLDatabase(debug=True)
     search_by_name_test_case(db)
 
-@pytest.mark.skipif(not MySQLUnitOfWork(debug=True).is_available(), reason="database is not avaibable")
+@pytest.mark.skipif(not MySQLDatabase(debug=True).is_available(), reason="database is not avaibable")
 def test_mysql_based_search_by_category():
-    db = MySQLUnitOfWork(debug=True)
+    db = MySQLDatabase(debug=True)
     search_by_category_test_case(db)
 
-@pytest.mark.skipif(not MySQLUnitOfWork(debug=True).is_available(), reason="database is not avaibable")
+@pytest.mark.skipif(not MySQLDatabase(debug=True).is_available(), reason="database is not avaibable")
 def test_mysql_composite_search():
-    db = MemoryUnitOfWork()
+    db = MemoryDatabase()
     composite_search_test_case(db)

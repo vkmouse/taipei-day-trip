@@ -1,7 +1,7 @@
 import mysql.connector
 import logging
 
-class MySQLRepository:
+class MySQLModel:
     def with_connection(func):
         def wrap(self, *args, **kwargs):
             cnx = self.cnxpool.get_connection()

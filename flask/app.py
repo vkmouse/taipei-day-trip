@@ -1,12 +1,12 @@
 from flask import *
 from taipei_day_trip.models import copy_db
-from taipei_day_trip.models import MemoryUnitOfWork
-from taipei_day_trip.models import MySQLUnitOfWork
+from taipei_day_trip.models import MemoryDatabase
+from taipei_day_trip.models import MySQLDatabase
 from taipei_day_trip.routes import attraction_bp
 from taipei_day_trip.routes import category_bp
 
-mem = MemoryUnitOfWork()
-db = MySQLUnitOfWork()
+mem = MemoryDatabase()
+db = MySQLDatabase()
 mem.import_from_json_file('data/taipei-attractions.json')
 copy_db(mem, db)
 

@@ -3,22 +3,22 @@ import re
 
 from taipei_day_trip.models.attraction_model import AttractionModel
 from taipei_day_trip.models.category_model import CategoryModel
-from taipei_day_trip.models.memory.attraction_repository import MemoryAttractionRepository
-from taipei_day_trip.models.memory.category_repository import MemoryCategoryRepository
-from taipei_day_trip.models.memory.mrt_repository import MemoryMRTRepository
+from taipei_day_trip.models.memory.attraction_model import MemoryAttractionModel
+from taipei_day_trip.models.memory.category_model import MemoryCategoryModel
+from taipei_day_trip.models.memory.mrt_model import MemoryMRTModel
 from taipei_day_trip.models.mrt_model import MRTModel
 from taipei_day_trip.models.types import List
 from taipei_day_trip.models.database import Database
 
-class MemoryUnitOfWork(Database):
+class MemoryDatabase(Database):
     def _create_attraction_repository(self) -> AttractionModel:
-        return MemoryAttractionRepository(self.categories, self.mrts)
+        return MemoryAttractionModel(self.categories, self.mrts)
 
     def _create_category_repository(self) -> CategoryModel:
-        return MemoryCategoryRepository()
+        return MemoryCategoryModel()
 
     def _create_mrt_repository(self) -> MRTModel:
-        return MemoryMRTRepository()
+        return MemoryMRTModel()
 
     def import_from_json_file(self, filename: str):
         file = open(filename, 'r', encoding='utf8')

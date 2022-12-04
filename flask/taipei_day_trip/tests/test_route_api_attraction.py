@@ -2,7 +2,7 @@ import pytest
 
 from flask import Flask
 from flask.testing import FlaskClient
-from taipei_day_trip.models import MemoryUnitOfWork
+from taipei_day_trip.models import MemoryDatabase
 from taipei_day_trip.routes import attraction_bp
 from taipei_day_trip.tests import util
 
@@ -18,8 +18,8 @@ def app():
 def client(app: Flask):
     return app.test_client()
 
-def init_db() -> MemoryUnitOfWork:
-    db = MemoryUnitOfWork()
+def init_db() -> MemoryDatabase:
+    db = MemoryDatabase()
     db.categories.add('category1')
     for i in range(20):
         util.add_attraction(db, name=f'attr{i + 1}')

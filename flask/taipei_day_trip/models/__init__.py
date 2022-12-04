@@ -3,8 +3,8 @@ from taipei_day_trip.models.category_model import CategoryModel
 from taipei_day_trip.models.database import copy_db
 from taipei_day_trip.models.database import Database
 from taipei_day_trip.models.mrt_model import MRTModel
-from taipei_day_trip.models.memory.unit_of_work import MemoryUnitOfWork
-from taipei_day_trip.models.mysql.unit_of_work import MySQLUnitOfWork
+from taipei_day_trip.models.memory.database import MemoryDatabase
+from taipei_day_trip.models.mysql.database import MySQLDatabase
 from taipei_day_trip.models.types import Attraction
 from taipei_day_trip.models.types import Category
 from taipei_day_trip.models.types import List

@@ -1,7 +1,7 @@
 import pytest
 
 from taipei_day_trip.models.types import Attraction
-from taipei_day_trip.models import MemoryUnitOfWork
+from taipei_day_trip.models import MemoryDatabase
 
 def test_import_from_json():
     attraction = Attraction(id = 1,
@@ -62,7 +62,7 @@ def test_import_from_json():
     json_str = json_str.replace('{mrt}', attraction.mrt)
     json_str = json_str.replace('{mp3}', 'https://www.travel.taipei/d_upload_ttn/sceneadmin/pic/10784.mp3')
 
-    db = MemoryUnitOfWork()
+    db = MemoryDatabase()
     db.import_from_json(json_str)
 
     assert len(db.categories.get_all()) == 1

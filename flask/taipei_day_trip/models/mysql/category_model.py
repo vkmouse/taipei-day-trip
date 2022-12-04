@@ -1,10 +1,10 @@
 from taipei_day_trip.models.category_model import CategoryModel
-from taipei_day_trip.models.mysql.repository import MySQLRepository
+from taipei_day_trip.models.mysql.mysql_model import MySQLModel
 from taipei_day_trip.models.types import Category
 from taipei_day_trip.models.types import List
 
-class MySQLCategoryRepository(MySQLRepository, CategoryModel):
-    @MySQLRepository.with_connection
+class MySQLCategoryModel(MySQLModel, CategoryModel):
+    @MySQLModel.with_connection
     def add(self, name: str, cnx, cursor) -> bool:
         if self.__nameExists(name):
             return False
@@ -14,7 +14,7 @@ class MySQLCategoryRepository(MySQLRepository, CategoryModel):
         cnx.commit()
         return True
 
-    @MySQLRepository.with_connection
+    @MySQLModel.with_connection
     def get_all(self, cnx, cursor) -> List[Category]:
         query = 'SELECT * FROM {}'.format(self.tablename)
         cursor.execute(query)
@@ -25,7 +25,7 @@ class MySQLCategoryRepository(MySQLRepository, CategoryModel):
             output.append(Category(id, name))
         return output
 
-    @MySQLRepository.with_connection
+    @MySQLModel.with_connection
     def __nameExists(self, __id: int, cnx, cursor) -> bool:
         query = 'SELECT COUNT(*) FROM {} WHERE name=%s'.format(self.tablename)
         data = (__id,)
