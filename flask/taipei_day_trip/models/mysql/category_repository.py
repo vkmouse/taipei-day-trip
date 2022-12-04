@@ -1,7 +1,7 @@
-from taipei_day_trip.core import Category
-from taipei_day_trip.core import List
 from taipei_day_trip.models.category_model import CategoryModel
 from taipei_day_trip.models.mysql.repository import MySQLRepository
+from taipei_day_trip.models.types import Category
+from taipei_day_trip.models.types import List
 
 class MySQLCategoryRepository(MySQLRepository, CategoryModel):
     @MySQLRepository.with_connection

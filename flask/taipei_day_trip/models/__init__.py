@@ -5,3 +5,7 @@ from taipei_day_trip.models.unit_of_work import copy_db
 from taipei_day_trip.models.unit_of_work import UnitOfWork
 from taipei_day_trip.models.memory.unit_of_work import MemoryUnitOfWork
 from taipei_day_trip.models.mysql.unit_of_work import MySQLUnitOfWork
+from taipei_day_trip.models.types import Attraction
+from taipei_day_trip.models.types import Category
+from taipei_day_trip.models.types import List
+from taipei_day_trip.models.types import MRT

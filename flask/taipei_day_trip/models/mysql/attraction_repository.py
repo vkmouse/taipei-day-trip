@@ -1,8 +1,8 @@
-from taipei_day_trip.core import Attraction
-from taipei_day_trip.core import List
 from taipei_day_trip.models.attraction_model import AttractionModel
 from taipei_day_trip.models.mysql.attraction_image_repository import MySQLAttractionImageRepository
 from taipei_day_trip.models.mysql.repository import MySQLRepository
+from taipei_day_trip.models.types import Attraction
+from taipei_day_trip.models.types import List
 
 class MySQLAttractionRepository(MySQLRepository, AttractionModel):
     def __init__(self, cnxpool, category_tablename: str, mrt_tablename: str, debug: bool):

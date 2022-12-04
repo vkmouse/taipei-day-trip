@@ -1,5 +1,5 @@
-from taipei_day_trip.core import Attraction
-from taipei_day_trip.core import List
+from taipei_day_trip.models.types import Attraction
+from taipei_day_trip.models.types import List
 
 class AttractionModel:
     def add(self,

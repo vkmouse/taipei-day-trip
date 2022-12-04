@@ -1,13 +1,13 @@
 import json
 import re
 
-from taipei_day_trip.core import List
 from taipei_day_trip.models.attraction_model import AttractionModel
 from taipei_day_trip.models.category_model import CategoryModel
 from taipei_day_trip.models.memory.attraction_repository import MemoryAttractionRepository
 from taipei_day_trip.models.memory.category_repository import MemoryCategoryRepository
 from taipei_day_trip.models.memory.mrt_repository import MemoryMRTRepository
 from taipei_day_trip.models.mrt_model import MRTModel
+from taipei_day_trip.models.types import List
 from taipei_day_trip.models.unit_of_work import UnitOfWork
 
 class MemoryUnitOfWork(UnitOfWork):

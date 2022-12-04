@@ -1,8 +1,8 @@
-from taipei_day_trip.core import Attraction
-from taipei_day_trip.core import List
 from taipei_day_trip.models.attraction_model import AttractionModel
 from taipei_day_trip.models.memory.category_repository import MemoryCategoryRepository
 from taipei_day_trip.models.memory.mrt_repository import MemoryMRTRepository
+from taipei_day_trip.models.types import Attraction
+from taipei_day_trip.models.types import List
 
 class MemoryAttractionRepository(AttractionModel):
     def __init__(self, categories: MemoryCategoryRepository, mrts: MemoryMRTRepository):

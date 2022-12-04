@@ -1,5 +1,5 @@
-from taipei_day_trip.core import List
 from taipei_day_trip.models.mysql.repository import MySQLRepository
+from taipei_day_trip.models.types import List
 
 class MySQLAttractionImageRepository(MySQLRepository):
     def __init__(self, cnxpool, attraction_tablename: str, debug: bool):

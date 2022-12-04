@@ -1,7 +1,7 @@
-from taipei_day_trip.core import MRT
-from taipei_day_trip.core import List
 from taipei_day_trip.models.mrt_model import MRTModel
 from taipei_day_trip.models.mysql.repository import MySQLRepository
+from taipei_day_trip.models.types import List
+from taipei_day_trip.models.types import MRT
 
 class MySQLMRTRepository(MySQLRepository, MRTModel):
     @MySQLRepository.with_connection

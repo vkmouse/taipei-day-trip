@@ -1,5 +1,5 @@
-from taipei_day_trip.core import List
-from taipei_day_trip.core import MRT
+from taipei_day_trip.models.types import List
+from taipei_day_trip.models.types import MRT
 
 class MRTModel:
     def add(self, name: str) -> bool:
