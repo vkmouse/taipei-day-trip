@@ -3,7 +3,7 @@ import pytest
 from flask import Flask
 from flask.testing import FlaskClient
 from taipei_day_trip.repository import MemoryUnitOfWork
-from taipei_day_trip.route import get_attraction_api
+from taipei_day_trip.routes import attraction_bp
 from taipei_day_trip.tests import util
 
 @pytest.fixture()
@@ -11,7 +11,7 @@ def app():
     db = init_db()
     app = Flask(__name__)
     app.config['TESTING'] = True # TESTING flag is disable error catching during request handling
-    app.register_blueprint(get_attraction_api(db))
+    app.register_blueprint(attraction_bp(db))
     yield app
 
 @pytest.fixture()

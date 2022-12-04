@@ -1,36 +1,27 @@
-from flask import Blueprint
 from flask import request
 from taipei_day_trip.core import UnitOfWork
 
-def get_attraction_api(db: UnitOfWork):
-    bp = Blueprint('attraction', __name__)
-    controller = AttractionController(db, num_data_per_page=12)
+class AttractionController:
+    def __init__(self, db: UnitOfWork, num_data_per_page: int):
+        self.__db = db
+        self.__num_data_per_page = num_data_per_page
 
-    @bp.route('/api/attractions')
-    def attractions():
-        return controller.search(
+    def attraction(self, id: int):
+        return self.__get_by_id(id)
+
+    def attractions(self):
+        return self.__search(
             page = request.args.get('page'), 
             keyword = request.args.get('keyword')
         )
 
-    @bp.route('/api/attraction/<int:id>')
-    def attraction(id):
-        return controller.get_by_id(id)
-
-    return bp
-
-class AttractionController:
-    def __init__(self, db: UnitOfWork, num_data_per_page):
-        self.__db = db
-        self.__num_data_per_page = num_data_per_page
-
-    def get_by_id(self, id: int):
+    def __get_by_id(self, id: int):
         try:
             return self.__get_by_id_from_repository(id)
         except Exception as e:
             return self.__handle_expection_error(e)
 
-    def search(self, page: str | None, keyword: str | None):
+    def __search(self, page: str | None, keyword: str | None):
         try:
             if page == None:
                 return self.__handle_missing_required_parameter('page')

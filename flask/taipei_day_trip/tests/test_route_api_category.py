@@ -3,14 +3,14 @@ import pytest
 from flask import Flask
 from flask.testing import FlaskClient
 from taipei_day_trip.repository import MemoryUnitOfWork
-from taipei_day_trip.route import get_category_api
+from taipei_day_trip.routes import category_bp
 
 @pytest.fixture()
 def app():
     db = init_db()
     app = Flask(__name__)
     app.config["TESTING"] = True # TESTING flag is disable error catching during request handling
-    app.register_blueprint(get_category_api(db))
+    app.register_blueprint(category_bp(db))
     yield app
 
 @pytest.fixture()

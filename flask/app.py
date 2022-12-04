@@ -2,8 +2,8 @@ from flask import *
 from taipei_day_trip.core import copy_db
 from taipei_day_trip.repository import MemoryUnitOfWork
 from taipei_day_trip.repository import MySQLUnitOfWork
-from taipei_day_trip.route import get_attraction_api
-from taipei_day_trip.route import get_category_api
+from taipei_day_trip.routes import attraction_bp
+from taipei_day_trip.routes import category_bp
 
 mem = MemoryUnitOfWork()
 db = MySQLUnitOfWork()
@@ -14,8 +14,8 @@ app = Flask(__name__)
 app.config["JSON_AS_ASCII"] = False
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 
-app.register_blueprint(get_attraction_api(db))
-app.register_blueprint(get_category_api(db))
+app.register_blueprint(attraction_bp(db))
+app.register_blueprint(category_bp(db))
 
 # Pages
 @app.route("/")
