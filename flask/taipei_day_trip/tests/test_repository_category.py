@@ -2,9 +2,9 @@ import pytest
 
 from taipei_day_trip.models import MemoryUnitOfWork
 from taipei_day_trip.models import MySQLUnitOfWork
-from taipei_day_trip.models import UnitOfWork
+from taipei_day_trip.models import Database
 
-def category_test_case(db: UnitOfWork):
+def category_test_case(db: Database):
     assert len(db.categories.get_all()) == 0
     assert db.categories.add('category1') == True
     all = db.categories.get_all()

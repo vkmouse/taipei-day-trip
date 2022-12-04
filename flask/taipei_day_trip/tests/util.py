@@ -1,6 +1,6 @@
-from taipei_day_trip.models import UnitOfWork
+from taipei_day_trip.models import Database
 
-def add_attraction(db: UnitOfWork, name: str = None, category: str = None, mrt: str = None) -> bool:
+def add_attraction(db: Database, name: str = None, category: str = None, mrt: str = None) -> bool:
     return db.attractions.add(name='attr1' if name == None else name,
                               description='desc1',
                               address='addr',

@@ -2,7 +2,7 @@ from taipei_day_trip.models.attraction_model import AttractionModel
 from taipei_day_trip.models.category_model import CategoryModel
 from taipei_day_trip.models.mrt_model import MRTModel
 
-class UnitOfWork:
+class Database:
     def __init__(self):
         self.__categories = self._create_category_repository()
         self.__mrts = self._create_mrt_repository()
@@ -29,12 +29,12 @@ class UnitOfWork:
     def _create_mrt_repository(self) -> MRTModel:
         return NotImplemented
 
-def copy_db(src: UnitOfWork, dst: UnitOfWork):
+def copy_db(src: Database, dst: Database):
     copy_categories(src, dst)
     copy_mrt(src, dst)
     copy_attractions(src, dst)
 
-def copy_attractions(src: UnitOfWork, dst: UnitOfWork):
+def copy_attractions(src: Database, dst: Database):
     values = dst.attractions.get_all()
     for value in src.attractions.get_all():
         is_existed = len(list(filter(lambda x: x.name == value.name, values))) > 0
@@ -49,14 +49,14 @@ def copy_attractions(src: UnitOfWork, dst: UnitOfWork):
                                 category=value.category,
                                 mrt=value.mrt)
 
-def copy_categories(src: UnitOfWork, dst: UnitOfWork):
+def copy_categories(src: Database, dst: Database):
     values = dst.categories.get_all()
     for value in src.categories.get_all():
         is_existed = len(list(filter(lambda x: x.name == value.name, values))) > 0
         if not is_existed:
             dst.categories.add(value.name)
 
-def copy_mrt(src: UnitOfWork, dst: UnitOfWork):
+def copy_mrt(src: Database, dst: Database):
     values = dst.mrts.get_all()
     for value in src.mrts.get_all():
         is_existed = len(list(filter(lambda x: x.name == value.name, values))) > 0

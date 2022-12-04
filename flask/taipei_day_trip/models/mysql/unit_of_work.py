@@ -8,16 +8,16 @@ from taipei_day_trip.models.mrt_model import MRTModel
 from taipei_day_trip.models.mysql.attraction_repository import MySQLAttractionRepository
 from taipei_day_trip.models.mysql.category_repository import MySQLCategoryRepository
 from taipei_day_trip.models.mysql.mrt_repository import MySQLMRTRepository
-from taipei_day_trip.models.unit_of_work import UnitOfWork
+from taipei_day_trip.models.database import Database
 
-class MySQLUnitOfWork(UnitOfWork):
+class MySQLUnitOfWork(Database):
     def __init__(self, debug=False, load_dotenv=True):
         self.__debug = debug
         if load_dotenv:
             dotenv.load_dotenv()
         self.create_database()
         self.__cnxpool = self.create_connectpool()
-        UnitOfWork.__init__(self)
+        Database.__init__(self)
         self.categories.create_table()
         self.mrts.create_table()
         self.attractions.create_table()

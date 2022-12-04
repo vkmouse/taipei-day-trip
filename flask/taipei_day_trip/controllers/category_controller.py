@@ -1,7 +1,7 @@
-from taipei_day_trip.models import UnitOfWork
+from taipei_day_trip.models import Database
 
 class CategoryController:
-    def __init__(self, db: UnitOfWork):
+    def __init__(self, db: Database):
         self.__db = db
 
     def categories(self):

@@ -8,9 +8,9 @@ from taipei_day_trip.models.memory.category_repository import MemoryCategoryRepo
 from taipei_day_trip.models.memory.mrt_repository import MemoryMRTRepository
 from taipei_day_trip.models.mrt_model import MRTModel
 from taipei_day_trip.models.types import List
-from taipei_day_trip.models.unit_of_work import UnitOfWork
+from taipei_day_trip.models.database import Database
 
-class MemoryUnitOfWork(UnitOfWork):
+class MemoryUnitOfWork(Database):
     def _create_attraction_repository(self) -> AttractionModel:
         return MemoryAttractionRepository(self.categories, self.mrts)
 

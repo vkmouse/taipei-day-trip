@@ -1,8 +1,8 @@
 from flask import request
-from taipei_day_trip.models import UnitOfWork
+from taipei_day_trip.models import Database
 
 class AttractionController:
-    def __init__(self, db: UnitOfWork, num_data_per_page: int):
+    def __init__(self, db: Database, num_data_per_page: int):
         self.__db = db
         self.__num_data_per_page = num_data_per_page
 

@@ -2,9 +2,9 @@ import pytest
 
 from taipei_day_trip.models import MemoryUnitOfWork
 from taipei_day_trip.models import MySQLUnitOfWork
-from taipei_day_trip.models import UnitOfWork
+from taipei_day_trip.models import Database
 
-def mrt_test_case(db: UnitOfWork):
+def mrt_test_case(db: Database):
     assert len(db.mrts.get_all()) == 0
 
     assert db.mrts.add('mrt1') == True
