@@ -15,18 +15,19 @@ def test_member_register():
 
 def test_member_get_auth():
     controller = create_controller()
-    assert controller.get_auth('1') == controller.view.render_get_auth(Member(1, 'mem1', 'mem1@mem1.com', '12345'))
-    assert controller.get_auth('0') == controller.view.render_get_auth(None)
-    assert controller.get_auth('fds4s') == controller.view.render_get_auth(None)
+    assert (controller.get_auth(controller.generate_jwt(1)) == 
+            controller.view.render_get_auth(Member(1, 'mem1', 'mem1@mem1.com', '12345')))
+    assert controller.get_auth(controller.generate_jwt(0)) == controller.view.render_get_auth(None)
     assert controller.get_auth(None) == controller.view.render_get_auth(None)
+    assert controller.get_auth('fdsf4') == controller.view.render_get_auth(None)
 
 def test_member_login():
     controller = create_controller()
-    assert controller.login('mem1@mem1.com', '12345') == controller.view.render_success()
-    assert controller.login('mem1@mem1.com1', '12345') == controller.view.render_email_is_not_exists()
-    assert controller.login('mem1@mem1.com', '123451') == controller.view.render_password_is_incorrect()
-    assert controller.login('', '') == controller.view.render_email_is_not_exists()
-    assert controller.login(None, '') == controller.view.render_email_is_not_exists()
+    assert controller.login('mem1@mem1.com', '12345')[0] == controller.view.render_success()
+    assert controller.login('mem1@mem1.com1', '12345')[0] == controller.view.render_email_is_not_exists()
+    assert controller.login('mem1@mem1.com', '123451')[0] == controller.view.render_password_is_incorrect()
+    assert controller.login('', '')[0] == controller.view.render_email_is_not_exists()
+    assert controller.login(None, '')[0] == controller.view.render_email_is_not_exists()
 
 def test_member_validate_id():
     controller = create_controller()

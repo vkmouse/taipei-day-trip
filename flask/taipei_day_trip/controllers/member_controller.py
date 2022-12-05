@@ -1,3 +1,4 @@
+import jwt
 import re
 
 from taipei_day_trip.models import Database
@@ -22,9 +23,15 @@ class MemberController:
         except Exception as e:
             return self.view.render_unexpected(e)
 
-    def get_auth(self, id: str | None):
+    def get_auth(self, token: str | None):
         try:
-            if not self.validator.validate_id(id):
+            if token == None:
+                return self.view.render_get_auth(None)
+            decoded = self.decode_jwt(token)
+            if decoded == None:
+                return self.view.render_get_auth(None)
+            id = decoded['id']
+            if not self.validator.validate_id(str(id)):
                 return self.view.render_get_auth(None)
             member = self.__db.members.get_by_id(int(id))
             return self.view.render_get_auth(member)
@@ -34,20 +41,29 @@ class MemberController:
     def login(self, email: str | None, password: str | None):
         try:
             if not email and self.validator.validate_email(email):
-                return self.view.render_email_is_not_exists()
+                return self.view.render_email_is_not_exists(), None
             if not password and self.validator.validate_password(password):
-                return self.view.render_password_is_incorrect()
+                return self.view.render_password_is_incorrect(), None
             member = self.__db.members.get_by_email(email)
             if member == None:
-                return self.view.render_email_is_not_exists()
+                return self.view.render_email_is_not_exists(), None
             if member.password != password:
-                return self.view.render_password_is_incorrect()
-            return self.view.render_success()
+                return self.view.render_password_is_incorrect(), None
+            return self.view.render_success(), self.generate_jwt(member.id)
         except Exception as e:
-            return self.view.render_unexpected(e)
+            return self.view.render_unexpected(e), None
 
     def logout(self):
         return self.view.render_success()
+
+    def generate_jwt(self, id: int) -> str:
+        return jwt.encode({'id': id}, 'secret', algorithm='HS256')
+
+    def decode_jwt(self, token: str):
+        try:
+            return jwt.decode(token, "secret", algorithms=["HS256"])
+        except jwt.InvalidTokenError:
+            return None
 
 class MemberValidator:
     def validate_id(self, id: str | None) -> bool:
@@ -97,6 +113,9 @@ class MemberView:
 
     def render_password_is_incorrect(self):
         return { 'error': True, 'message': 'Login password is incorrect' }, 400
+
+    def render_invalid_parameter(self):
+        return { 'error': True, 'message': 'Invalid parameter' }, 400
 
     def render_unexpected(self, e: Exception):
         return { 'error': True, 'message': str(e) }, 500
