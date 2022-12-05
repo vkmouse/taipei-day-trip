@@ -5,13 +5,11 @@ from taipei_day_trip.models.types import Member
 class MySQLMemberModel(MySQLModel, MemberModel):
     @MySQLModel.with_connection
     def add(self, name: str, email: str, password: str, cnx, cursor) -> bool:
-        if self.__email_exists(email):
-            return False
-        query = 'INSERT INTO {} (name, email, password) VALUES (%s, %s, %s)'.format(self.tablename)
+        query = 'INSERT IGNORE INTO {} (name, email, password) VALUES (%s, %s, %s)'.format(self.tablename)
         data = (name, email, password)
         cursor.execute(query, data)
         cnx.commit()
-        return True
+        return cursor.rowcount == 1
 
     @MySQLModel.with_connection
     def get_by_id(self, id: int, cnx, cursor) -> Member | None:
@@ -38,14 +36,6 @@ class MySQLMemberModel(MySQLModel, MemberModel):
                       name=rows[0]['name'],
                       email=rows[0]['email'],
                       password=rows[0]['password'])
-
-    @MySQLModel.with_connection
-    def __email_exists(self, __email: str, cnx, cursor) -> bool:
-        query = 'SELECT COUNT(*) FROM {} WHERE name=%s'.format(self.tablename)
-        data = (__email,)
-        cursor.execute(query, data)
-        (count,) = cursor.fetchone()
-        return count > 0
 
     @property
     def tablename(self) -> str:
