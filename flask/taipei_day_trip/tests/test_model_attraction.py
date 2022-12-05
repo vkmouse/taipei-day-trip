@@ -1,11 +1,11 @@
 import pytest
 
-from taipei_day_trip.core import UnitOfWork
-from taipei_day_trip.repository import MemoryUnitOfWork
-from taipei_day_trip.repository import MySQLUnitOfWork
+from taipei_day_trip.models import MemoryDatabase
+from taipei_day_trip.models import MySQLDatabase
+from taipei_day_trip.models import Database
 from taipei_day_trip.tests import util
 
-def attraction_test_case(db: UnitOfWork):
+def attraction_test_case(db: Database):
     db.categories.add('category1')
     db.mrts.add('mrt1')
     db.mrts.add('mrt2')
@@ -25,7 +25,7 @@ def attraction_test_case(db: UnitOfWork):
     assert all[0].mrt == 'mrt2'
     assert util.add_attraction(db, mrt='mrt2', category='category2') == False
 
-def images_test_case(db: UnitOfWork):
+def images_test_case(db: Database):
     db.categories.add('category1')
     db.mrts.add('mrt1')
     assert util.add_attraction(db) == True
@@ -34,19 +34,19 @@ def images_test_case(db: UnitOfWork):
     assert actual[0] == '123'
     assert actual[1] == '456'
 
-def null_mrt_test_case(db: UnitOfWork):
+def null_mrt_test_case(db: Database):
     db.categories.add('category1')
     assert util.add_attraction(db, mrt=None) == True
     assert db.attractions.get_all()[0].mrt == None
 
-def get_by_id_test_case(db: UnitOfWork):
+def get_by_id_test_case(db: Database):
     db.categories.add('category1')
     assert util.add_attraction(db, name='attr1') == True
     assert util.add_attraction(db, name='attr2') == True
     assert db.attractions.get_by_id(1).name == 'attr1'
     assert db.attractions.get_by_id(2).name == 'attr2'
 
-def get_range_test_case(db: UnitOfWork):
+def get_range_test_case(db: Database):
     db.categories.add('category1')
     assert util.add_attraction(db, name='attr1') == True
     assert util.add_attraction(db, name='attr2') == True
@@ -60,7 +60,7 @@ def get_range_test_case(db: UnitOfWork):
     assert len(actuals) == 1
     assert actuals[0].name == 'attr4'
 
-def search_by_name_test_case(db: UnitOfWork):
+def search_by_name_test_case(db: Database):
     db.categories.add('category1')
     assert util.add_attraction(db, name='月牙灣') == True
     assert util.add_attraction(db, name='月牙刀') == True
@@ -73,7 +73,7 @@ def search_by_name_test_case(db: UnitOfWork):
     assert len(db.attractions.search_by_category_or_name('月', 1, 3)) == 2
     assert len(db.attractions.search_by_category_or_name('月', 2, 10)) == 2
 
-def search_by_category_test_case(db: UnitOfWork):
+def search_by_category_test_case(db: Database):
     db.categories.add('月牙灣')
     db.categories.add('月牙刀')
     db.categories.add('月亮')
@@ -88,7 +88,7 @@ def search_by_category_test_case(db: UnitOfWork):
     assert len(db.attractions.search_by_category_or_name('月餅', 0, 4)) == 0
     assert len(db.attractions.search_by_category_or_name('月牙刀', 2, 10)) == 0
 
-def composite_search_test_case(db: UnitOfWork):
+def composite_search_test_case(db: Database):
     db.categories.add('藍色公路')
     db.categories.add('公共藝術')
     assert util.add_attraction(db, name='藍色公路', category='公共藝術') == True
@@ -97,74 +97,74 @@ def composite_search_test_case(db: UnitOfWork):
     assert len(db.attractions.search_by_category_or_name('藍色公路', 0, 2)) == 2
     assert len(db.attractions.search_by_category_or_name('公路', 0, 2)) == 1
 
-def test_memory_based_repository():
-    db = MemoryUnitOfWork()
+def test_memory_based_model():
+    db = MemoryDatabase()
     attraction_test_case(db)
 
 def test_memory_based_images():
-    db = MemoryUnitOfWork()
+    db = MemoryDatabase()
     images_test_case(db)
 
 def test_memory_based_null_mrt():
-    db = MemoryUnitOfWork()
+    db = MemoryDatabase()
     null_mrt_test_case(db)
 
 def test_memory_based_get_by_id():
-    db = MemoryUnitOfWork()
+    db = MemoryDatabase()
     get_by_id_test_case(db)
 
 def test_memory_based_get_range():
-    db = MemoryUnitOfWork()
+    db = MemoryDatabase()
     get_range_test_case(db)
 
 def test_memory_search_by_name():
-    db = MemoryUnitOfWork()
+    db = MemoryDatabase()
     search_by_name_test_case(db)
 
 def test_memory_search_by_category():
-    db = MemoryUnitOfWork()
+    db = MemoryDatabase()
     search_by_category_test_case(db)
 
 def test_memory_composite_search():
-    db = MemoryUnitOfWork()
+    db = MemoryDatabase()
     composite_search_test_case(db)
 
-@pytest.mark.skipif(not MySQLUnitOfWork(debug=True).is_available(), reason="database is not avaibable")
-def test_mysql_based_repository():
-    db = MySQLUnitOfWork(debug=True)
+@pytest.mark.skipif(not MySQLDatabase(debug=True).is_available(), reason="database is not avaibable")
+def test_mysql_based_model():
+    db = MySQLDatabase(debug=True)
     attraction_test_case(db)
 
-@pytest.mark.skipif(not MySQLUnitOfWork(debug=True).is_available(), reason="database is not avaibable")
+@pytest.mark.skipif(not MySQLDatabase(debug=True).is_available(), reason="database is not avaibable")
 def test_mysql_based_images():
-    db = MySQLUnitOfWork(debug=True)
+    db = MySQLDatabase(debug=True)
     images_test_case(db)
 
-@pytest.mark.skipif(not MySQLUnitOfWork(debug=True).is_available(), reason="database is not avaibable")
+@pytest.mark.skipif(not MySQLDatabase(debug=True).is_available(), reason="database is not avaibable")
 def test_mysql_based_null_mrt():
-    db = MySQLUnitOfWork(debug=True)
+    db = MySQLDatabase(debug=True)
     null_mrt_test_case(db)
 
-@pytest.mark.skipif(not MySQLUnitOfWork(debug=True).is_available(), reason="database is not avaibable")
+@pytest.mark.skipif(not MySQLDatabase(debug=True).is_available(), reason="database is not avaibable")
 def test_mysql_based_get_by_id():
-    db = MySQLUnitOfWork(debug=True)
+    db = MySQLDatabase(debug=True)
     get_by_id_test_case(db)
 
-@pytest.mark.skipif(not MySQLUnitOfWork(debug=True).is_available(), reason="database is not avaibable")
+@pytest.mark.skipif(not MySQLDatabase(debug=True).is_available(), reason="database is not avaibable")
 def test_mysql_based_get_range():
-    db = MySQLUnitOfWork(debug=True)
+    db = MySQLDatabase(debug=True)
     get_range_test_case(db)
 
-@pytest.mark.skipif(not MySQLUnitOfWork(debug=True).is_available(), reason="database is not avaibable")
+@pytest.mark.skipif(not MySQLDatabase(debug=True).is_available(), reason="database is not avaibable")
 def test_mysql_based_search_by_name():
-    db = MySQLUnitOfWork(debug=True)
+    db = MySQLDatabase(debug=True)
     search_by_name_test_case(db)
 
-@pytest.mark.skipif(not MySQLUnitOfWork(debug=True).is_available(), reason="database is not avaibable")
+@pytest.mark.skipif(not MySQLDatabase(debug=True).is_available(), reason="database is not avaibable")
 def test_mysql_based_search_by_category():
-    db = MySQLUnitOfWork(debug=True)
+    db = MySQLDatabase(debug=True)
     search_by_category_test_case(db)
 
-@pytest.mark.skipif(not MySQLUnitOfWork(debug=True).is_available(), reason="database is not avaibable")
+@pytest.mark.skipif(not MySQLDatabase(debug=True).is_available(), reason="database is not avaibable")
 def test_mysql_composite_search():
-    db = MemoryUnitOfWork()
+    db = MemoryDatabase()
     composite_search_test_case(db)

@@ -1,8 +1,8 @@
-from taipei_day_trip.core import MRT
-from taipei_day_trip.core import MRTRepository
-from taipei_day_trip.core import List
+from taipei_day_trip.models.mrt_model import MRTModel
+from taipei_day_trip.models.types import MRT
+from taipei_day_trip.models.types import List
 
-class MemoryMRTRepository(MRTRepository):
+class MemoryMRTModel(MRTModel):
     def __init__(self):
         self.__db: List[MRT] = []
         self.__id: int = 0

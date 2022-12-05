@@ -1,52 +1,43 @@
-from flask import Blueprint
 from flask import request
-from taipei_day_trip.core import UnitOfWork
+from taipei_day_trip.models import Database
 
-def get_attraction_api(db: UnitOfWork):
-    bp = Blueprint('attraction', __name__)
-    controller = AttractionController(db, num_data_per_page=12)
+class AttractionController:
+    def __init__(self, db: Database, num_data_per_page: int):
+        self.__db = db
+        self.__num_data_per_page = num_data_per_page
 
-    @bp.route('/api/attractions')
-    def attractions():
-        return controller.search(
+    def attraction(self, id: int):
+        return self.__get_by_id(id)
+
+    def attractions(self):
+        return self.__search(
             page = request.args.get('page'), 
             keyword = request.args.get('keyword')
         )
 
-    @bp.route('/api/attraction/<int:id>')
-    def attraction(id):
-        return controller.get_by_id(id)
-
-    return bp
-
-class AttractionController:
-    def __init__(self, db: UnitOfWork, num_data_per_page):
-        self.__db = db
-        self.__num_data_per_page = num_data_per_page
-
-    def get_by_id(self, id: int):
+    def __get_by_id(self, id: int):
         try:
-            return self.__get_by_id_from_repository(id)
+            return self.__get_by_id_from_model(id)
         except Exception as e:
             return self.__handle_expection_error(e)
 
-    def search(self, page: str | None, keyword: str | None):
+    def __search(self, page: str | None, keyword: str | None):
         try:
             if page == None:
                 return self.__handle_missing_required_parameter('page')
             if not page.isdigit():
                 return self.__handle_page_is_invalid()
-            return self.__search_from_repository(int(page), keyword)
+            return self.__search_from_model(int(page), keyword)
         except Exception as e:
             return self.__handle_expection_error(e)
 
-    def __get_by_id_from_repository(self, id: int):
+    def __get_by_id_from_model(self, id: int):
         attraction = self.__db.attractions.get_by_id(id)
         if attraction == None:
             return self.__handle_attraction_id_not_exists(id)
         return { 'data': attraction.to_json() }, 200
 
-    def __search_from_repository(self, page: int, keyword: str | None):
+    def __search_from_model(self, page: int, keyword: str | None):
         start = self.__num_data_per_page * page
         stop = self.__num_data_per_page * (page + 1) + 1
         output = []

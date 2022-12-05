@@ -1,12 +1,12 @@
-from taipei_day_trip.core import MRT
-from taipei_day_trip.core import MRTRepository
-from taipei_day_trip.core import List
-from taipei_day_trip.repository.mysql.repository import MySQLRepository
+from taipei_day_trip.models.category_model import CategoryModel
+from taipei_day_trip.models.mysql.mysql_model import MySQLModel
+from taipei_day_trip.models.types import Category
+from taipei_day_trip.models.types import List
 
-class MySQLMRTRepository(MySQLRepository, MRTRepository):
-    @MySQLRepository.with_connection
+class MySQLCategoryModel(MySQLModel, CategoryModel):
+    @MySQLModel.with_connection
     def add(self, name: str, cnx, cursor) -> bool:
-        if name == None or self.__nameExists(name):
+        if self.__nameExists(name):
             return False
         query = 'INSERT INTO {} (name) VALUES (%s)'.format(self.tablename)
         data = (name,)
@@ -14,18 +14,18 @@ class MySQLMRTRepository(MySQLRepository, MRTRepository):
         cnx.commit()
         return True
 
-    @MySQLRepository.with_connection
-    def get_all(self, cnx, cursor) -> List[MRT]:
+    @MySQLModel.with_connection
+    def get_all(self, cnx, cursor) -> List[Category]:
         query = 'SELECT * FROM {}'.format(self.tablename)
         cursor.execute(query)
         rows = cursor.fetchall()
-        output: List[MRT] = []
+        output: List[Category] = []
         for row in rows:
             (id, name,) = row
-            output.append(MRT(id, name))
+            output.append(Category(id, name))
         return output
 
-    @MySQLRepository.with_connection
+    @MySQLModel.with_connection
     def __nameExists(self, __id: int, cnx, cursor) -> bool:
         query = 'SELECT COUNT(*) FROM {} WHERE name=%s'.format(self.tablename)
         data = (__id,)
@@ -36,8 +36,8 @@ class MySQLMRTRepository(MySQLRepository, MRTRepository):
     @property
     def tablename(self) -> str:
         if self.debug:
-            return 'test_mrt'
-        return 'mrt'
+            return 'test_category'
+        return 'category'
 
     @property
     def create_table_statement(self) -> str:
