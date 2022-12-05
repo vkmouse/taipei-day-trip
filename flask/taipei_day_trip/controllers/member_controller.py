@@ -1,6 +1,7 @@
 import re
 
 from taipei_day_trip.models import Database
+from taipei_day_trip.models import Member
 
 class MemberController:
     def __init__(self, db: Database):
@@ -9,16 +10,31 @@ class MemberController:
         self.view = MemberView()
 
     def register(self, name: str | None, email: str | None, password: str | None):
-        if (not self.validator.validate_name(name) or
-            not self.validator.validate_email(email) or
-            not self.validator.validate_password(password)):
-            return self.view.render_register_validation_failed()
-        success = self.__db.members.add(name, email, password)
-        if not success:
-            return self.view.render_register_email_conflict()
-        return self.view.render_register_success()
+        try:
+            if (not self.validator.validate_name(name) or
+                not self.validator.validate_email(email) or
+                not self.validator.validate_password(password)):
+                return self.view.render_register_validation_failed()
+            success = self.__db.members.add(name, email, password)
+            if not success:
+                return self.view.render_register_email_conflict()
+            return self.view.render_register_success()
+        except Exception as e:
+            self.view.render_unexpected(e)
+
+    def get_auth(self, id: str | None):
+        try:
+            if not self.validator.validate_id(id):
+                return self.view.render_get_auth(None)
+            member = self.__db.members.get_by_id(int(id))
+            return self.view.render_get_auth(member)
+        except Exception as e:
+            self.view.render_unexpected(e)
 
 class MemberValidator:
+    def validate_id(self, id: str | None) -> bool:
+        return id != None and id.isdigit()
+
     def validate_name(self, name: str | None):
         if name == None:
             return False
@@ -41,8 +57,22 @@ class MemberView:
     def render_register_success(self):
         return { 'ok': True }, 200
 
+    def render_get_auth(self, member: Member | None):
+        if member:
+            return {
+                'data': {
+                    'id': member.id,
+                    'name': member.name,
+                    'email': member.email
+                }
+            }
+        return { 'data': None }
+
     def render_register_validation_failed(self):
         return { 'error': True, 'message': 'Registration information is incorrect' }, 400
 
     def render_register_email_conflict(self):
         return { 'error': True, 'message': 'That email is taken. Try another' }, 409
+
+    def render_unexpected(self, e: Exception):
+        return { 'error': True, 'message': str(e) }, 500

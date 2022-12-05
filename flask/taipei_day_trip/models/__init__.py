@@ -8,4 +8,5 @@ from taipei_day_trip.models.mysql.database import MySQLDatabase
 from taipei_day_trip.models.types import Attraction
 from taipei_day_trip.models.types import Category
 from taipei_day_trip.models.types import List
+from taipei_day_trip.models.types import Member
 from taipei_day_trip.models.types import MRT
