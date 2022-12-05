@@ -11,13 +11,13 @@ from taipei_day_trip.models.types import List
 from taipei_day_trip.models.database import Database
 
 class MemoryDatabase(Database):
-    def _create_attraction_repository(self) -> AttractionModel:
+    def _create_attraction_model(self) -> AttractionModel:
         return MemoryAttractionModel(self.categories, self.mrts)
 
-    def _create_category_repository(self) -> CategoryModel:
+    def _create_category_model(self) -> CategoryModel:
         return MemoryCategoryModel()
 
-    def _create_mrt_repository(self) -> MRTModel:
+    def _create_mrt_model(self) -> MRTModel:
         return MemoryMRTModel()
 
     def import_from_json_file(self, filename: str):

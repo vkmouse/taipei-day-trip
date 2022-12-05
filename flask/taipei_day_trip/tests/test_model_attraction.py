@@ -97,7 +97,7 @@ def composite_search_test_case(db: Database):
     assert len(db.attractions.search_by_category_or_name('藍色公路', 0, 2)) == 2
     assert len(db.attractions.search_by_category_or_name('公路', 0, 2)) == 1
 
-def test_memory_based_repository():
+def test_memory_based_model():
     db = MemoryDatabase()
     attraction_test_case(db)
 
@@ -130,7 +130,7 @@ def test_memory_composite_search():
     composite_search_test_case(db)
 
 @pytest.mark.skipif(not MySQLDatabase(debug=True).is_available(), reason="database is not avaibable")
-def test_mysql_based_repository():
+def test_mysql_based_model():
     db = MySQLDatabase(debug=True)
     attraction_test_case(db)
 

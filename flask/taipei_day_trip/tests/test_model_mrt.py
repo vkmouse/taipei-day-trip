@@ -17,11 +17,11 @@ def mrt_test_case(db: Database):
 
     assert db.mrts.add(None) == False
 
-def test_memory_based_repository():
+def test_memory_based_model():
     db = MemoryDatabase()
     mrt_test_case(db)
 
 @pytest.mark.skipif(not MySQLDatabase(debug=True).is_available(), reason="database is not avaibable")
-def test_mysql_based_repository():
+def test_mysql_based_model():
     db = MySQLDatabase(debug=True)
     mrt_test_case(db)

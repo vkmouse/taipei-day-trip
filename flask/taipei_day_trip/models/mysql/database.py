@@ -28,13 +28,13 @@ class MySQLDatabase(Database):
             self.categories.drop_table_if_exists()
             self.mrts.drop_table_if_exists()
 
-    def _create_attraction_repository(self) -> AttractionModel:
+    def _create_attraction_model(self) -> AttractionModel:
         return MySQLAttractionModel(self.__cnxpool, self.categories.tablename, self.mrts.tablename, self.__debug)
 
-    def _create_category_repository(self) -> CategoryModel:
+    def _create_category_model(self) -> CategoryModel:
         return MySQLCategoryModel(self.__cnxpool, self.__debug)
 
-    def _create_mrt_repository(self) -> MRTModel:
+    def _create_mrt_model(self) -> MRTModel:
         return MySQLMRTModel(self.__cnxpool, self.__debug)
 
     def is_available(self) -> bool:

@@ -4,9 +4,9 @@ from taipei_day_trip.models.mrt_model import MRTModel
 
 class Database:
     def __init__(self):
-        self.__categories = self._create_category_repository()
-        self.__mrts = self._create_mrt_repository()
-        self.__attractions = self._create_attraction_repository()
+        self.__categories = self._create_category_model()
+        self.__mrts = self._create_mrt_model()
+        self.__attractions = self._create_attraction_model()
 
     @property
     def attractions(self) -> AttractionModel:
@@ -20,13 +20,13 @@ class Database:
     def mrts(self) -> MRTModel:
         return self.__mrts
 
-    def _create_attraction_repository(self) -> AttractionModel:
+    def _create_attraction_model(self) -> AttractionModel:
         return NotImplemented
 
-    def _create_category_repository(self) -> CategoryModel:
+    def _create_category_model(self) -> CategoryModel:
         return NotImplemented
 
-    def _create_mrt_repository(self) -> MRTModel:
+    def _create_mrt_model(self) -> MRTModel:
         return NotImplemented
 
 def copy_db(src: Database, dst: Database):

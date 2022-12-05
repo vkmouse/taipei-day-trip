@@ -17,7 +17,7 @@ class AttractionController:
 
     def __get_by_id(self, id: int):
         try:
-            return self.__get_by_id_from_repository(id)
+            return self.__get_by_id_from_model(id)
         except Exception as e:
             return self.__handle_expection_error(e)
 
@@ -27,17 +27,17 @@ class AttractionController:
                 return self.__handle_missing_required_parameter('page')
             if not page.isdigit():
                 return self.__handle_page_is_invalid()
-            return self.__search_from_repository(int(page), keyword)
+            return self.__search_from_model(int(page), keyword)
         except Exception as e:
             return self.__handle_expection_error(e)
 
-    def __get_by_id_from_repository(self, id: int):
+    def __get_by_id_from_model(self, id: int):
         attraction = self.__db.attractions.get_by_id(id)
         if attraction == None:
             return self.__handle_attraction_id_not_exists(id)
         return { 'data': attraction.to_json() }, 200
 
-    def __search_from_repository(self, page: int, keyword: str | None):
+    def __search_from_model(self, page: int, keyword: str | None):
         start = self.__num_data_per_page * page
         stop = self.__num_data_per_page * (page + 1) + 1
         output = []

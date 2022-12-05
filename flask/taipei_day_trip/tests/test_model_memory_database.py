@@ -1,6 +1,6 @@
 import pytest
 
-from taipei_day_trip.models.types import Attraction
+from taipei_day_trip.models import Attraction
 from taipei_day_trip.models import MemoryDatabase
 
 def test_import_from_json():
