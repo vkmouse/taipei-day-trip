@@ -18,9 +18,9 @@ class MemberController:
             success = self.__db.members.add(name, email, password)
             if not success:
                 return self.view.render_register_email_conflict()
-            return self.view.render_register_success()
+            return self.view.render_success()
         except Exception as e:
-            self.view.render_unexpected(e)
+            return self.view.render_unexpected(e)
 
     def get_auth(self, id: str | None):
         try:
@@ -29,7 +29,25 @@ class MemberController:
             member = self.__db.members.get_by_id(int(id))
             return self.view.render_get_auth(member)
         except Exception as e:
-            self.view.render_unexpected(e)
+            return self.view.render_unexpected(e)
+
+    def login(self, email: str | None, password: str | None):
+        try:
+            if not email and self.validator.validate_email(email):
+                return self.view.render_email_is_not_exists()
+            if not password and self.validator.validate_password(password):
+                return self.view.render_password_is_incorrect()
+            member = self.__db.members.get_by_email(email)
+            if member == None:
+                return self.view.render_email_is_not_exists()
+            if member.password != password:
+                return self.view.render_password_is_incorrect()
+            return self.view.render_success()
+        except Exception as e:
+            return self.view.render_unexpected(e)
+
+    def logout(self):
+        return self.view.render_success()
 
 class MemberValidator:
     def validate_id(self, id: str | None) -> bool:
@@ -54,7 +72,7 @@ class MemberValidator:
         return match != None and match.group() == password
 
 class MemberView:
-    def render_register_success(self):
+    def render_success(self):
         return { 'ok': True }, 200
 
     def render_get_auth(self, member: Member | None):
@@ -65,14 +83,20 @@ class MemberView:
                     'name': member.name,
                     'email': member.email
                 }
-            }
-        return { 'data': None }
+            }, 200
+        return { 'data': None }, 200
 
     def render_register_validation_failed(self):
         return { 'error': True, 'message': 'Registration information is incorrect' }, 400
 
     def render_register_email_conflict(self):
         return { 'error': True, 'message': 'That email is taken. Try another' }, 409
+
+    def render_email_is_not_exists(self):
+        return { 'error': True, 'message': 'Login email is not exists' }, 400
+
+    def render_password_is_incorrect(self):
+        return { 'error': True, 'message': 'Login password is incorrect' }, 400
 
     def render_unexpected(self, e: Exception):
         return { 'error': True, 'message': str(e) }, 500
