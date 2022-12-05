@@ -44,6 +44,13 @@ class Category:
         self.id = id
         self.name = name
 
+class Member:
+    def __init__(self, id: str, name: str, email: str, password: str):
+        self.id = id
+        self.name = name
+        self.email = email
+        self.password = password
+
 class MRT:
     def __init__(self, id: int, name: str):
         self.id = id

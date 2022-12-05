@@ -1,0 +1,31 @@
+import uuid
+
+from taipei_day_trip.models.member_model import MemberModel
+from taipei_day_trip.models.types import Member
+from taipei_day_trip.models.types import List
+
+class MemoryMemberModel(MemberModel):
+    def __init__(self):
+        self.__db: List[Member] = []
+
+    def add(self, name: str, email: str, password: str) -> bool:
+        if self.email_exists(email):
+            return False
+        element = Member(uuid.uuid4(), name, email, password)
+        self.__db.append(element)
+        return True
+
+    def get_by_id(self, id: str) -> Member | None:
+        output = list(filter(lambda i: i.id == id, self.__db))
+        if len(output) == 0:
+            return None
+        return output[0]
+
+    def get_by_email(self, email: str) -> Member | None:
+        output = list(filter(lambda i: i.email == email, self.__db))
+        if len(output) == 0:
+            return None
+        return output[0]
+
+    def email_exists(self, email: str) -> bool:
+        return len(list(filter(lambda i: i.email == email, self.__db))) > 0
