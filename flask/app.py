@@ -18,4 +18,4 @@ app.register_blueprint(attraction_bp(db))
 app.register_blueprint(category_bp(db))
 
 if __name__ == '__main__':
-	app.run(host='0.0.0.0', port=3000)
+	app.run(debug=True)

@@ -1,4 +1,3 @@
-from flask import request
 from taipei_day_trip.models import Database
 
 class AttractionController:
@@ -9,11 +8,8 @@ class AttractionController:
     def attraction(self, id: int):
         return self.__get_by_id(id)
 
-    def attractions(self):
-        return self.__search(
-            page = request.args.get('page'), 
-            keyword = request.args.get('keyword')
-        )
+    def attractions(self, page: str | None, keyword: str | None):
+        return self.__search(page, keyword)
 
     def __get_by_id(self, id: int):
         try:
