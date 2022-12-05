@@ -6,7 +6,7 @@ from taipei_day_trip.models.types import List
 class MySQLCategoryModel(MySQLModel, CategoryModel):
     @MySQLModel.with_connection
     def add(self, name: str, cnx, cursor) -> bool:
-        if self.__nameExists(name):
+        if self.__name_exists(name):
             return False
         query = 'INSERT INTO {} (name) VALUES (%s)'.format(self.tablename)
         data = (name,)
@@ -26,9 +26,9 @@ class MySQLCategoryModel(MySQLModel, CategoryModel):
         return output
 
     @MySQLModel.with_connection
-    def __nameExists(self, __id: int, cnx, cursor) -> bool:
+    def __name_exists(self, __name: str, cnx, cursor) -> bool:
         query = 'SELECT COUNT(*) FROM {} WHERE name=%s'.format(self.tablename)
-        data = (__id,)
+        data = (__name,)
         cursor.execute(query, data)
         (count,) = cursor.fetchone()
         return count > 0

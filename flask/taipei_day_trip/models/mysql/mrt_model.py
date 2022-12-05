@@ -6,7 +6,7 @@ from taipei_day_trip.models.types import MRT
 class MySQLMRTModel(MySQLModel, MRTModel):
     @MySQLModel.with_connection
     def add(self, name: str, cnx, cursor) -> bool:
-        if name == None or self.__nameExists(name):
+        if name == None or self.__name_exists(name):
             return False
         query = 'INSERT INTO {} (name) VALUES (%s)'.format(self.tablename)
         data = (name,)
@@ -26,9 +26,9 @@ class MySQLMRTModel(MySQLModel, MRTModel):
         return output
 
     @MySQLModel.with_connection
-    def __nameExists(self, __id: int, cnx, cursor) -> bool:
+    def __name_exists(self, __name: str, cnx, cursor) -> bool:
         query = 'SELECT COUNT(*) FROM {} WHERE name=%s'.format(self.tablename)
-        data = (__id,)
+        data = (__name,)
         cursor.execute(query, data)
         (count,) = cursor.fetchone()
         return count > 0
