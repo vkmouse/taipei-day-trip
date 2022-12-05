@@ -9,6 +9,7 @@ def member_test_case(db: Database):
     assert db.members.get_by_email("1@1") != None
     assert db.members.get_by_email("2@2") == None
     member = db.members.get_by_email("1@1")
+    assert member.id == 1
     assert member.name == "name1"
     assert member.email == "1@1"
     assert member.password == "pass1"

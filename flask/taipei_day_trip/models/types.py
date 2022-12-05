@@ -45,7 +45,7 @@ class Category:
         self.name = name
 
 class Member:
-    def __init__(self, id: str, name: str, email: str, password: str):
+    def __init__(self, id: int, name: str, email: str, password: str):
         self.id = id
         self.name = name
         self.email = email

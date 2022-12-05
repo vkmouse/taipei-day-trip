@@ -5,7 +5,7 @@ class MemberModel:
     def add(self, name: str, email: str, password: str) -> bool:
         # Return false on email exists
         return NotImplemented
-    def get_by_id(self, id: str) -> Member | None:
+    def get_by_id(self, id: int) -> Member | None:
         # Return None on id not exists
         return NotImplemented
     def get_by_email(self, email: str) -> Member | None:
