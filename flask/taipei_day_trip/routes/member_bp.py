@@ -3,6 +3,7 @@ from flask import make_response
 from flask import request
 
 from taipei_day_trip.controllers import MemberController
+from taipei_day_trip.middleware import access_token_required
 from taipei_day_trip.models import Database
 
 def member_bp(db: Database):
@@ -25,9 +26,9 @@ def member_bp(db: Database):
         elif request.method == 'DELETE':
             return user_auth_delete()
 
-    def user_auth_get():
-        refresh_token = request.cookies.get('refresh_token')
-        return controller.get_auth(refresh_token)
+    @access_token_required
+    def user_auth_get(member_id):
+        return controller.get_auth(member_id)
 
     def user_auth_put():
         if request.content_type != 'application/json':

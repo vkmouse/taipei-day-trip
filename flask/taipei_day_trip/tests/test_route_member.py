@@ -53,12 +53,10 @@ def test_logout(client: FlaskClient):
 
 def test_get_auth_success(client: FlaskClient):
     token = make_token(1)
-    client.set_cookie('localhost', 'refresh_token', token)
-    response = client.get(path='/api/user/auth')
+    response = client.get(path='/api/user/auth', headers={ 'Authorization': f'Bearer {token}' })
     assert response.status_code == 200
     assert response.get_json()['data'] != None
 
 def test_get_auth_failed(client: FlaskClient):
     response = client.get(path='/api/user/auth')
-    assert response.status_code == 200
-    assert response.get_json()['data'] == None
+    assert response.status_code == 401

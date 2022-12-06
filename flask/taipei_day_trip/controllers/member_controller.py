@@ -24,18 +24,10 @@ class MemberController:
         except Exception as e:
             return self.view.render_unexpected(e)
 
-    def get_auth(self, token: str | None):
+    def get_auth(self, id: int):
         try:
-            if token == None:
-                return self.view.render_get_auth(None)
-            decoded = decode(token)
-            if decoded == None:
-                return self.view.render_get_auth(None)
-            id = decoded['id']
-            if not self.validator.validate_id(str(id)):
-                return self.view.render_get_auth(None)
-            member = self.__db.members.get_by_id(int(id))
-            return self.view.render_get_auth(member)
+            member = self.__db.members.get_by_id(id)
+            return self.view.render_get_auth(member)            
         except Exception as e:
             return self.view.render_unexpected(e)
 
