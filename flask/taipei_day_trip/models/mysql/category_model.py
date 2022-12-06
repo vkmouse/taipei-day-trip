@@ -6,13 +6,11 @@ from taipei_day_trip.models.types import List
 class MySQLCategoryModel(MySQLModel, CategoryModel):
     @MySQLModel.with_connection
     def add(self, name: str, cnx, cursor) -> bool:
-        if self.__nameExists(name):
-            return False
-        query = 'INSERT INTO {} (name) VALUES (%s)'.format(self.tablename)
+        query = 'INSERT IGNORE INTO {} (name) VALUES (%s)'.format(self.tablename)
         data = (name,)
         cursor.execute(query, data)
         cnx.commit()
-        return True
+        return cursor.rowcount == 1
 
     @MySQLModel.with_connection
     def get_all(self, cnx, cursor) -> List[Category]:
@@ -24,14 +22,6 @@ class MySQLCategoryModel(MySQLModel, CategoryModel):
             (id, name,) = row
             output.append(Category(id, name))
         return output
-
-    @MySQLModel.with_connection
-    def __nameExists(self, __id: int, cnx, cursor) -> bool:
-        query = 'SELECT COUNT(*) FROM {} WHERE name=%s'.format(self.tablename)
-        data = (__id,)
-        cursor.execute(query, data)
-        (count,) = cursor.fetchone()
-        return count > 0
 
     @property
     def tablename(self) -> str:
@@ -45,6 +35,7 @@ class MySQLCategoryModel(MySQLModel, CategoryModel):
             'CREATE TABLE {} ('
             '    id              bigint        NOT NULL  AUTO_INCREMENT,'
             '    name            varchar(255)  NOT NULL,'
-            '    PRIMARY KEY (id)'
+            '    PRIMARY KEY (id),'
+            '    UNIQUE (name)'
             ');'
         ).format(self.tablename)

@@ -30,39 +30,19 @@ def test_attraction_id():
 
 def test_attraction_id_if_not_exists():
     controller = create_controller()
-    body, status_code = controller.attraction(999)
-    assert status_code == 400
-    assert body == {
-        'error': True,
-        'message': 'No attraction id 999'
-    }
+    assert controller.attraction(999) == controller.view.render_attraction_id_not_exists(999)
 
 def test_attractions_if_missing_requestment():
     controller = create_controller()
-    body, status_code = controller.attractions(None, None)
-    assert status_code == 400
-    assert body == {
-        'error': True,
-        'message': 'Missing required parameter page'
-    }
+    assert controller.attractions(None, None) == controller.view.render_missing_required_parameter('page')
 
 def test_attractions_if_page_not_a_number():
     controller = create_controller()
-    body, status_code = controller.attractions('not a number', None)
-    assert status_code == 400
-    assert body == {
-        'error': True,
-        'message': 'page is invalid, it allow only integer number'
-    }
+    assert controller.attractions('not a number', None) == controller.view.render_page_is_invalid()
 
 def test_attractions_if_page_number_invalid():
     controller = create_controller()
-    body, status_code = controller.attractions('-10', None)
-    assert status_code == 400
-    assert body == {
-        'error': True,
-        'message': 'page is invalid, it allow only integer number'
-    }
+    assert controller.attractions('-10', None) == controller.view.render_page_is_invalid()
 
 def test_attractions_if_having_next_page():
     controller = create_controller()

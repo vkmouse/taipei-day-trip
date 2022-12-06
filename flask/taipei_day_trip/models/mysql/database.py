@@ -4,9 +4,11 @@ import os
 
 from taipei_day_trip.models.attraction_model import AttractionModel
 from taipei_day_trip.models.category_model import CategoryModel
+from taipei_day_trip.models.member_model import MemberModel
 from taipei_day_trip.models.mrt_model import MRTModel
 from taipei_day_trip.models.mysql.attraction_model import MySQLAttractionModel
 from taipei_day_trip.models.mysql.category_model import MySQLCategoryModel
+from taipei_day_trip.models.mysql.member_model import MySQLMemberModel
 from taipei_day_trip.models.mysql.mrt_model import MySQLMRTModel
 from taipei_day_trip.models.database import Database
 
@@ -21,9 +23,11 @@ class MySQLDatabase(Database):
         self.categories.create_table()
         self.mrts.create_table()
         self.attractions.create_table()
+        self.members.create_table()
 
     def __del__(self):
         if self.__debug:
+            self.members.drop_table_if_exists()
             self.attractions.drop_table_if_exists()
             self.categories.drop_table_if_exists()
             self.mrts.drop_table_if_exists()
@@ -33,6 +37,9 @@ class MySQLDatabase(Database):
 
     def _create_category_model(self) -> CategoryModel:
         return MySQLCategoryModel(self.__cnxpool, self.__debug)
+        
+    def _create_member_model(self) -> MemberModel:
+        return MySQLMemberModel(self.__cnxpool, self.__debug)
 
     def _create_mrt_model(self) -> MRTModel:
         return MySQLMRTModel(self.__cnxpool, self.__debug)
