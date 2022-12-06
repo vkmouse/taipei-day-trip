@@ -11,7 +11,8 @@ def decode(token: str):
         return None
 
 def access_token_required(func):
-    def decorator(*args, **kwargs):
+    view = JWTView()
+    def access_token_required_wrapper(*args, **kwargs):
         token = None
         if 'Authorization' in request.headers:
             words = request.headers['Authorization'].split(' ')
@@ -19,13 +20,39 @@ def access_token_required(func):
             if scheme == 'Bearer' and len(words) == 2:
                 token = words[1]
         if not token:
-            return { 'error': True, 'message': 'Authorization Token is missing' }, 401
+            return view.render_missing_token()
         try:
             decoded_token = decode(token)
             if decoded_token == None or decoded_token['is_refresh']:
-                return { 'error': True, 'message': 'Invalid Authorization token' }, 401
+                return view.render_invalid_token()
             member_id = decoded_token['id']
             return func(member_id, *args, **kwargs)
         except Exception as e:
-            return { 'error': True, 'message':str(e) }, 500
-    return decorator
+            return view.render_unexpected(e)
+    return access_token_required_wrapper
+
+def refresh_token_required(func):
+    view = JWTView()
+    def refresh_token_required_wrapper(*args, **kwargs):
+        token = request.cookies.get('refresh_token')
+        if not token:
+            return view.render_missing_token()
+        try:
+            decoded_token = decode(token)
+            if decoded_token == None or decoded_token['is_refresh'] == False:
+                return view.render_invalid_token()
+            member_id = decoded_token['id']
+            return func(member_id, *args, **kwargs)
+        except Exception as e:
+            return view.render_unexpected(e)
+    return refresh_token_required_wrapper
+
+class JWTView:
+    def render_missing_token(self):
+        return { 'error': True, 'message': 'Authorization Token is missing' }, 401
+
+    def render_invalid_token(self):
+        return { 'error': True, 'message': 'Invalid Authorization token' }, 401
+
+    def render_unexpected(self, e: Exception):
+        return { 'error': True, 'message':str(e) }, 500
