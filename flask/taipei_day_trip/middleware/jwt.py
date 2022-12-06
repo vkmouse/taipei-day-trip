@@ -1,7 +1,7 @@
 import jwt
 
-def make_token(id: int) -> str:
-    return jwt.encode({'id': id}, 'secret', algorithm='HS256')
+def make_token(id: int, is_refresh=False) -> str:
+    return jwt.encode({ 'id': id, 'is_refresh': is_refresh }, 'secret', algorithm='HS256')
 
 def decode(token: str):
     try:

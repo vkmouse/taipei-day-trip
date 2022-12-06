@@ -50,7 +50,9 @@ class MemberController:
                 return self.view.render_email_is_not_exists(), None
             if member.password != password:
                 return self.view.render_password_is_incorrect(), None
-            return self.view.render_success(), make_token(member.id)
+            access_token = make_token(member.id)
+            refresh_token = make_token(member.id, is_refresh=True)
+            return self.view.render_login_success(access_token), refresh_token
         except Exception as e:
             return self.view.render_unexpected(e), None
 
@@ -82,6 +84,9 @@ class MemberValidator:
 class MemberView:
     def render_success(self):
         return { 'ok': True }, 200
+
+    def render_login_success(self, token: str):
+        return { 'ok': True, 'access_token': token }, 200
 
     def render_get_auth(self, member: Member | None):
         if member:

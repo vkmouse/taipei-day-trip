@@ -1,4 +1,5 @@
 from taipei_day_trip.controllers import MemberController
+from taipei_day_trip.middleware import decode
 from taipei_day_trip.middleware import make_token
 from taipei_day_trip.models import MemoryDatabase
 from taipei_day_trip.models import Member
@@ -22,9 +23,15 @@ def test_member_get_auth():
     assert controller.get_auth(None) == controller.view.render_get_auth(None)
     assert controller.get_auth('fdsf4') == controller.view.render_get_auth(None)
 
-def test_member_login():
+def test_member_login_success():
     controller = create_controller()
-    assert controller.login('mem1@mem1.com', '12345')[0] == controller.view.render_success()
+    response = controller.login('mem1@mem1.com', '12345')[0]
+    assert response[0]['ok'] == True
+    assert decode(response[0]['access_token'])['id'] == 1
+    assert response[1] == 200
+
+def test_member_login_failed():
+    controller = create_controller()
     assert controller.login('mem1@mem1.com1', '12345')[0] == controller.view.render_email_is_not_exists()
     assert controller.login('mem1@mem1.com', '123451')[0] == controller.view.render_password_is_incorrect()
     assert controller.login('', '')[0] == controller.view.render_email_is_not_exists()

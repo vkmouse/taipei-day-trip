@@ -26,22 +26,22 @@ def member_bp(db: Database):
             return user_auth_delete()
 
     def user_auth_get():
-        token = request.cookies.get('token')
-        return controller.get_auth(token)
+        refresh_token = request.cookies.get('refresh_token')
+        return controller.get_auth(refresh_token)
 
     def user_auth_put():
         if request.content_type != 'application/json':
             return controller.view.render_invalid_parameter()
         body = request.get_json()
-        resp, token = controller.login(body['email'], body['password'])
+        resp, refresh_token = controller.login(body['email'], body['password'])
         response = make_response(resp)
-        if token:
-            response.set_cookie('token', token)
+        if refresh_token:
+            response.set_cookie('refresh_token', refresh_token)
         return response
 
     def user_auth_delete():
         response = make_response(controller.logout())
-        response.set_cookie('token', '', expires=0)
+        response.set_cookie('refresh_token', '', expires=0)
         return response
 
     return bp

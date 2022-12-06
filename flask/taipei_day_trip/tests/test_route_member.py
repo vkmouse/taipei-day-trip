@@ -35,21 +35,25 @@ def test_login_success(client: FlaskClient):
         }),
         content_type='application/json'
     )
-    assert response.get_json() == { 'ok': True }
+    body = response.get_json()
+    access_token = body['access_token']
     cookie = response.headers.get('Set-Cookie')
     cookie_attrs = parse_cookie(cookie)
-    assert decode(cookie_attrs['token']) == { 'id': 1 }
+    refresh_token = cookie_attrs['refresh_token']
+    assert body['ok'] == True
+    assert decode(access_token) == { 'id': 1, 'is_refresh': False }
+    assert decode(refresh_token) == { 'id': 1, 'is_refresh': True }
 
 def test_logout(client: FlaskClient):
     response = client.delete(path='/api/user/auth')
     assert response.get_json() == { 'ok': True }
     cookie = response.headers.get('Set-Cookie')
     cookie_attrs = parse_cookie(cookie)
-    assert cookie_attrs['token'] == ''
+    assert cookie_attrs['refresh_token'] == ''
 
 def test_get_auth_success(client: FlaskClient):
     token = make_token(1)
-    client.set_cookie('localhost', 'token', token)
+    client.set_cookie('localhost', 'refresh_token', token)
     response = client.get(path='/api/user/auth')
     assert response.status_code == 200
     assert response.get_json()['data'] != None
