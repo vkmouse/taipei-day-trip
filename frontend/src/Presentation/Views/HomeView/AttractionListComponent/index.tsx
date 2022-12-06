@@ -1,7 +1,7 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
-import { useAppSelector } from '../../Data/Store/hooks';
+import { useAppSelector } from '../../../../Data/Store/hooks';
 import AttractionComponent from './AttractionComponent';
 
 const Grid = css`

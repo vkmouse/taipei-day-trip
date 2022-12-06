@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import React from 'react';
-import { Secondery10 } from '../Styles/Colors';
-import { BodyBold, H1 } from '../Styles/Typography';
+import { Secondery10 } from '../../../Styles/Colors';
+import { BodyBold, H1 } from '../../../Styles/Typography';
 import SearchBar from './SearchBar';
 
 const BannerStyle = styled.div`
