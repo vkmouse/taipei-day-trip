@@ -1,6 +1,7 @@
-import jwt
 import re
 
+from taipei_day_trip.middleware import decode
+from taipei_day_trip.middleware import make_token
 from taipei_day_trip.models import Database
 from taipei_day_trip.models import Member
 
@@ -27,7 +28,7 @@ class MemberController:
         try:
             if token == None:
                 return self.view.render_get_auth(None)
-            decoded = self.decode_jwt(token)
+            decoded = decode(token)
             if decoded == None:
                 return self.view.render_get_auth(None)
             id = decoded['id']
@@ -49,21 +50,12 @@ class MemberController:
                 return self.view.render_email_is_not_exists(), None
             if member.password != password:
                 return self.view.render_password_is_incorrect(), None
-            return self.view.render_success(), self.generate_jwt(member.id)
+            return self.view.render_success(), make_token(member.id)
         except Exception as e:
             return self.view.render_unexpected(e), None
 
     def logout(self):
         return self.view.render_success()
-
-    def generate_jwt(self, id: int) -> str:
-        return jwt.encode({'id': id}, 'secret', algorithm='HS256')
-
-    def decode_jwt(self, token: str):
-        try:
-            return jwt.decode(token, "secret", algorithms=["HS256"])
-        except jwt.InvalidTokenError:
-            return None
 
 class MemberValidator:
     def validate_id(self, id: str | None) -> bool:
