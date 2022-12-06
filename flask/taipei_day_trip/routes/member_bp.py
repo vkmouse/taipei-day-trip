@@ -4,6 +4,7 @@ from flask import request
 
 from taipei_day_trip.controllers import MemberController
 from taipei_day_trip.middleware import access_token_required
+from taipei_day_trip.middleware import refresh_token_required
 from taipei_day_trip.models import Database
 
 def member_bp(db: Database):
@@ -16,6 +17,11 @@ def member_bp(db: Database):
             return controller.view.render_invalid_parameter()
         body = request.get_json()
         return controller.register(body['name'], body['email'], body['password'])
+
+    @bp.route('/api/user/refresh', methods=['POST'])
+    @refresh_token_required
+    def user_refresh(member_id):
+        return controller.refresh(member_id)
 
     @bp.route('/api/user/auth', methods=['GET', 'PUT', 'DELETE'])
     def user_auth():

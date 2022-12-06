@@ -51,6 +51,10 @@ class MemberController:
     def logout(self):
         return self.view.render_success()
 
+    def refresh(self, id: int):
+        access_token = make_token(id)
+        return self.view.render_login_success(access_token)
+
 class MemberValidator:
     def validate_id(self, id: str | None) -> bool:
         return id != None and id.isdigit()

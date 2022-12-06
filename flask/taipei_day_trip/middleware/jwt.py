@@ -43,11 +43,11 @@ def access_token_required(func):
             if scheme == 'Bearer' and len(words) == 2:
                 token = words[1]
         if not token:
-            return view.render_missing_token()
+            return view.render_missing_access_token()
         try:
             decoded_token = decode(token)
             if decoded_token == None or decoded_token['is_refresh']:
-                return view.render_invalid_token()
+                return view.render_invalid_access_token()
             member_id = decoded_token['id']
             return func(member_id, *args, **kwargs)
         except Exception as e:
@@ -59,11 +59,11 @@ def refresh_token_required(func):
     def refresh_token_required_wrapper(*args, **kwargs):
         token = request.cookies.get('refresh_token')
         if not token:
-            return view.render_missing_token()
+            return view.render_missing_refresh_token()
         try:
             decoded_token = decode(token)
             if decoded_token == None or decoded_token['is_refresh'] == False:
-                return view.render_invalid_token()
+                return view.render_invalid_refresh_token()
             member_id = decoded_token['id']
             return func(member_id, *args, **kwargs)
         except Exception as e:
@@ -71,11 +71,17 @@ def refresh_token_required(func):
     return refresh_token_required_wrapper
 
 class JWTView:
-    def render_missing_token(self):
+    def render_missing_access_token(self):
         return { 'error': True, 'message': 'Authorization Token is missing' }, 401
 
-    def render_invalid_token(self):
+    def render_invalid_access_token(self):
         return { 'error': True, 'message': 'Invalid Authorization token' }, 401
+
+    def render_missing_refresh_token(self):
+        return { 'error': True, 'message': 'Authorization Token is missing' }, 403
+
+    def render_invalid_refresh_token(self):
+        return { 'error': True, 'message': 'Invalid Authorization token' }, 403
 
     def render_unexpected(self, e: Exception):
         return { 'error': True, 'message':str(e) }, 500

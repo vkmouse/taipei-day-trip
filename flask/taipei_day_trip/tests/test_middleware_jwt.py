@@ -59,7 +59,7 @@ def test_access_token_success(client: FlaskClient):
 def test_refresh_token_with_no_cookie(client: FlaskClient):
     response = client.get(path='/test_refresh_token')
     body = response.get_json()
-    assert response.status_code == 401
+    assert response.status_code == 403
     assert body['error'] == True
     assert body['message'] == 'Authorization Token is missing'
 
@@ -67,7 +67,7 @@ def test_refresh_token_with_invalid_jwt(client: FlaskClient):
     client.set_cookie('localhost', 'refresh_token', '12345')
     response = client.get(path='/test_refresh_token')
     body = response.get_json()
-    assert response.status_code == 401
+    assert response.status_code == 403
     assert body['error'] == True
     assert body['message'] == 'Invalid Authorization token'
 
@@ -75,7 +75,7 @@ def test_refresh_token_with_access(client: FlaskClient):
     client.set_cookie('localhost', 'refresh_token', make_token(1))
     response = client.get(path='/test_refresh_token')
     body = response.get_json()
-    assert response.status_code == 401
+    assert response.status_code == 403
     assert body['error'] == True
     assert body['message'] == 'Invalid Authorization token'
 
