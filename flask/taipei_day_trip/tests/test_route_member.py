@@ -40,9 +40,13 @@ def test_login_success(client: FlaskClient):
     cookie = response.headers.get('Set-Cookie')
     cookie_attrs = parse_cookie(cookie)
     refresh_token = cookie_attrs['refresh_token']
+    decoded_access_token = decode(access_token)
+    decoded_refresh_token = decode(refresh_token)
     assert body['ok'] == True
-    assert decode(access_token) == { 'id': 1, 'is_refresh': False }
-    assert decode(refresh_token) == { 'id': 1, 'is_refresh': True }
+    assert decoded_access_token['id'] == 1
+    assert decoded_access_token['is_refresh'] == False
+    assert decoded_refresh_token['id'] == 1
+    assert decoded_refresh_token['is_refresh'] == True
 
 def test_logout(client: FlaskClient):
     response = client.delete(path='/api/user/auth')

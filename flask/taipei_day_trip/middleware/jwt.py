@@ -1,12 +1,35 @@
+import dotenv
 import jwt
+import os
+
+from datetime import datetime
+from datetime import timezone
+from datetime import timedelta
 from flask import request
 
+dotenv.load_dotenv()
+secret_key = os.getenv('JWT_SECRET_KEY')
+access_token_lifetime = os.getenv('JWT_ACCESS_TOKEN_LIFETIME')
+refresh_token_lifetime = os.getenv('JWT_REFRESH_TOKEN_LIFETIME')
+
+def get_exp(is_refresh: bool):
+    exp = datetime.now(tz=timezone.utc)
+    if is_refresh:
+        exp += timedelta(seconds=int(refresh_token_lifetime))
+    else:
+        exp += timedelta(seconds=int(access_token_lifetime))
+    return exp
+
 def make_token(id: int, is_refresh=False) -> str:
-    return jwt.encode({ 'id': id, 'is_refresh': is_refresh }, 'secret', algorithm='HS256')
+    return jwt.encode({ 
+        'id': id,
+        'is_refresh': is_refresh,
+        'exp': get_exp(is_refresh)
+    }, secret_key, algorithm='HS256')
 
 def decode(token: str):
     try:
-        return jwt.decode(token, "secret", algorithms=["HS256"])
+        return jwt.decode(token, secret_key, algorithms=['HS256'])
     except jwt.InvalidTokenError:
         return None
 
