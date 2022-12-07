@@ -22,7 +22,6 @@ const InputEmail = () => {
             autoFocus
             placeholder='輸入密碼'
             type='password'
-            autoComplete='off'
             value={password.value}
             onChange={handleChanged}
           />

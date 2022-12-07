@@ -1,8 +1,10 @@
 import styled from '@emotion/styled';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useNavigationContext } from '../../../../context/NavigationContext';
+import { api } from '../../../../Core/API';
 import { Primary, Secondery20, Secondery50, Secondery70 } from '../../../Styles/Colors';
 import { BodyMedium, H3 } from '../../../Styles/Typography';
+import { HintText } from './Input';
 import InputEmail from './InputEmail';
 import InputName from './InputName';
 import InputPassword from './InputPassword';
@@ -142,17 +144,46 @@ const signupDescription: Description = {
 
 const Dialog = () => {
   const [isSignin, setIsSignin] = useState(true);
+  const [responseText, setResponseText] = useState('');
+  const requireSuccess = useRef(true);
   const { dialog, email, name, password, clear } = useNavigationContext();
   const description: Description = isSignin ? signinDescription : signupDescription;
   
   const switchSignAction = () => {
+    setResponseText('');
     setIsSignin(() => !isSignin);
     clear();
   };
 
+  const register = async () => {
+    const response = await api.register(name.value, email.value, password.value);
+    const status = response.status;
+    if (status === 200) {
+      setResponseText('✔ 註冊成功！');
+      requireSuccess.current = true;
+    } else if (status === 400) {
+      setResponseText('⚠ 註冊失敗');
+      requireSuccess.current = false;
+    } else if (status === 409) {
+      setResponseText('⚠ 電子郵件已經被註冊');
+      requireSuccess.current = false;
+    } else if (status === 500) {
+      setResponseText('⚠ 伺服器異常');
+      requireSuccess.current = false;
+    }
+  };
+
+  const handleClick = () => {
+    if (isSignin) {
+
+    } else {
+      register();
+    }
+  };
+
   const isValid = (isSignin && email.isValid && password.isValid) || 
                   (email.isValid && password.isValid && name.isValid);
-
+  const buttonCursor = isValid ? 'pointer' : 'not-allowed';
   return (
     <Container>
       <DialogContainer>
@@ -165,7 +196,15 @@ const Dialog = () => {
           {isSignin ? <></> : <InputName /> }
           <InputEmail />
           <InputPassword />
-          <Button disabled={!isValid}>{description.button}</Button>
+          <Button 
+            style={{cursor: buttonCursor}} 
+            disabled={!isValid}
+            onClick={handleClick}>
+            {description.button}
+          </Button>
+          <TextContainer>
+            <HintText style={{color: requireSuccess.current ? 'blue' : 'red' }}>{responseText}</HintText>
+          </TextContainer>
           <TextContainer>
             <Text>{description.text}</Text>
             <TextButton onClick={switchSignAction}>{description.textButton}</TextButton>

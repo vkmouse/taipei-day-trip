@@ -26,6 +26,21 @@ class RealAPI implements API {
     const body = await response.json();
     return body;
   };
+
+  register = async (name: string, email: string, password: string): Promise<Response> => {
+    const response = await fetch('/api/user', {
+      method: 'POST',
+      body: JSON.stringify({
+        'name': name,
+        'email': email,
+        'password': password,
+      }),
+      headers: new Headers({
+        'Content-Type': 'application/json'
+      })
+    });
+    return response;
+  };
 }
 
 export default RealAPI;

@@ -1,9 +1,8 @@
-import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { Secondery50, Primary } from "../../../Styles/Colors";
 import { BodyMedium } from "../../../Styles/Typography";
 
-export const InputContainer = styled.form`
+export const InputContainer = styled.div`
   margin: 10px 0;
   padding: 0 32px 0 0;
 `;

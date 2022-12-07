@@ -46,6 +46,50 @@ class MockAPI implements API {
     });
   };
 
+  register = (name: string, email: string, password: string): Promise<Response> => {
+    let status = 200;
+    if (name === '400') {
+      status = 400;
+    } else if (name === '409') {
+      status = 409;
+    } else if (name === '500') {
+      status = 500;
+    }
+
+    const response: Response = {
+      headers: new Headers(),
+      ok: true,
+      redirected: false,
+      status,
+      statusText: '',
+      type: 'basic',
+      url: '',
+      clone: function (): Response {
+        throw new Error("Function not implemented.");
+      },
+      body: null,
+      bodyUsed: false,
+      arrayBuffer: function (): Promise<ArrayBuffer> {
+        throw new Error("Function not implemented.");
+      },
+      blob: function (): Promise<Blob> {
+        throw new Error("Function not implemented.");
+      },
+      formData: function (): Promise<FormData> {
+        throw new Error("Function not implemented.");
+      },
+      json: function (): Promise<any> {
+        throw new Error("Function not implemented.");
+      },
+      text: function (): Promise<string> {
+        throw new Error("Function not implemented.");
+      }
+    };
+    return new Promise((resolve, reject) => {
+      setTimeout(() => resolve(response), ms);
+    });
+  };
+
   private createAttraction = (id: number) : Attraction => {
     return {
       id: id,
