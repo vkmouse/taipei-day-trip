@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { api } from '../../../Core/API';
+import { useAPIContext } from '../../../context/APIContext';
 import { Attraction } from '../../../Core/Core';
 import Footer from '../../Components/Footer';
 import Navigation from '../../Components/Navigation';
@@ -53,7 +53,8 @@ function AttractionView() {
 
   const id = parseInt(params.attractionId);
   const [attraction, setAttraction] = useState<Attraction>();
-
+  const api = useAPIContext();
+  
   const getAttraction = async (id: number) => {
     const attraction = await api.getAttraction(id);
     setAttraction(attraction);

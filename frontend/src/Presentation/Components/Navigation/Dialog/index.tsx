@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import React, { useRef, useState } from 'react';
+import { useAPIContext } from '../../../../context/APIContext';
 import { useNavigationContext } from '../../../../context/NavigationContext';
-import { api } from '../../../../Core/API';
 import { Primary, Secondery20, Secondery50, Secondery70 } from '../../../Styles/Colors';
 import { BodyMedium, H3 } from '../../../Styles/Typography';
 import { HintText } from './Input';
@@ -148,6 +148,7 @@ const Dialog = () => {
   const requireSuccess = useRef(true);
   const { dialog, email, name, password, clear } = useNavigationContext();
   const description: Description = isSignin ? signinDescription : signupDescription;
+  const api = useAPIContext();
   
   const switchSignAction = () => {
     setResponseText('');

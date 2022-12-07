@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import React, { useEffect, useRef, useState } from 'react';
-import { api } from '../../../Core/API';
+import { useAPIContext } from '../../../context/APIContext';
 import { Attractions } from '../../../Core/Core';
 import { setData, setNextPage } from '../../../Data/Slices/attractionSlice';
 import { useAppSelector, useAppDispatch } from '../../../Data/Store/hooks';
@@ -34,6 +34,7 @@ function HomeView() {
   const observer = useRef<IntersectionObserver>();
   const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(false);
+  const api = useAPIContext();
 
   const setAttractions = (body: Attractions) => {
     dispatch(setData(attractions.concat(body.data)));
