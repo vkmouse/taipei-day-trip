@@ -1,21 +1,20 @@
-import React, { useRef, useState } from 'react';
+import React from 'react';
+import { useNavigationContext } from '../../../../context/NavigationContext';
 import { BaseInput, DangerInput, HintText, InputContainer } from "./Input";
 
-const InputEmail = (props: { 
-    onChange?: (value: string, isValid: boolean) => void 
-}) => {
+const InputEmail = () => {
     const re = /[.*a-zA-Z\d]{4,100}/g;
-    const isValid = useRef(true);
-    const [value, setValue] = useState('');
-    const Input = isValid.current ? BaseInput : DangerInput;
+    const { password } = useNavigationContext();
     const handleChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newValue = e.target.value;
         const match = re.exec(newValue);
-        isValid.current = match !== null && match[0] === newValue;      
-        setValue(newValue);
-        props.onChange?.(newValue, isValid.current);
+        const isValid = match !== null && match[0] === newValue;
+        password.setIsValid(isValid);
+        password.setValue(newValue);
     };
 
+    const showValid = password.isValid || password.value.length === 0;
+    const Input = showValid ? BaseInput : DangerInput;
     return (
       <>
         <InputContainer>
@@ -24,10 +23,10 @@ const InputEmail = (props: {
             placeholder='輸入密碼'
             type='password'
             autoComplete='off'
-            value={value}
+            value={password.value}
             onChange={handleChanged}
           />
-          {isValid.current ? <></> : <HintText>⚠ 請輸入 4 ~ 100 個字元的英文字母、數字</HintText>}
+          {showValid ? <></> : <HintText>⚠ 請輸入 4 ~ 100 個字元的英文字母、數字</HintText>}
         </InputContainer>
       </>
     );

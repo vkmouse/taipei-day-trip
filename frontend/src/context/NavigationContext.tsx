@@ -17,6 +17,9 @@ type InputValue = {
 type NavigationState = {
   dialog: Dialog
   email: InputValue
+  password: InputValue
+  name: InputValue
+  clear: () => void
 }
 
 const initialState: NavigationState = {
@@ -29,8 +32,21 @@ const initialState: NavigationState = {
     value: '',
     isValid: false,
     setValue: () => void 0,
-    setIsValid: () => void 0
-  }
+    setIsValid: () => void 0,
+  },
+  password: {
+    value: '',
+    isValid: false,
+    setValue: () => void 0,
+    setIsValid: () => void 0,
+  },
+  name: {
+    value: '',
+    isValid: false,
+    setValue: () => void 0,
+    setIsValid: () => void 0,
+  },
+  clear: () => void 0,
 };
 
 const NavigationContext = createContext<NavigationState>(initialState);
@@ -38,19 +54,50 @@ const NavigationContext = createContext<NavigationState>(initialState);
 const NavigationProvider = (props: { children: JSX.Element }) => {
   const [isShow, setIsShow] = useState(false);
   const [email, setEmail] = useState('');
-  const [emailIsValid, setemailIsValid] = useState(false);
+  const [emailIsValid, setEmailIsValid] = useState(false);
+  const [password, setPassword] = useState('');
+  const [passwordIsValid, setPasswordIsValid] = useState(false);
+  const [name, setName] = useState('');
+  const [nameIsValid, setNameIsValid] = useState(false);
+  const clear = () => {
+    setEmail('');
+    setEmailIsValid(false);
+    setPassword('');
+    setPasswordIsValid(false);
+    setName('');
+    setNameIsValid(false);
+  };
   const state: NavigationState = {
     dialog: {
       isShow: isShow,
-      show: () => setIsShow(true),
-      hide: () => setIsShow(false),
+      show: () => {
+        setIsShow(true);
+        clear();
+      },
+      hide: () => {
+        setIsShow(false);
+        clear();
+      },
     },
     email: {
       value: email,
       isValid: emailIsValid,
       setValue: (value: string) => setEmail(value),
-      setIsValid: (value: boolean) => setemailIsValid(value),
+      setIsValid: (value: boolean) => setEmailIsValid(value),
     },
+    password: {
+      value: password,
+      isValid: passwordIsValid,
+      setValue: (value: string) => setPassword(value),
+      setIsValid: (value: boolean) => setPasswordIsValid(value),
+    },
+    name: {
+      value: name,
+      isValid: nameIsValid,
+      setValue: (value: string) => setName(value),
+      setIsValid: (value: boolean) => setNameIsValid(value),
+    },
+    clear
   };
 
   return <NavigationContext.Provider value={state} {...props} />;
@@ -61,11 +108,3 @@ const useNavigationContext = () => {
 };
 
 export { NavigationProvider, useNavigationContext };
-
-// export const ShowDialogContext = createContext<[boolean, React.Dispatch<React.SetStateAction<boolean>>]>([false, () => void 0]);
-// export const EmailContext = createContext<[string, Dispatch<SetStateAction<string>>]>(['', () => void 0]);
-// export const PasswordContext = createContext<[string, Dispatch<SetStateAction<string>>]>(['', () => void 0]);
-// export const NameContext = createContext<[string, Dispatch<SetStateAction<string>>]>(['', () => void 0]);
-// export const EmailIsValidContext = createContext<[boolean, Dispatch<SetStateAction<boolean>>]>([false, () => void 0]);
-// export const PasswordIsValidContext = createContext<[boolean, Dispatch<SetStateAction<boolean>>]>([false, () => void 0]);
-// export const NameIsValidContext = createContext<[boolean, Dispatch<SetStateAction<boolean>>]>([false, () => void 0]);

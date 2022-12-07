@@ -1,31 +1,30 @@
-import React, { useRef, useState } from 'react';
+import React from 'react';
+import { useNavigationContext } from '../../../../context/NavigationContext';
 import { BaseInput, DangerInput, HintText, InputContainer } from "./Input";
 
-const InputName = (props: { 
-    onChange?: (value: string, isValid: boolean) => void 
-}) => {
+const InputName = () => {
     const re = /.{1,20}/g;
-    const isValid = useRef(true);
-    const [value, setValue] = useState('');
-    const Input = isValid.current ? BaseInput : DangerInput;
+    const { name } = useNavigationContext();
     const handleChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newValue = e.target.value;
         const match = re.exec(newValue);
-        isValid.current = match !== null && match[0] === newValue;
-        setValue(newValue);
-        props.onChange?.(newValue, isValid.current);
+        const isValid = match !== null && match[0] === newValue;
+        name.setIsValid(isValid);
+        name.setValue(newValue);
     };
 
+    const showValid = name.isValid || name.value.length === 0;
+    const Input = showValid ? BaseInput : DangerInput;
     return (
       <>
         <InputContainer>
           <Input
             autoFocus
             placeholder='輸入姓名'
-            value={value}
+            value={name.value}
             onChange={handleChanged}
           />
-          {isValid.current ? <></> : <HintText>⚠ 請輸入 1 ~ 20 個字元</HintText>}
+          {showValid ? <></> : <HintText>⚠ 請輸入 1 ~ 20 個字元</HintText>}
         </InputContainer>
       </>
     );

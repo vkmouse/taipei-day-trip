@@ -142,12 +142,16 @@ const signupDescription: Description = {
 
 const Dialog = () => {
   const [isSignin, setIsSignin] = useState(true);
-  const { dialog } = useNavigationContext();
+  const { dialog, email, name, password, clear } = useNavigationContext();
   const description: Description = isSignin ? signinDescription : signupDescription;
   
-  const handleTextButtonClick = () => {
+  const switchSignAction = () => {
     setIsSignin(() => !isSignin);
+    clear();
   };
+
+  const isValid = (isSignin && email.isValid && password.isValid) || 
+                  (email.isValid && password.isValid && name.isValid);
 
   return (
     <Container>
@@ -161,10 +165,10 @@ const Dialog = () => {
           {isSignin ? <></> : <InputName /> }
           <InputEmail />
           <InputPassword />
-          <Button disabled>{description.button}</Button>
+          <Button disabled={!isValid}>{description.button}</Button>
           <TextContainer>
             <Text>{description.text}</Text>
-            <TextButton onClick={handleTextButtonClick}>{description.textButton}</TextButton>
+            <TextButton onClick={switchSignAction}>{description.textButton}</TextButton>
           </TextContainer>
         </Form>
       </DialogContainer>
