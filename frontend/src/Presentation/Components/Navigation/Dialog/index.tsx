@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import React, { useState } from 'react';
-import { Primary, Secondery, Secondery20, Secondery50, Secondery70 } from '../../../Styles/Colors';
+import { useNavigationContext } from '../../../../context/NavigationContext';
+import { Primary, Secondery20, Secondery50, Secondery70 } from '../../../Styles/Colors';
 import { BodyMedium, H3 } from '../../../Styles/Typography';
 import InputEmail from './InputEmail';
 import InputName from './InputName';
@@ -141,6 +142,7 @@ const signupDescription: Description = {
 
 const Dialog = () => {
   const [isSignin, setIsSignin] = useState(true);
+  const { hideDialog } = useNavigationContext();
   const description: Description = isSignin ? signinDescription : signupDescription;
   
   const handleTextButtonClick = () => {
@@ -154,7 +156,7 @@ const Dialog = () => {
         <Form>
           <TitleContainer>
             <Title>{description.title}</Title>
-            <Cancel><CancelIcon /></Cancel>
+            <Cancel onClick={hideDialog}><CancelIcon /></Cancel>
           </TitleContainer>
           {isSignin ? <></> : <InputName /> }
           <InputEmail />

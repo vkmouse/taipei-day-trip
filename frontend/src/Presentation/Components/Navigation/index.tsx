@@ -1,9 +1,10 @@
 import styled from '@emotion/styled';
-import React, { useState } from 'react';
+import React from 'react';
 import { BodyMedium, H2 } from '../../Styles/Typography';
 import { Primary, Secondery, Secondery20 } from '../../Styles/Colors';
 import { Link, useLocation } from 'react-router-dom';
 import Dialog from './Dialog';
+import { NavigationProvider, useNavigationContext } from '../../../context/NavigationContext';
 
 const Container = styled.nav`
   display: flex;  
@@ -76,9 +77,17 @@ const DialogBackground = styled.div`
 `;
 
 const Navigation = () => {
+  return (
+    <NavigationProvider>         
+      <NavigationImpl />
+    </NavigationProvider>
+  );
+};
+
+const NavigationImpl = () => {
   const location = useLocation();
-  const [showDialog, setShowDialog] = useState(false);
-  
+  const { dialogIsDisplay, showDialog, hideDialog } = useNavigationContext();
+
   const handleBrandClicked = () => {
     if (location.pathname === '/') {
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -87,22 +96,22 @@ const Navigation = () => {
 
   return (
     <Container>
-      {showDialog ? 
-        <FullPage>
-          <DialogContainer>
-            <DialogBackground />
-            <Dialog />
-          </DialogContainer>
-        </FullPage> : 
-        <></>
-      }
-      <Navbar>
-        <NavBrand to="/" onClick={handleBrandClicked}>台北一日遊</NavBrand>
-        <NavItems>
-          <NavItem>預定行程</NavItem>
-          <NavItem onClick={() => setShowDialog(() => !showDialog)}>登入/註冊</NavItem>
-        </NavItems>
-      </Navbar>
+        {dialogIsDisplay ? 
+          <FullPage>
+            <DialogContainer>
+              <DialogBackground onClick={hideDialog}/>
+              <Dialog />
+            </DialogContainer>
+          </FullPage> : 
+          <></>
+        }
+        <Navbar>
+          <NavBrand to="/" onClick={handleBrandClicked}>台北一日遊</NavBrand>
+          <NavItems>
+            <NavItem>預定行程</NavItem>
+            <NavItem onClick={showDialog}>登入/註冊</NavItem>
+          </NavItems>
+        </Navbar>
     </Container>
   );
 };
