@@ -3,6 +3,7 @@ import React from 'react';
 import { Primary, Secondery20, Secondery50, Secondery70 } from '../../../Styles/Colors';
 import { BodyMedium, H3 } from '../../../Styles/Typography';
 import InputEmail from './InputEmail';
+import InputPassword from './InputPassword';
 
 const Container = styled.div`
   display: flex;
@@ -123,9 +124,7 @@ const Dialog = () => {
             <Cancel><CancelIcon /></Cancel>
           </TitleContainer>
           <InputEmail onChange={(v1, v2) => console.log(v1, v2)}/>
-          <InputContainer>
-            <Input placeholder='輸入密碼'></Input>
-          </InputContainer>
+          <InputPassword onChange={(v1, v2) => console.log(v1, v2)}/>
           <Button>
             登入帳戶
           </Button>

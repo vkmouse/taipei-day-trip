@@ -3,7 +3,7 @@ import styled from "@emotion/styled";
 import { Secondery50, Primary } from "../../../Styles/Colors";
 import { BodyMedium } from "../../../Styles/Typography";
 
-export const InputContainer = styled.div`
+export const InputContainer = styled.form`
   margin: 10px 0;
   padding: 0 32px 0 0;
 `;
