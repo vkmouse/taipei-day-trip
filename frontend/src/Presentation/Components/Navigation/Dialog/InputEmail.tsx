@@ -1,32 +1,30 @@
-import React, { useRef, useState } from 'react';
+import React from 'react';
 import { useNavigationContext } from '../../../../context/NavigationContext';
 import { BaseInput, DangerInput, HintText, InputContainer } from "./Input";
 
-const InputEmail = (props: { 
-    onChange?: (value: string, isValid: boolean) => void 
-}) => {
+const InputEmail = () => {
     const re = /\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z]+$/g;
-    const isValid = useRef(true);
-    const { email, setEmail } = useNavigationContext();
-    const Input = isValid.current ? BaseInput : DangerInput;
+    const { email } = useNavigationContext();
     const handleChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newValue = e.target.value;
         const match = re.exec(newValue);
-        isValid.current = match !== null && match[0] === newValue;
-        setEmail(newValue);
-        props.onChange?.(newValue, isValid.current);
+        const isValid = match !== null && match[0] === newValue;
+        email.setIsValid(isValid);
+        email.setValue(newValue);
     };
 
+    const showValid = email.isValid || email.value.length === 0;
+    const Input = showValid ? BaseInput : DangerInput;
     return (
       <>
         <InputContainer>
           <Input
             autoFocus
             placeholder='輸入電子信箱'
-            value={email}
+            value={email.value}
             onChange={handleChanged}
           />
-          {isValid.current ? <></> : <HintText>⚠ 請輸入正確的電子郵件</HintText>}
+          {showValid ? <></> : <HintText>⚠ 請輸入正確的電子郵件</HintText>}
         </InputContainer>
       </>
     );

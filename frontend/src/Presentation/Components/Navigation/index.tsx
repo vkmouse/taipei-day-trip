@@ -86,7 +86,7 @@ const Navigation = () => {
 
 const NavigationImpl = () => {
   const location = useLocation();
-  const { dialogIsDisplay, showDialog, hideDialog } = useNavigationContext();
+  const { dialog } = useNavigationContext();
 
   const handleBrandClicked = () => {
     if (location.pathname === '/') {
@@ -96,10 +96,10 @@ const NavigationImpl = () => {
 
   return (
     <Container>
-        {dialogIsDisplay ? 
+        {dialog.isShow ? 
           <FullPage>
             <DialogContainer>
-              <DialogBackground onClick={hideDialog}/>
+              <DialogBackground onClick={dialog.hide}/>
               <Dialog />
             </DialogContainer>
           </FullPage> : 
@@ -109,7 +109,7 @@ const NavigationImpl = () => {
           <NavBrand to="/" onClick={handleBrandClicked}>台北一日遊</NavBrand>
           <NavItems>
             <NavItem>預定行程</NavItem>
-            <NavItem onClick={showDialog}>登入/註冊</NavItem>
+            <NavItem onClick={dialog.show}>登入/註冊</NavItem>
           </NavItems>
         </Navbar>
     </Container>

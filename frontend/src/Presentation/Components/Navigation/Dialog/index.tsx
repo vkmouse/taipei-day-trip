@@ -142,7 +142,7 @@ const signupDescription: Description = {
 
 const Dialog = () => {
   const [isSignin, setIsSignin] = useState(true);
-  const { hideDialog } = useNavigationContext();
+  const { dialog } = useNavigationContext();
   const description: Description = isSignin ? signinDescription : signupDescription;
   
   const handleTextButtonClick = () => {
@@ -156,7 +156,7 @@ const Dialog = () => {
         <Form>
           <TitleContainer>
             <Title>{description.title}</Title>
-            <Cancel onClick={hideDialog}><CancelIcon /></Cancel>
+            <Cancel onClick={dialog.hide}><CancelIcon /></Cancel>
           </TitleContainer>
           {isSignin ? <></> : <InputName /> }
           <InputEmail />

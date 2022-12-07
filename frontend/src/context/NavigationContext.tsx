@@ -1,33 +1,56 @@
 import React, { createContext, useContext } from 'react';
 import { useState } from 'react';
 
+type Dialog = {
+  isShow: boolean
+  show: () => void
+  hide: () => void
+}
+
+type InputValue = {
+  value: string
+  isValid: boolean
+  setValue: (value: string) => void
+  setIsValid: (value: boolean) => void
+}
+
 type NavigationState = {
-  dialogIsDisplay: boolean
-  email: string
-  showDialog: () => void
-  hideDialog: () => void
-  setEmail: (value: string) => void
+  dialog: Dialog
+  email: InputValue
 }
 
 const initialState: NavigationState = {
-  dialogIsDisplay: false,
-  email: '',
-  showDialog: () => void 0,
-  hideDialog: () => void 0,
-  setEmail: () => void 0,
+  dialog: {
+    isShow: false,
+    show: () => void 0,
+    hide: () => void 0,
+  },
+  email: {
+    value: '',
+    isValid: false,
+    setValue: () => void 0,
+    setIsValid: () => void 0
+  }
 };
 
 const NavigationContext = createContext<NavigationState>(initialState);
 
 const NavigationProvider = (props: { children: JSX.Element }) => {
-  const [dialogIsDisplay, setDialogIsDisplay] = useState(false);
+  const [isShow, setIsShow] = useState(false);
   const [email, setEmail] = useState('');
+  const [emailIsValid, setemailIsValid] = useState(false);
   const state: NavigationState = {
-    dialogIsDisplay,
-    email,
-    showDialog: () => setDialogIsDisplay(true),
-    hideDialog: () => setDialogIsDisplay(false),
-    setEmail
+    dialog: {
+      isShow: isShow,
+      show: () => setIsShow(true),
+      hide: () => setIsShow(false),
+    },
+    email: {
+      value: email,
+      isValid: emailIsValid,
+      setValue: (value: string) => setEmail(value),
+      setIsValid: (value: boolean) => setemailIsValid(value),
+    },
   };
 
   return <NavigationContext.Provider value={state} {...props} />;
