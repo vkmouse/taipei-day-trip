@@ -1,8 +1,9 @@
 import styled from '@emotion/styled';
 import React from 'react';
-import { BodyMedium, H2 } from '../Styles/Typography';
-import { Primary, Secondery } from '../Styles/Colors';
+import { BodyMedium, H2 } from '../../Styles/Typography';
+import { Primary, Secondery } from '../../Styles/Colors';
 import { Link, useLocation } from 'react-router-dom';
+import Dialog from './Dialog';
 
 const Container = styled.nav`
   display: flex;  
@@ -51,6 +52,26 @@ const NavItem = styled.button`
   }
 `;
 
+const FullPage = styled.div`
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+`;
+
+const DialogContainer = styled.div`
+  position: relative;
+  width: 100%;
+  height: 100%;
+`;
+
+const DialogBackground = styled.div`
+  position: absolute;
+  background: black;
+  opacity: 0.25;
+  width: 100%;
+  height: 100%;
+`;
+
 const Navigation = () => {
   const location = useLocation();
   
@@ -62,6 +83,12 @@ const Navigation = () => {
 
   return (
     <Container>
+      <FullPage>
+        <DialogContainer>
+          <DialogBackground />
+          <Dialog />
+        </DialogContainer>
+      </FullPage>
       <Navbar>
         <NavBrand to="/" onClick={handleBrandClicked}>台北一日遊</NavBrand>
         <NavItems>
