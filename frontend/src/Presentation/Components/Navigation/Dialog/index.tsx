@@ -1,8 +1,9 @@
 import styled from '@emotion/styled';
-import React from 'react';
-import { Primary, Secondery20, Secondery50, Secondery70 } from '../../../Styles/Colors';
+import React, { useState } from 'react';
+import { Primary, Secondery, Secondery20, Secondery50, Secondery70 } from '../../../Styles/Colors';
 import { BodyMedium, H3 } from '../../../Styles/Typography';
 import InputEmail from './InputEmail';
+import InputName from './InputName';
 import InputPassword from './InputPassword';
 
 const Container = styled.div`
@@ -91,6 +92,10 @@ const Button = styled.button`
   border-width: 0;
   cursor: pointer;
   user-select: none;
+  &:disabled {
+    background-color: ${Secondery20};
+    color: ${Secondery70};
+  }
 `;
 
 const TextContainer = styled.div`
@@ -113,24 +118,51 @@ const TextButton = styled(Text)`
   }
 `;
 
+type Description = {
+  title: string
+  button: string
+  text: string
+  textButton: string
+}
+
+const signinDescription: Description = {
+  title: '登入會員帳號',
+  button: '登入帳戶',
+  text: '還沒有帳戶？',
+  textButton: '點此註冊',
+};
+
+const signupDescription: Description = {
+  title: '註冊會員帳號',
+  button: '註冊新帳戶',
+  text: '已經有帳戶了？',
+  textButton: '點此登入',
+};
+
 const Dialog = () => {
+  const [isSignin, setIsSignin] = useState(true);
+  const description: Description = isSignin ? signinDescription : signupDescription;
+  
+  const handleTextButtonClick = () => {
+    setIsSignin(() => !isSignin);
+  };
+
   return (
     <Container>
       <DialogContainer>
         <DecoratorBar />
         <Form>
           <TitleContainer>
-            <Title>登入會員帳號</Title>
+            <Title>{description.title}</Title>
             <Cancel><CancelIcon /></Cancel>
           </TitleContainer>
-          <InputEmail onChange={(v1, v2) => console.log(v1, v2)}/>
-          <InputPassword onChange={(v1, v2) => console.log(v1, v2)}/>
-          <Button>
-            登入帳戶
-          </Button>
+          {isSignin ? <></> : <InputName /> }
+          <InputEmail />
+          <InputPassword />
+          <Button disabled>{description.button}</Button>
           <TextContainer>
-            <Text>還沒有帳戶？</Text>
-            <TextButton>點此註冊</TextButton>
+            <Text>{description.text}</Text>
+            <TextButton onClick={handleTextButtonClick}>{description.textButton}</TextButton>
           </TextContainer>
         </Form>
       </DialogContainer>

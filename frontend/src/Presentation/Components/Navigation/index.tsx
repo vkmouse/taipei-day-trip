@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
-import React from 'react';
+import React, { useState } from 'react';
 import { BodyMedium, H2 } from '../../Styles/Typography';
-import { Primary, Secondery } from '../../Styles/Colors';
+import { Primary, Secondery, Secondery20 } from '../../Styles/Colors';
 import { Link, useLocation } from 'react-router-dom';
 import Dialog from './Dialog';
 
@@ -50,6 +50,9 @@ const NavItem = styled.button`
       padding-right: 0;
     }
   }
+  &:hover {
+    background-color: ${Secondery20};
+  }
 `;
 
 const FullPage = styled.div`
@@ -74,6 +77,7 @@ const DialogBackground = styled.div`
 
 const Navigation = () => {
   const location = useLocation();
+  const [showDialog, setShowDialog] = useState(false);
   
   const handleBrandClicked = () => {
     if (location.pathname === '/') {
@@ -83,17 +87,20 @@ const Navigation = () => {
 
   return (
     <Container>
-      <FullPage>
-        <DialogContainer>
-          <DialogBackground />
-          <Dialog />
-        </DialogContainer>
-      </FullPage>
+      {showDialog ? 
+        <FullPage>
+          <DialogContainer>
+            <DialogBackground />
+            <Dialog />
+          </DialogContainer>
+        </FullPage> : 
+        <></>
+      }
       <Navbar>
         <NavBrand to="/" onClick={handleBrandClicked}>台北一日遊</NavBrand>
         <NavItems>
           <NavItem>預定行程</NavItem>
-          <NavItem>登入/註冊</NavItem>
+          <NavItem onClick={() => setShowDialog(() => !showDialog)}>登入/註冊</NavItem>
         </NavItems>
       </Navbar>
     </Container>

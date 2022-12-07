@@ -30,8 +30,8 @@ const AttractionListComponent = () => {
   const attractions = useAppSelector(state => state.attraction.data);
   return (
     <Container>
-      {attractions.map(p => {
-        return <AttractionComponent key={p.id} {...p} />;
+      {attractions.map((p, i) => {
+        return <AttractionComponent key={i} {...p} />;
       })}
     </Container>
   );
