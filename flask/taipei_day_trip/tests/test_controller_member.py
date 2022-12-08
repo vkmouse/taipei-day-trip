@@ -1,12 +1,12 @@
 from taipei_day_trip.controllers import MemberController
 from taipei_day_trip.middleware import decode
-from taipei_day_trip.middleware import make_token
 from taipei_day_trip.models import MemoryDatabase
 from taipei_day_trip.models import Member
+from taipei_day_trip.utils import hashpw
 
 def create_controller() -> MemberController:
     db = MemoryDatabase()
-    db.members.add('mem1', 'mem1@mem1.com', '12345')
+    db.members.add('mem1', 'mem1@mem1.com', hashpw('12345'))
     return MemberController(db)
 
 def test_member_register():

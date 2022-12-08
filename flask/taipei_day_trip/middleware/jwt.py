@@ -1,24 +1,15 @@
-import dotenv
 import jwt
-import os
 
-from datetime import datetime
-from datetime import timezone
-from datetime import timedelta
 from flask import request
-
-dotenv.load_dotenv()
-secret_key = os.getenv('JWT_SECRET_KEY')
-access_token_lifetime = os.getenv('JWT_ACCESS_TOKEN_LIFETIME')
-refresh_token_lifetime = os.getenv('JWT_REFRESH_TOKEN_LIFETIME')
+from taipei_day_trip.utils import generate_access_token_exp
+from taipei_day_trip.utils import generate_refresh_token_exp
+from taipei_day_trip.utils import secret_key
 
 def get_exp(is_refresh: bool):
-    exp = datetime.now(tz=timezone.utc)
     if is_refresh:
-        exp += timedelta(seconds=int(refresh_token_lifetime))
+        return generate_refresh_token_exp()
     else:
-        exp += timedelta(seconds=int(access_token_lifetime))
-    return exp
+        return generate_access_token_exp()
 
 def make_token(id: int, is_refresh=False) -> str:
     return jwt.encode({ 

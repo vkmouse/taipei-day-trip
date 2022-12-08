@@ -1,9 +1,10 @@
 import re
 
-from taipei_day_trip.middleware import decode
 from taipei_day_trip.middleware import make_token
 from taipei_day_trip.models import Database
 from taipei_day_trip.models import Member
+from taipei_day_trip.utils import checkpw
+from taipei_day_trip.utils import hashpw
 
 class MemberController:
     def __init__(self, db: Database):
@@ -17,6 +18,7 @@ class MemberController:
                 not self.validator.validate_email(email) or
                 not self.validator.validate_password(password)):
                 return self.view.render_register_validation_failed()
+            password = hashpw(password)
             success = self.__db.members.add(name, email, password)
             if not success:
                 return self.view.render_register_email_conflict()
@@ -40,7 +42,7 @@ class MemberController:
             member = self.__db.members.get_by_email(email)
             if member == None:
                 return self.view.render_email_is_not_exists(), None
-            if member.password != password:
+            if not checkpw(password, member.password):
                 return self.view.render_password_is_incorrect(), None
             access_token = make_token(member.id)
             refresh_token = make_token(member.id, is_refresh=True)

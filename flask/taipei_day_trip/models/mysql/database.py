@@ -1,6 +1,4 @@
-import dotenv
 import mysql.connector
-import os
 
 from taipei_day_trip.models.attraction_model import AttractionModel
 from taipei_day_trip.models.category_model import CategoryModel
@@ -11,12 +9,14 @@ from taipei_day_trip.models.mysql.category_model import MySQLCategoryModel
 from taipei_day_trip.models.mysql.member_model import MySQLMemberModel
 from taipei_day_trip.models.mysql.mrt_model import MySQLMRTModel
 from taipei_day_trip.models.database import Database
+from taipei_day_trip.utils import mysql_database
+from taipei_day_trip.utils import mysql_host
+from taipei_day_trip.utils import mysql_password
+from taipei_day_trip.utils import mysql_user
 
 class MySQLDatabase(Database):
     def __init__(self, debug=False, load_dotenv=True):
         self.__debug = debug
-        if load_dotenv:
-            dotenv.load_dotenv()
         self.create_database()
         self.__cnxpool = self.create_connectpool()
         Database.__init__(self)
@@ -53,7 +53,7 @@ class MySQLDatabase(Database):
             return False
 
     def create_database(self):
-        database = MySQLConfig.database()
+        database = mysql_database
         config = MySQLConfig.config_without_database()
         with mysql.connector.connect(**config) as cnx:
             with cnx.cursor() as cursor:
@@ -68,34 +68,18 @@ class MySQLDatabase(Database):
 
 class MySQLConfig:
     @staticmethod
-    def host():
-        return os.getenv('MYSQL_HOST')
-
-    @staticmethod
-    def user():
-        return os.getenv('MYSQL_USER')
-
-    @staticmethod
-    def password():
-        return os.getenv('MYSQL_PASSWORD')
-
-    @staticmethod
-    def database():
-        return os.getenv('MYSQL_DATABASE')
-
-    @staticmethod
     def config():
         return {
-            'host': MySQLConfig.host(),
-            'user': MySQLConfig.user(),
-            'password': MySQLConfig.password(),
-            'database': MySQLConfig.database()
+            'host': mysql_host,
+            'user': mysql_user,
+            'password': mysql_password,
+            'database': mysql_database
         }
 
     @staticmethod
     def config_without_database():
         return {
-            'host': MySQLConfig.host(),
-            'user': MySQLConfig.user(),
-            'password': MySQLConfig.password(),
+            'host': mysql_host,
+            'user': mysql_user,
+            'password': mysql_password,
         }

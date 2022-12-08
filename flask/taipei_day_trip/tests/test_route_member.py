@@ -8,6 +8,7 @@ from taipei_day_trip.middleware import decode
 from taipei_day_trip.middleware import make_token
 from taipei_day_trip.models import MemoryDatabase
 from taipei_day_trip.routes import member_bp
+from taipei_day_trip.utils.utils import hashpw
 
 @pytest.fixture()
 def app():
@@ -23,7 +24,7 @@ def client(app: Flask):
 
 def create_db() -> MemoryDatabase:
     db = MemoryDatabase()
-    db.members.add('mem1', 'mem1@mem1.com', '12345')
+    db.members.add('mem1', 'mem1@mem1.com', hashpw('12345'))
     return db
 
 def test_login_success(client: FlaskClient):
