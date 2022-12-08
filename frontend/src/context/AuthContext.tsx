@@ -52,19 +52,18 @@ const AuthProvider = (props: { children: JSX.Element[] | JSX.Element }) => {
   const parseLoginFailed = async (response: Response) => {
     token.current = '';
     setIsLogin(false);
-    try {
-      const body: { 'error': boolean, 'message': string } = await response.json();
-      if (body.message.includes('email')) {
-        return LoginResponse.EmailNotExist;
-      } else if (body.message.includes('password')) {
-        return LoginResponse.PasswordError;
-      } else if (response.status === 500) {
-        return LoginResponse.ServerFailed;
-      }
-    } finally {
+    const body: { 'error': boolean, 'message': string } = await response.json();
+    if (body.message.includes('email')) {
+      return LoginResponse.EmailNotExist;
+    } else if (body.message.includes('password')) {
+      return LoginResponse.PasswordError;
+    } else if (response.status === 500) {
+      return LoginResponse.ServerFailed;
+    } else {
       return LoginResponse.LoginFailed;
     }
   };
+
   const auth: Auth = {
     token: token.current,
     isLogin: isLogin,
