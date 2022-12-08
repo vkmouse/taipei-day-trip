@@ -1,11 +1,11 @@
 import styled from '@emotion/styled';
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Attraction } from '../../Core/Core';
-import { Secondery50 } from '../Styles/Colors';
-import { CenterCropped } from '../Styles/ImageCropped';
-import { AbsoluteBottom, AbsoluteFull, RatioContainer } from '../Styles/Ratio';
-import { BodyBold, BodyMedium } from '../Styles/Typography';
+import { Attraction } from '../../../../Core/Core';
+import { Secondery50 } from '../../../Styles/Colors';
+import { CenterCropped } from '../../../Styles/ImageCropped';
+import { AbsoluteBottom, AbsoluteFull, RatioContainer } from '../../../Styles/Ratio';
+import { BodyBold, BodyMedium } from '../../../Styles/Typography';
 
 const AttractionTitleContainer = styled.div`
   ${AbsoluteBottom}

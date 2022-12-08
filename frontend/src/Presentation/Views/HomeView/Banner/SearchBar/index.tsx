@@ -1,10 +1,10 @@
 import styled from '@emotion/styled';
 import React, { useState } from 'react';
-import { setData, setNextPage } from '../../Data/Slices/attractionSlice';
-import { setSearchBarText, updateKeyword } from '../../Data/Slices/keywordSlice';
-import { useAppDispatch, useAppSelector } from '../../Data/Store/hooks';
-import { Primary } from '../Styles/Colors';
-import { BodyBold } from '../Styles/Typography';
+import { setData, setNextPage } from '../../../../../Data/Slices/attractionSlice';
+import { setSearchBarText, updateKeyword } from '../../../../../Data/Slices/keywordSlice';
+import { useAppDispatch, useAppSelector } from '../../../../../Data/Store/hooks';
+import { Primary } from '../../../../Styles/Colors';
+import { BodyBold } from '../../../../Styles/Typography';
 import CategoryList from './CategoryList';
 
 const Container = styled.div`

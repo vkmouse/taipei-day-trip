@@ -1,10 +1,10 @@
 import styled from '@emotion/styled';
 import React, { useEffect, useState } from 'react';
-import { api } from '../../Core/API';
-import { setSearchBarText } from '../../Data/Slices/keywordSlice';
-import { useAppDispatch } from '../../Data/Store/hooks';
-import { Secondery20 } from '../Styles/Colors';
-import { CategoryMedium } from '../Styles/Typography';
+import { useAPIContext } from '../../../../../context/APIContext';
+import { setSearchBarText } from '../../../../../Data/Slices/keywordSlice';
+import { useAppDispatch } from '../../../../../Data/Store/hooks';
+import { Secondery20 } from '../../../../Styles/Colors';
+import { CategoryMedium } from '../../../../Styles/Typography';
 
 const Container = styled.div`
   position: absolute;
@@ -41,6 +41,7 @@ const Text = styled.div`
 const CategoryList = (props: { visible: boolean }) => {
   const [categories, setCategories] = useState<string[]>([]);
   const dispatch = useAppDispatch();
+  const api = useAPIContext();
   
   const getCategories = async () => {
     const body = await api.getCategories();

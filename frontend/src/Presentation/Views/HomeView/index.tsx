@@ -1,14 +1,14 @@
 import styled from '@emotion/styled';
 import React, { useEffect, useRef, useState } from 'react';
-import { api } from '../../Core/API';
-import { Attractions } from '../../Core/Core';
-import { setData, setNextPage } from '../../Data/Slices/attractionSlice';
-import { useAppDispatch, useAppSelector } from '../../Data/Store/hooks';
-import AttractionListComponent from '../Components/AttractionListComponent';
-import Banner from '../Components/Banner';
-import Footer from '../Components/Footer';
-import Navigation from '../Components/Navigation';
-import { Header, Main } from '../Styles/SemanticStyles';
+import { useAPIContext } from '../../../context/APIContext';
+import { Attractions } from '../../../Core/Core';
+import { setData, setNextPage } from '../../../Data/Slices/attractionSlice';
+import { useAppSelector, useAppDispatch } from '../../../Data/Store/hooks';
+import Footer from '../../Components/Footer';
+import Navigation from '../../Components/Navigation';
+import { Header, Main } from '../../Styles/SemanticStyles';
+import AttractionListComponent from './AttractionListComponent';
+import Banner from './Banner';
 
 const AttractionNotFound = styled.img`
   width: 100%;
@@ -34,6 +34,7 @@ function HomeView() {
   const observer = useRef<IntersectionObserver>();
   const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(false);
+  const api = useAPIContext();
 
   const setAttractions = (body: Attractions) => {
     dispatch(setData(attractions.concat(body.data)));

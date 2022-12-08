@@ -1,7 +1,7 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
-import { useAppSelector } from '../../Data/Store/hooks';
+import { useAppSelector } from '../../../../Data/Store/hooks';
 import AttractionComponent from './AttractionComponent';
 
 const Grid = css`
@@ -30,8 +30,8 @@ const AttractionListComponent = () => {
   const attractions = useAppSelector(state => state.attraction.data);
   return (
     <Container>
-      {attractions.map(p => {
-        return <AttractionComponent key={p.id} {...p} />;
+      {attractions.map((p, i) => {
+        return <AttractionComponent key={i} {...p} />;
       })}
     </Container>
   );
