@@ -44,7 +44,7 @@ def member_bp(db: Database):
         response = make_response(resp)
         if refresh_token:
             exp = generate_refresh_token_exp()
-            response.set_cookie('refresh_token', refresh_token, expires=exp)
+            response.set_cookie('refresh_token', refresh_token, expires=exp, httponly=True, secure=True)
         return response
 
     def user_auth_delete():
