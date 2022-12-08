@@ -46,45 +46,38 @@ const mockAPI: API = {
     });
   },
 
-  register: (name: string, email: string, password: string): Promise<Response> => {
-    let status = 200;
-    if (name === '400') {
-      status = 400;
-    } else if (name === '409') {
-      status = 409;
-    } else if (name === '500') {
-      status = 500;
+  getUserInfo: (token: string) : Promise<Response> => {
+    let response = createResponse(200);
+    return new Promise((resolve, reject) => {
+      setTimeout(() => resolve(response), ms);
+    });
+  },
+
+  login: (email: string, password: string): Promise<Response> => {
+    let response = createResponse(200);
+    if (email.includes('400')) {
+      response = createResponse(400);
+    } else if (email.includes('409')) {
+      response = createResponse(409);
+    } else if (email.includes('500')) {
+      response = createResponse(500);
     }
 
-    const response: Response = {
-      headers: new Headers(),
-      ok: true,
-      redirected: false,
-      status,
-      statusText: '',
-      type: 'basic',
-      url: '',
-      clone: function (): Response {
-        throw new Error("Function not implemented.");
-      },
-      body: null,
-      bodyUsed: false,
-      arrayBuffer: function (): Promise<ArrayBuffer> {
-        throw new Error("Function not implemented.");
-      },
-      blob: function (): Promise<Blob> {
-        throw new Error("Function not implemented.");
-      },
-      formData: function (): Promise<FormData> {
-        throw new Error("Function not implemented.");
-      },
-      json: function (): Promise<any> {
-        throw new Error("Function not implemented.");
-      },
-      text: function (): Promise<string> {
-        throw new Error("Function not implemented.");
-      }
-    };
+    return new Promise((resolve, reject) => {
+      setTimeout(() => resolve(response), ms);
+    });
+  },
+
+  register: (name: string, email: string, password: string): Promise<Response> => {
+    let response = createResponse(200);
+    if (name === '400') {
+      response = createResponse(400);
+    } else if (name === '409') {
+      response = createResponse(409);
+    } else if (name === '500') {
+      response = createResponse(500);
+    }
+
     return new Promise((resolve, reject) => {
       setTimeout(() => resolve(response), ms);
     });
@@ -105,6 +98,38 @@ const createAttraction = (id: number) : Attraction => {
              'https://www.travel.taipei/d_upload_ttn/sceneadmin/image/A0/B0/C0/D20/E983/F199/866b5059-8fd7-4719-964c-51d2f78675d5.jpg'],
     category: `公共藝術${id}`,
     mrt: `忠孝復興${id}`
+  };
+};
+
+const createResponse = (status: number): Response => {
+  return {
+    headers: new Headers(),
+    ok: true,
+    redirected: false,
+    status,
+    statusText: '',
+    type: 'basic',
+    url: '',
+    clone: function (): Response {
+      throw new Error("Function not implemented.");
+    },
+    body: null,
+    bodyUsed: false,
+    arrayBuffer: function (): Promise<ArrayBuffer> {
+      throw new Error("Function not implemented.");
+    },
+    blob: function (): Promise<Blob> {
+      throw new Error("Function not implemented.");
+    },
+    formData: function (): Promise<FormData> {
+      throw new Error("Function not implemented.");
+    },
+    json: function (): Promise<any> {
+      throw new Error("Function not implemented.");
+    },
+    text: function (): Promise<string> {
+      throw new Error("Function not implemented.");
+    }
   };
 };
 

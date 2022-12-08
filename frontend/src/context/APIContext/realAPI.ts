@@ -27,6 +27,30 @@ const realAPI: API = {
     return body;
   },
 
+  getUserInfo: async (token: string) : Promise<Response> => {
+    const response = await fetch('/api/user/auth', {
+      method: 'GET',
+      headers: new Headers({
+        'Authorization': `Bearer ${token}`
+      })
+    });
+    return response;
+  },
+
+  login: async (email: string, password: string): Promise<Response> => {
+    const response = await fetch('/api/user/auth', {
+      method: 'PUT',
+      body: JSON.stringify({
+        'email': email,
+        'password': password,
+      }),
+      headers: new Headers({
+        'Content-Type': 'application/json'
+      })
+    });
+    return response;
+  },
+
   register: async (name: string, email: string, password: string): Promise<Response> => {
     const response = await fetch('/api/user', {
       method: 'POST',

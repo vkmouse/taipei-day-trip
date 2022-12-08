@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import React, { useRef, useState } from 'react';
 import { useAPIContext } from '../../../../context/APIContext';
+import { LoginResponse, useAuthContext } from '../../../../context/AuthContext';
 import { useNavigationContext } from '../../../../context/NavigationContext';
 import { Primary, Secondery20, Secondery50, Secondery70 } from '../../../Styles/Colors';
 import { BodyMedium, H3 } from '../../../Styles/Typography';
@@ -149,6 +150,7 @@ const Dialog = () => {
   const { dialog, email, name, password, clear } = useNavigationContext();
   const description: Description = isSignin ? signinDescription : signupDescription;
   const api = useAPIContext();
+  const auth = useAuthContext();
   
   const switchSignAction = () => {
     setResponseText('');
@@ -158,25 +160,50 @@ const Dialog = () => {
 
   const register = async () => {
     const response = await api.register(name.value, email.value, password.value);
-    const status = response.status;
-    if (status === 200) {
-      setResponseText('✔ 註冊成功！');
-      requireSuccess.current = true;
-    } else if (status === 400) {
-      setResponseText('⚠ 註冊失敗');
-      requireSuccess.current = false;
-    } else if (status === 409) {
-      setResponseText('⚠ 電子郵件已經被註冊');
-      requireSuccess.current = false;
-    } else if (status === 500) {
-      setResponseText('⚠ 伺服器異常');
-      requireSuccess.current = false;
+    requireSuccess.current = false;
+    switch (response.status) {
+      case 200:
+        setResponseText('✔ 註冊成功！');
+        requireSuccess.current = true;
+        break;
+      case 400:
+        setResponseText('⚠ 註冊失敗');
+        break;
+      case 409:
+        setResponseText('⚠ 電子郵件已經被註冊');
+        break;
+      case 500:
+        setResponseText('⚠ 伺服器異常');
+        break;
+    }
+  };
+
+  const login = async () => {
+    const response = await auth.login(email.value, password.value);
+    requireSuccess.current = false;
+    switch (response) {
+      case LoginResponse.Success: 
+        setResponseText('✔ 登入成功');
+        requireSuccess.current = true;
+        break;
+      case LoginResponse.EmailNotExist:
+        setResponseText('⚠ 電子郵件不存在');
+        break;
+      case LoginResponse.LoginFailed:
+        setResponseText('⚠ 登入失敗');
+        break;
+      case LoginResponse.PasswordError:
+        setResponseText('⚠ 密碼錯誤');
+        break;
+      case LoginResponse.ServerFailed:
+        setResponseText('⚠ 伺服器異常');
+        break;
     }
   };
 
   const handleClick = () => {
     if (isSignin) {
-
+      login();
     } else {
       register();
     }

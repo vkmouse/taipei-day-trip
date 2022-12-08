@@ -3,6 +3,7 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { APIProvider } from './context/APIContext';
+import { AuthProvider } from './context/AuthContext';
 import store from './Data/Store/store';
 import GlobalStyles from './Presentation/Styles/GlobalStyles';
 import AttractionView from './Presentation/Views/AttractionView';
@@ -13,17 +14,19 @@ function App() {
     <Provider store={store}>
       <APIProvider>
       {/* <APIProvider isMock> */}
-        <Global styles={GlobalStyles} />
-        <Router>
-          <Routes>
-            <Route path='/'>
-              <Route index element={<HomeView />} />
-              <Route path='attraction'>
-                <Route path=":attractionId"  element={<AttractionView />} />
+        <AuthProvider>
+          <Global styles={GlobalStyles} />
+          <Router>
+            <Routes>
+              <Route path='/'>
+                <Route index element={<HomeView />} />
+                <Route path='attraction'>
+                  <Route path=":attractionId"  element={<AttractionView />} />
+                </Route>
               </Route>
-            </Route>
-          </Routes>
-        </Router>
+            </Routes>
+          </Router>
+        </AuthProvider>
       </APIProvider>
     </Provider>
   );
