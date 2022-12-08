@@ -91,7 +91,7 @@ const NavigationImpl = () => {
   const auth = useAuthContext();
 
   useEffect(() => {
-    auth.getUserInfo(true).then(p => console.log(p));
+    auth.getUserInfo(true);
   }, []);
 
   const handleBrandClicked = () => {
