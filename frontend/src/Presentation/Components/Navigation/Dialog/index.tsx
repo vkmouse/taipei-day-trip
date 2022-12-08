@@ -151,7 +151,7 @@ const Dialog = () => {
   const description: Description = isSignin ? signinDescription : signupDescription;
   const api = useAPIContext();
   const auth = useAuthContext();
-  
+
   const switchSignAction = () => {
     setResponseText('');
     setIsSignin(() => !isSignin);
@@ -185,6 +185,7 @@ const Dialog = () => {
       case LoginResponse.Success: 
         setResponseText('✔ 登入成功');
         requireSuccess.current = true;
+        dialog.hide();
         break;
       case LoginResponse.EmailNotExist:
         setResponseText('⚠ 電子郵件不存在');

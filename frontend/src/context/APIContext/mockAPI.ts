@@ -68,6 +68,20 @@ const mockAPI: API = {
     });
   },
 
+  logout: () : Promise<Response> => {
+    let response = createResponse(200);
+    return new Promise((resolve, reject) => {
+      setTimeout(() => resolve(response), ms);
+    });
+  },
+
+  refresh: (): Promise<Response> => {
+    let response = createResponse(200);
+    return new Promise((resolve, reject) => {
+      setTimeout(() => resolve(response), ms);
+    });
+  },
+
   register: (name: string, email: string, password: string): Promise<Response> => {
     let response = createResponse(200);
     if (name === '400') {

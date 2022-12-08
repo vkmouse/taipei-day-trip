@@ -51,6 +51,16 @@ const realAPI: API = {
     return response;
   },
 
+  logout: async () : Promise<Response> => {
+    const response = await fetch('/api/user/auth', { method: 'DELETE' });
+    return response;
+  },
+
+  refresh: async (): Promise<Response> => {
+    const response = await fetch('/api/user/refresh', { method: 'POST' });
+    return response;
+  },
+
   register: async (name: string, email: string, password: string): Promise<Response> => {
     const response = await fetch('/api/user', {
       method: 'POST',

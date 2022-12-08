@@ -1,10 +1,11 @@
 import styled from '@emotion/styled';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BodyMedium, H2 } from '../../Styles/Typography';
 import { Primary, Secondery, Secondery20 } from '../../Styles/Colors';
 import { Link, useLocation } from 'react-router-dom';
 import Dialog from './Dialog';
 import { NavigationProvider, useNavigationContext } from '../../../context/NavigationContext';
+import { useAuthContext } from '../../../context/AuthContext';
 
 const Container = styled.nav`
   display: flex;  
@@ -87,6 +88,11 @@ const Navigation = () => {
 const NavigationImpl = () => {
   const location = useLocation();
   const { dialog } = useNavigationContext();
+  const auth = useAuthContext();
+
+  useEffect(() => {
+    auth.getUserInfo(true).then(p => console.log(p));
+  }, []);
 
   const handleBrandClicked = () => {
     if (location.pathname === '/') {
@@ -109,7 +115,9 @@ const NavigationImpl = () => {
           <NavBrand to="/" onClick={handleBrandClicked}>台北一日遊</NavBrand>
           <NavItems>
             <NavItem>預定行程</NavItem>
-            <NavItem onClick={dialog.show}>登入/註冊</NavItem>
+            <NavItem onClick={auth.isLogin ? auth.logout : dialog.show}>
+              {auth.isLogin ? '登出' : '登入/註冊'}
+            </NavItem>
           </NavItems>
         </Navbar>
     </Container>

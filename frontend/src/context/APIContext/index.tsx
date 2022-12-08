@@ -9,6 +9,8 @@ export type API = {
   getCategories: () => Promise<{ data: string[] }>
   getUserInfo: (token: string) => Promise<Response>
   login: (email: string, password: string) => Promise<Response>
+  logout: () => Promise<Response>
+  refresh: () => Promise<Response>
   register: (name: string, email: string, password: string) => Promise<Response>
 }
 
@@ -18,6 +20,8 @@ const initialState: API = {
   getCategories: () => new Promise(() => void 0),
   getUserInfo: () => new Promise(() => void 0),
   login: () => new Promise(() => void 0),
+  logout: () => new Promise(() => void 0),
+  refresh: () => new Promise(() => void 0),
   register: () => new Promise(() => void 0),
 };
 
