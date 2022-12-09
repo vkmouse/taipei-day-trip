@@ -2,3 +2,5 @@ Flask
 mysql-connector-python
 pytest
 python-dotenv
+pyjwt
+bcrypt
