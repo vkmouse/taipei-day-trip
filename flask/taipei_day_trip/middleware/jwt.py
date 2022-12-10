@@ -22,7 +22,6 @@ class JWT:
 
     def block_refresh_token(self, token: str | None):
         decoded_token = JWT.decode(token)
-        print(decoded_token)
         if decoded_token != None and decoded_token['jti']:
             self.cache.set(decoded_token['jti'], '', refresh_token_lifetime)
 
