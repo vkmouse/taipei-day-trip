@@ -47,7 +47,7 @@ services:
     image: redis:alpine
     container_name: tdt-redis
     networks:
-      - tdt-redis
+      - tdt-network
     command: ["redis-server", "--bind", "0.0.0.0"]
 
 networks:
