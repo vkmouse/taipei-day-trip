@@ -43,5 +43,12 @@ services:
       timeout: 5s
       retries: 20
 
+  redis:
+    image: redis:alpine
+    container_name: tdt-redis
+    networks:
+      - tdt-redis
+    command: ["redis-server", "--bind", "0.0.0.0"]
+
 networks:
   tdt-network:

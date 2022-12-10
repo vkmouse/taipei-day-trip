@@ -1,6 +1,6 @@
 from flask import *
 from taipei_day_trip.models import copy_db
-from taipei_day_trip.models import MemoryCache
+from taipei_day_trip.models import RedisCache
 from taipei_day_trip.models import MemoryDatabase
 from taipei_day_trip.models import MySQLDatabase
 from taipei_day_trip.routes import attraction_bp
@@ -8,7 +8,7 @@ from taipei_day_trip.routes import category_bp
 from taipei_day_trip.routes import member_bp
 from taipei_day_trip.utils import is_debug
 
-cache = MemoryCache()
+cache = RedisCache()
 mem = MemoryDatabase()
 db = MySQLDatabase(debug=is_debug)
 mem.import_from_json_file('data/taipei-attractions.json')
