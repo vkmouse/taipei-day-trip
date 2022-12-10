@@ -1,4 +1,5 @@
 import jwt
+import uuid
 
 from datetime import datetime
 from flask import request
@@ -17,8 +18,13 @@ class JWT:
         return JWT.make_token(id, False, generate_access_token_exp())
 
     def make_refresh_token(self, id: int) -> str:
-        self.cache.set(id, '', refresh_token_lifetime)
         return JWT.make_token(id, True, generate_refresh_token_exp())
+
+    def block_refresh_token(self, token: str | None):
+        decoded_token = JWT.decode(token)
+        print(decoded_token)
+        if decoded_token != None and decoded_token['jti']:
+            self.cache.set(decoded_token['jti'], '', refresh_token_lifetime)
 
     def access_token_required(self, func):
         def access_token_required_wrapper(*args, **kwargs):
@@ -49,7 +55,7 @@ class JWT:
                 decoded_token = JWT.decode(token)
                 if decoded_token == None or decoded_token['is_refresh'] == False:
                     return self.view.render_invalid_refresh_token()
-                if self.cache.get(decoded_token['id']) == None:
+                if self.cache.get(decoded_token['jti']) != None:
                     return self.view.render_invalid_refresh_token()
                 member_id = decoded_token['id']
                 return func(member_id, *args, **kwargs)
@@ -59,10 +65,12 @@ class JWT:
 
     @staticmethod
     def make_token(id: int, is_refresh: bool, exp: datetime) -> str:
+        jti = str(uuid.uuid4())
         return jwt.encode({ 
             'id': id,
             'is_refresh': is_refresh,
             'exp': exp,
+            'jti': jti
         }, secret_key, algorithm='HS256')
 
     @staticmethod

@@ -52,7 +52,8 @@ class MemberController:
         except Exception as e:
             return self.view.render_unexpected(e), None
 
-    def logout(self):
+    def logout(self, token: str | None):
+        self.jwt.block_refresh_token(token)
         return self.view.render_success()
 
     def refresh(self, id: int):

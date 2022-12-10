@@ -49,7 +49,8 @@ def member_bp(db: Database, cache: Cache):
         return response
 
     def user_auth_delete():
-        response = make_response(controller.logout())
+        refresh_token = request.cookies.get('refresh_token')
+        response = make_response(controller.logout(refresh_token))
         response.set_cookie('refresh_token', '', expires=0)
         return response
 
