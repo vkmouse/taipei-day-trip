@@ -13,3 +13,6 @@ mysql_database = os.getenv('MYSQL_DATABASE')
 mysql_host = os.getenv('MYSQL_HOST')
 mysql_password = os.getenv('MYSQL_PASSWORD')
 mysql_user = os.getenv('MYSQL_USER')
+
+# Debug
+is_debug = os.getenv('DEBUG') and os.getenv('DEBUG').upper() == 'TRUE'

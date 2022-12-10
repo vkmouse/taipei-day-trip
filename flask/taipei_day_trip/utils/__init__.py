@@ -1,4 +1,5 @@
 from taipei_day_trip.utils.env import access_token_lifetime
+from taipei_day_trip.utils.env import is_debug
 from taipei_day_trip.utils.env import mysql_database
 from taipei_day_trip.utils.env import mysql_host
 from taipei_day_trip.utils.env import mysql_password

@@ -5,6 +5,7 @@ from flask import request
 from taipei_day_trip.models import Cache
 from taipei_day_trip.utils import generate_access_token_exp
 from taipei_day_trip.utils import generate_refresh_token_exp
+from taipei_day_trip.utils import refresh_token_lifetime
 from taipei_day_trip.utils import secret_key
 
 class JWT:
@@ -16,6 +17,7 @@ class JWT:
         return JWT.make_token(id, False, generate_access_token_exp())
 
     def make_refresh_token(self, id: int) -> str:
+        self.cache.set(id, '', refresh_token_lifetime)
         return JWT.make_token(id, True, generate_refresh_token_exp())
 
     def access_token_required(self, func):
@@ -33,7 +35,6 @@ class JWT:
                 if decoded_token == None or decoded_token['is_refresh']:
                     return self.view.render_invalid_access_token()
                 member_id = decoded_token['id']
-                # self.cache.set(member_id, '')
                 return func(member_id, *args, **kwargs)
             except Exception as e:
                 return self.view.render_unexpected(e)
@@ -48,8 +49,8 @@ class JWT:
                 decoded_token = JWT.decode(token)
                 if decoded_token == None or decoded_token['is_refresh'] == False:
                     return self.view.render_invalid_refresh_token()
-                # if self.cache.get(decoded_token['id']):
-                #     return self.view.render_invalid_refresh_token()
+                if self.cache.get(decoded_token['id']) == None:
+                    return self.view.render_invalid_refresh_token()
                 member_id = decoded_token['id']
                 return func(member_id, *args, **kwargs)
             except Exception as e:
