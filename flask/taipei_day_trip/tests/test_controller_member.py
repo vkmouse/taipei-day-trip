@@ -1,13 +1,15 @@
 from taipei_day_trip.controllers import MemberController
-from taipei_day_trip.middleware import decode
+from taipei_day_trip.middleware import JWT
+from taipei_day_trip.models import MemoryCache
 from taipei_day_trip.models import MemoryDatabase
 from taipei_day_trip.models import Member
 from taipei_day_trip.utils import hashpw
 
 def create_controller() -> MemberController:
     db = MemoryDatabase()
+    cache = MemoryCache()
     db.members.add('mem1', 'mem1@mem1.com', hashpw('12345'))
-    return MemberController(db)
+    return MemberController(db, cache)
 
 def test_member_register():
     controller = create_controller()
@@ -25,7 +27,7 @@ def test_member_login_success():
     controller = create_controller()
     response = controller.login('mem1@mem1.com', '12345')[0]
     assert response[0]['ok'] == True
-    assert decode(response[0]['access_token'])['id'] == 1
+    assert JWT.decode(response[0]['access_token'])['id'] == 1
     assert response[1] == 200
 
 def test_member_login_failed():

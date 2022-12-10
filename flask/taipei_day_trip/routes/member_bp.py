@@ -2,14 +2,15 @@ from flask import Blueprint
 from flask import make_response
 from flask import request
 from taipei_day_trip.controllers import MemberController
-from taipei_day_trip.middleware import access_token_required
-from taipei_day_trip.middleware import refresh_token_required
+from taipei_day_trip.middleware import JWT
+from taipei_day_trip.models import Cache
 from taipei_day_trip.models import Database
 from taipei_day_trip.utils import generate_refresh_token_exp
 
-def member_bp(db: Database):
-    controller = MemberController(db)
+def member_bp(db: Database, cache: Cache):
+    controller = MemberController(db, cache)
     bp = Blueprint('member', __name__)
+    jwt = JWT(cache)
 
     @bp.route('/api/user', methods=['POST'])
     def user():
@@ -19,7 +20,7 @@ def member_bp(db: Database):
         return controller.register(body['name'], body['email'], body['password'])
 
     @bp.route('/api/user/refresh', methods=['POST'])
-    @refresh_token_required
+    @jwt.refresh_token_required
     def user_refresh(member_id):
         return controller.refresh(member_id)
 
@@ -32,7 +33,7 @@ def member_bp(db: Database):
         elif request.method == 'DELETE':
             return user_auth_delete()
 
-    @access_token_required
+    @jwt.access_token_required
     def user_auth_get(member_id):
         return controller.get_auth(member_id)
 
