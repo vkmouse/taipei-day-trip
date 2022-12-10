@@ -8,6 +8,10 @@ access_token_lifetime = os.getenv('JWT_ACCESS_TOKEN_LIFETIME')
 secret_key = os.getenv('JWT_SECRET_KEY')
 refresh_token_lifetime = os.getenv('JWT_REFRESH_TOKEN_LIFETIME')
 
+# Redis
+redis_host = os.getenv('REDIS_HOST')
+redis_port = os.getenv('REDIS_PORT')
+
 # MySQL
 mysql_database = os.getenv('MYSQL_DATABASE')
 mysql_host = os.getenv('MYSQL_HOST')

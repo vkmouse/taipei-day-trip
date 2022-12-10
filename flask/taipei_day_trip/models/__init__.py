@@ -7,6 +7,7 @@ from taipei_day_trip.models.mrt_model import MRTModel
 from taipei_day_trip.models.memory.cache import MemoryCache
 from taipei_day_trip.models.memory.database import MemoryDatabase
 from taipei_day_trip.models.mysql.database import MySQLDatabase
+from taipei_day_trip.models.redis.cache import RedisCache
 from taipei_day_trip.models.types import Attraction
 from taipei_day_trip.models.types import Category
 from taipei_day_trip.models.types import List
