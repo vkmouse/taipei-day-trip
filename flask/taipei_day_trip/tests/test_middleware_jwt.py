@@ -2,22 +2,22 @@ import pytest
 
 from flask import Flask
 from flask.testing import FlaskClient
-from taipei_day_trip.middleware import access_token_required
-from taipei_day_trip.middleware import make_token
-from taipei_day_trip.middleware import refresh_token_required
+from taipei_day_trip.middleware import JWT
+from taipei_day_trip.models import MemoryCache
 
+jwt = JWT(MemoryCache())
 @pytest.fixture()
 def app():
     app = Flask(__name__)
     app.config["TESTING"] = True # TESTING flag is disable error catching during request handling
     
     @app.route('/test_access_token')
-    @access_token_required
+    @jwt.access_token_required
     def test_access_token(member_id):
         return { 'ok': True, 'member_id': member_id }, 200
 
     @app.route('/test_refresh_token')
-    @refresh_token_required
+    @jwt.refresh_token_required
     def test_refresh_token(member_id):
         return { 'ok': True, 'member_id': member_id }, 200
 
@@ -42,14 +42,14 @@ def test_access_token_with_invalid_jwt(client: FlaskClient):
     assert body['message'] == 'Invalid Authorization token'
 
 def test_access_token_with_refresh(client: FlaskClient):
-    response = client.get(path='/test_access_token', headers={ 'Authorization': f'Bearer {make_token(1, is_refresh=True)}' })
+    response = client.get(path='/test_access_token', headers={ 'Authorization': f'Bearer {jwt.make_refresh_token(1)}' })
     body = response.get_json()
     assert response.status_code == 401
     assert body['error'] == True
     assert body['message'] == 'Invalid Authorization token'
 
 def test_access_token_success(client: FlaskClient):
-    response = client.get(path='/test_access_token', headers={ 'Authorization': f'Bearer {make_token(1)}' })
+    response = client.get(path='/test_access_token', headers={ 'Authorization': f'Bearer {jwt.make_access_token(1)}' })
     body = response.get_json()
     assert response.status_code == 200
     assert body['ok'] == True
@@ -71,7 +71,7 @@ def test_refresh_token_with_invalid_jwt(client: FlaskClient):
     assert body['message'] == 'Invalid Authorization token'
 
 def test_refresh_token_with_access(client: FlaskClient):
-    client.set_cookie('localhost', 'refresh_token', make_token(1))
+    client.set_cookie('localhost', 'refresh_token', jwt.make_access_token(1))
     response = client.get(path='/test_refresh_token')
     body = response.get_json()
     assert response.status_code == 403
@@ -79,7 +79,7 @@ def test_refresh_token_with_access(client: FlaskClient):
     assert body['message'] == 'Invalid Authorization token'
 
 def test_refresh_token_success(client: FlaskClient):
-    client.set_cookie('localhost', 'refresh_token', make_token(1, is_refresh=True))
+    client.set_cookie('localhost', 'refresh_token', jwt.make_refresh_token(1))
     response = client.get(path='/test_refresh_token')
     body = response.get_json()
     assert response.status_code == 200

@@ -1,14 +1,16 @@
 import re
 
-from taipei_day_trip.middleware import make_token
+from taipei_day_trip.middleware import JWT
+from taipei_day_trip.models import Cache
 from taipei_day_trip.models import Database
 from taipei_day_trip.models import Member
 from taipei_day_trip.utils import checkpw
 from taipei_day_trip.utils import hashpw
 
 class MemberController:
-    def __init__(self, db: Database):
+    def __init__(self, db: Database, cache: Cache):
         self.__db = db
+        self.jwt = JWT(cache)
         self.validator = MemberValidator()
         self.view = MemberView()
 
@@ -44,17 +46,18 @@ class MemberController:
                 return self.view.render_email_is_not_exists(), None
             if not checkpw(password, member.password):
                 return self.view.render_password_is_incorrect(), None
-            access_token = make_token(member.id)
-            refresh_token = make_token(member.id, is_refresh=True)
+            access_token = self.jwt.make_access_token(member.id)
+            refresh_token = self.jwt.make_refresh_token(member.id)
             return self.view.render_login_success(access_token), refresh_token
         except Exception as e:
             return self.view.render_unexpected(e), None
 
-    def logout(self):
+    def logout(self, token: str | None):
+        self.jwt.block_refresh_token(token)
         return self.view.render_success()
 
     def refresh(self, id: int):
-        access_token = make_token(id)
+        access_token = self.jwt.make_access_token(id)
         return self.view.render_login_success(access_token)
 
 class MemberValidator:
