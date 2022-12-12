@@ -46,7 +46,7 @@ const DecoratorBar = styled.div`
   border-radius: 5px 5px 0 0;
 `;
 
-const Form = styled.div`
+const Form = styled.form`
   padding: 15px;
 `;
 
@@ -314,7 +314,7 @@ const LoginRegister = (props: {
         <ModalContent>
           <ModalBody>
             <DecoratorBar />
-            <Form>
+            <Form onSubmit={e => e.preventDefault()}>
               <TitleContainer>
                 <Title>{description.title}</Title>
                 <Cancel onClick={props.hide}><CancelIcon /></Cancel>
