@@ -1,3 +1,5 @@
+from datetime import datetime
+from datetime import timedelta
 import typing
 
 List = typing.List
@@ -38,6 +40,15 @@ class Attraction:
             'lng': self.lng,
             'images': self.images,
         }
+
+class Booking:
+    def __init__(self, id: int, memberId: int, attractionId: int, starttime: datetime, duration: timedelta, price: int):
+        self.id = id
+        self.memberId = memberId
+        self.attractionId = attractionId
+        self.starttime = starttime
+        self.duration = duration
+        self.price = price
 
 class Category:
     def __init__(self, id: int, name: str):
