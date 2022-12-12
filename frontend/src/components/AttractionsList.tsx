@@ -2,7 +2,7 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useAppSelector } from '../Data/Store/hooks';
+import { Attraction } from '../Core/Core';
 import { Secondery50 } from '../Presentation/Styles/Colors';
 import { CenterCropped } from '../Presentation/Styles/ImageCropped';
 import { AbsoluteBottom, AbsoluteFull, RatioContainer } from '../Presentation/Styles/Ratio';
@@ -91,8 +91,8 @@ const AttractionDescription = styled.div`
   color: ${Secondery50};
 `;
 
-const AttractionsList = () => {
-  const attractions = useAppSelector(state => state.attraction.data);
+const AttractionsList = (props: {attractions: Attraction[]}) => {
+  const { attractions } = props;
   return (
     <AttractionsListContainer>
       {attractions.map((p, i) => 

@@ -1,9 +1,7 @@
 import styled from '@emotion/styled';
 import React, { useEffect, useRef, useState } from 'react';
 import { useAPIContext } from '../context/APIContext';
-import { Attractions } from '../Core/Core';
-import { setData, setNextPage } from '../Data/Slices/attractionSlice';
-import { useAppSelector, useAppDispatch } from '../Data/Store/hooks';
+import { Attraction } from '../Core/Core';
 import Footer from '../Presentation/Components/Footer';
 import Navigation from '../components/Navigation';
 import { Header, Main } from '../Presentation/Styles/SemanticStyles';
@@ -28,7 +26,6 @@ const Container = styled.div`
   justify-content: center;
   flex-basis: 100%;
 `;
-
 
 const BannerContainer = styled.div`
   display: flex;  
@@ -83,26 +80,21 @@ const SearchBarContainer = styled.div`
 `;
 
 function HomeView() {
-  const attractions = useAppSelector(state => state.attraction.data);
-  const nextPage = useAppSelector(state => state.attraction.nextPage);
   const observer = useRef<IntersectionObserver>();
-  const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const api = useAPIContext();
   const [searchInputText, setSearchInputText] = useState('');
   const keyword = useRef('');
+  const nextPage = useRef<number | null>(0);
+  const [attractions, setAttractions] = useState<Attraction[]>([]);
 
-  const setAttractions = (body: Attractions) => {
-    dispatch(setData(attractions.concat(body.data)));
-    dispatch(setNextPage(body.nextPage));
-  };
-
-  const getPage = async (nextPage: number | null, keyword: string) => {
-    const hasNext = nextPage !== null;
+  const getPage = async (newNextPage: number | null, keyword: string) => {
+    const hasNext = newNextPage !== null;
     if (hasNext) {
       setIsLoading(true);
-      const body = await api.getAttractions(nextPage, keyword);
-      setAttractions(body);
+      const body = await api.getAttractions(newNextPage, keyword);
+      setAttractions(attractions => attractions.concat(body.data));
+      nextPage.current = body.nextPage;
       setIsLoading(false);
     }
   };
@@ -123,8 +115,8 @@ function HomeView() {
   useEffect(() => {
     // Updating observer when "nextPage" or "keyword" changed.
     observer.current?.disconnect();
-    createOberserver(nextPage, keyword.current);
-  }, [nextPage, keyword.current]);
+    createOberserver(nextPage.current, keyword.current);
+  }, [nextPage.current, keyword.current]);
 
   useEffect(() => {
     if (isLoading) {
@@ -147,8 +139,8 @@ function HomeView() {
                 <SearchBar
                   searchInputText={searchInputText}
                   onSearchButtonClick={() => {
-                    dispatch(setNextPage(0));
-                    dispatch(setData([]));
+                    setAttractions([]);
+                    nextPage.current = 0;
                     keyword.current = searchInputText;
                   }}
                   onSearchInputTextChanged={text => setSearchInputText(text)}
@@ -159,7 +151,7 @@ function HomeView() {
         </BannerContainer>
       </Header>
       <Main>
-        <AttractionsList />
+        <AttractionsList attractions={attractions} />
         <Container>
           {isLoading ? <Loading /> : <></>}
           {attractions.length === 0 && nextPage === null ? <AttractionsNotFound /> : <></>}
