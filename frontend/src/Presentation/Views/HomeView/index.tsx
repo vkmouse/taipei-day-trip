@@ -5,7 +5,7 @@ import { Attractions } from '../../../Core/Core';
 import { setData, setNextPage } from '../../../Data/Slices/attractionSlice';
 import { useAppSelector, useAppDispatch } from '../../../Data/Store/hooks';
 import Footer from '../../Components/Footer';
-import Navigation from '../../Components/Navigation';
+import Navigation from '../../../components/Navigation';
 import { Header, Main } from '../../Styles/SemanticStyles';
 import AttractionListComponent from './AttractionListComponent';
 import Banner from './Banner';

@@ -1,18 +1,38 @@
 import styled from '@emotion/styled';
 import React, { useReducer, useState } from 'react';
-import { useNavigationContext } from '../context/NavigationContext';
+import { useAuthContext } from '../context/AuthContext';
 import useLogin from '../hooks/useLogin';
 import useRegister from '../hooks/useRegister';
 import { Primary, Secondery20, Secondery50, Secondery70 } from '../Presentation/Styles/Colors';
 import { BodyMedium, H3 } from '../Presentation/Styles/Typography';
 import { validateEmail, validateName, validatePassword } from '../utils/validate';
 
-const Container = styled.div`
+const FullPage = styled.div`
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+`;
+
+const Modal = styled.div`
+  position: relative;
+  width: 100%;
+  height: 100%;
+`;
+
+const ModalOverlay = styled.div`
+  position: absolute;
+  background: black;
+  opacity: 0.25;
+  width: 100%;
+  height: 100%;
+`;
+
+const ModalContent = styled.div`
   display: flex;
   justify-content: center;
 `;
 
-const InnerContainer = styled.div`
+const ModalBody = styled.div`
   z-index: 1;  
   margin-top: 80px;
   width: 340px;
@@ -247,14 +267,17 @@ const loginRegisterReducer = (state: LoginRegisterState, action: LoginRegisterAc
   }
 };
 
-const LoginRegister = () => {
+const LoginRegister = (props: {
+  display: string,
+  hide?: () => void,
+}) => {
   const [isLogin, setIsLogin] = useState(true);
   const [state, dispatch] = useReducer(loginRegisterReducer, initialState);
   const { email, emailValid, name, nameValid, password, passwordValid } = state;
-  const { dialog } = useNavigationContext();
   const description: Description = isLogin ? loginDescription : registerDescription;
   const loginHandler = useLogin();
   const registerHandler = useRegister();
+  const auth = useAuthContext();
 
   const switchForm = () => {
     loginHandler.clear();
@@ -263,13 +286,6 @@ const LoginRegister = () => {
     dispatch(clear());
   };
 
-  const handleClick = () => {
-    if (isLogin) {
-      loginHandler.login(email, password);
-    } else {
-      registerHandler.register(name, email, password);
-    }
-  };
   const isValid = (isLogin && emailValid && passwordValid) || 
                   (emailValid && passwordValid && nameValid);
   const buttonCursor = isValid ? 'pointer' : 'not-allowed';
@@ -291,55 +307,67 @@ const LoginRegister = () => {
   } else if (!passwordValid && password.length) {
     passwordMessage = '⚠ 請輸入 4 ~ 100 個字元的英文字母、數字';
   }
+
   return (
-    <Container>
-      <InnerContainer>
-        <DecoratorBar />
-        <Form>
-          <TitleContainer>
-            <Title>{description.title}</Title>
-            <Cancel onClick={dialog.hide}><CancelIcon /></Cancel>
-          </TitleContainer>
-          {isLogin ? <></> : 
-            <InputField
-              autoFocus
-              dangerMessage={nameValid || name.length === 0 ? '' : '⚠ 請輸入 1 ~ 20 個字元'}
-              placeholder='輸入姓名'
-              value={name}
-              onChange={e => dispatch(setName(e.target.value))}
-            /> }
-          <InputField 
-            autoFocus
-            dangerMessage={emailMessage}
-            placeholder='輸入電子信箱'
-            value={email}
-            onChange={e => dispatch(setEmail(e.target.value))}
-          />
-          <InputField
-            autoFocus
-            dangerMessage={passwordMessage}
-            placeholder='輸入密碼'
-            type='password'
-            value={password}
-            onChange={e => dispatch(setPassword(e.target.value))}
-          />
-          <Button 
-            style={{cursor: buttonCursor}} 
-            disabled={!isValid}
-            onClick={handleClick}>
-            {description.button}
-          </Button>
-          <TextContainer>
-            {isLogin ? <HintText {...loginHandler} /> : <></>}
-            {!isLogin ? <HintText {...registerHandler} /> : <></>}
-          </TextContainer>
-          <TextContainer>
-            <Text>{description.text}</Text>
-            <TextButton onClick={switchForm}>{description.textButton}</TextButton>
-          </TextContainer>
-        </Form>
-      </InnerContainer>
-    </Container>
+    <FullPage style={{ display: props.display }}>
+      <Modal>
+        <ModalOverlay onClick={props.hide}/>
+        <ModalContent>
+          <ModalBody>
+            <DecoratorBar />
+            <Form>
+              <TitleContainer>
+                <Title>{description.title}</Title>
+                <Cancel onClick={props.hide}><CancelIcon /></Cancel>
+              </TitleContainer>
+              {isLogin ? <></> : 
+                <InputField
+                  autoFocus
+                  dangerMessage={nameValid || name.length === 0 ? '' : '⚠ 請輸入 1 ~ 20 個字元'}
+                  placeholder='輸入姓名'
+                  value={name}
+                  onChange={e => dispatch(setName(e.target.value))}
+                /> }
+              <InputField 
+                autoFocus
+                dangerMessage={emailMessage}
+                placeholder='輸入電子信箱'
+                value={email}
+                onChange={e => dispatch(setEmail(e.target.value))}
+              />
+              <InputField
+                autoFocus
+                dangerMessage={passwordMessage}
+                placeholder='輸入密碼'
+                type='password'
+                value={password}
+                onChange={e => dispatch(setPassword(e.target.value))}
+              />
+              <Button 
+                style={{cursor: buttonCursor}} 
+                disabled={!isValid}
+                onClick={() => {
+                  if (isLogin) {
+                    loginHandler.login(email, password);
+                  } else {
+                    registerHandler.register(name, email, password);
+                  }
+                }}>
+                {description.button}
+              </Button>
+              <TextContainer>
+                {isLogin ? <HintText {...loginHandler} /> : <></>}
+                {!isLogin ? <HintText {...registerHandler} /> : <></>}
+              </TextContainer>
+              <TextContainer>
+                <Text>{description.text}</Text>
+                <TextButton onClick={switchForm}>{description.textButton}</TextButton>
+              </TextContainer>
+            </Form>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+    </FullPage>
   );
 };
 

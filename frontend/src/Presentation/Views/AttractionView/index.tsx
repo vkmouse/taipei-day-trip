@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import { useAPIContext } from '../../../context/APIContext';
 import { Attraction } from '../../../Core/Core';
 import Footer from '../../Components/Footer';
-import Navigation from '../../Components/Navigation';
+import Navigation from '../../../components/Navigation';
 import { Secondery } from '../../Styles/Colors';
 import { Header, Main } from '../../Styles/SemanticStyles';
 import { BodyMedium, BodyBold } from '../../Styles/Typography';
