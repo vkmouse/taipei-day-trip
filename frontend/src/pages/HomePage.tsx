@@ -1,24 +1,21 @@
 import styled from '@emotion/styled';
-import React, { useEffect, useRef, useState } from 'react';
-import { useAPIContext } from '../context/APIContext';
-import { Attraction } from '../Core/Core';
-import Footer from '../Presentation/Components/Footer';
-import Navigation from '../components/Navigation';
-import { Header, Main } from '../Presentation/Styles/SemanticStyles';
+import React, { useRef, useState, useEffect } from 'react';
 import AttractionsList from '../components/AttractionsList';
+import Navigation from '../components/Navigation';
 import SearchBar from '../components/SearchBar';
-import { Secondery10 } from '../Presentation/Styles/Colors';
-import { H1, BodyBold } from '../Presentation/Styles/Typography';
+import { Header, Main, Footer } from '../components/Semantic';
+import { useAPIContext, Attraction } from '../context/APIContext';
+import { H1, Secondery10, BodyBold } from '../utils/CommonStyles';
 
 const AttractionsNotFound = styled.img`
   width: 100%;
   height: 100%;
   max-width: 600px;
-  content: url("attraction_not_found.png");
+  content: url('attraction_not_found.png');
 `;
 
 const Loading = styled.img`
-  content: url("loading.gif");
+  content: url('loading.gif');
 `;
 
 const Container = styled.div`
@@ -33,7 +30,7 @@ const BannerContainer = styled.div`
   justify-content: center;
   width: 100%;
   height: 320px;
-  background: url("welcome.png");
+  background: url('welcome.png');
   background-size: cover;
 `;
 
@@ -113,7 +110,7 @@ function HomeView() {
   };
 
   useEffect(() => {
-    // Updating observer when "nextPage" or "keyword" changed.
+    // Updating observer when 'nextPage' or 'keyword' changed.
     observer.current?.disconnect();
     createOberserver(nextPage.current, keyword.current);
   }, [nextPage.current, keyword.current]);

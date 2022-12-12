@@ -2,11 +2,8 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Attraction } from '../Core/Core';
-import { Secondery50 } from '../Presentation/Styles/Colors';
-import { CenterCropped } from '../Presentation/Styles/ImageCropped';
-import { AbsoluteBottom, AbsoluteFull, RatioContainer } from '../Presentation/Styles/Ratio';
-import { BodyBold, BodyMedium } from '../Presentation/Styles/Typography';
+import { Attraction } from '../context/APIContext';
+import { AbsoluteBottom, AbsoluteFull, BodyBold, RatioContainer, CenterCropped, BodyMedium, Secondery50 } from '../utils/CommonStyles';
 
 const Grid = css`
   display: grid;

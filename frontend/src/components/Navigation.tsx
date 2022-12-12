@@ -1,10 +1,9 @@
 import styled from '@emotion/styled';
-import React, { useEffect, useState } from 'react';
-import { BodyMedium, H2 } from '../Presentation/Styles/Typography';
-import { Primary, Secondery, Secondery20 } from '../Presentation/Styles/Colors';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import LoginRegister from './LoginRegister';
 import { useAuthContext } from '../context/AuthContext';
+import { H2, Primary, BodyMedium, Secondery, Secondery20 } from '../utils/CommonStyles';
+import LoginRegister from './LoginRegister';
 
 const Container = styled.nav`
   display: flex;  
@@ -77,7 +76,7 @@ const Navigation = () => {
     <Container>
       {auth.isLogin ? <></> : <LoginRegister display={display} hide={hide}/>}
       <Navbar>
-        <NavBrand to="/" onClick={handleBrandClicked}>台北一日遊</NavBrand>
+        <NavBrand to='/' onClick={handleBrandClicked}>台北一日遊</NavBrand>
         <NavItems>
           <NavItem>預定行程</NavItem>
           <NavItem onClick={auth.isLogin ? () => { auth.logout(); hide(); } : show}>

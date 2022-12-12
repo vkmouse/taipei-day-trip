@@ -1,15 +1,12 @@
 import styled from '@emotion/styled';
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { useAPIContext } from '../context/APIContext';
-import { Attraction } from '../Core/Core';
-import Footer from '../Presentation/Components/Footer';
-import Navigation from '../components/Navigation';
-import { Secondery } from '../Presentation/Styles/Colors';
-import { Header, Main } from '../Presentation/Styles/SemanticStyles';
-import { BodyMedium, BodyBold } from '../Presentation/Styles/Typography';
 import BookingForm from '../components/BookingForm';
 import Carousel from '../components/Carousel';
+import Navigation from '../components/Navigation';
+import { Header, Main, Footer } from '../components/Semantic';
+import { Attraction, useAPIContext } from '../context/APIContext';
+import { BodyMedium, Secondery, BodyBold } from '../utils/CommonStyles';
 
 const Section = styled.section`
   display: flex;

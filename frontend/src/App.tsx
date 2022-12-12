@@ -3,9 +3,9 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { APIProvider } from './context/APIContext';
 import { AuthProvider } from './context/AuthContext';
-import GlobalStyles from './Presentation/Styles/GlobalStyles';
 import AttractionView from './pages/AttractionPage';
 import HomeView from './pages/HomePage';
+import { GlobalStyles } from './utils/CommonStyles';
 
 function App() {
   return (
@@ -18,7 +18,7 @@ function App() {
             <Route path='/'>
               <Route index element={<HomeView />} />
               <Route path='attraction'>
-                <Route path=":attractionId"  element={<AttractionView />} />
+                <Route path=':attractionId'  element={<AttractionView />} />
               </Route>
             </Route>
           </Routes>

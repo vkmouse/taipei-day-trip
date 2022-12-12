@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useAuthContext, LoginResponse } from "../context/AuthContext";
+import { useState } from 'react';
+import { useAuthContext, LoginResponse } from '../context/AuthContext';
 
 type Status = 
   | 'Pending'

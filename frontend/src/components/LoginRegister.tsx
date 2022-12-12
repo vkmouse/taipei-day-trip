@@ -1,10 +1,9 @@
 import styled from '@emotion/styled';
-import React, { useReducer, useState } from 'react';
+import React, { useState, useReducer } from 'react';
 import { useAuthContext } from '../context/AuthContext';
 import useLogin from '../hooks/useLogin';
 import useRegister from '../hooks/useRegister';
-import { Primary, Secondery20, Secondery50, Secondery70 } from '../Presentation/Styles/Colors';
-import { BodyMedium, H3 } from '../Presentation/Styles/Typography';
+import { H3, Secondery70, Secondery20, Primary, BodyMedium, Secondery50 } from '../utils/CommonStyles';
 import { validateEmail, validateName, validatePassword } from '../utils/validate';
 
 const FullPage = styled.div`
@@ -77,7 +76,7 @@ const Cancel = styled.div`
 `;
 
 const CancelIcon = styled.img`
-  content: url("/cancel.png");
+  content: url('/cancel.png');
   width: 16px;
   height: 16px;
 `;

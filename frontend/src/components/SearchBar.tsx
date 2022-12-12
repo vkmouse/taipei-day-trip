@@ -1,8 +1,7 @@
 import styled from '@emotion/styled';
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAPIContext } from '../context/APIContext';
-import { Primary, Secondery20 } from '../Presentation/Styles/Colors';
-import { BodyBold, CategoryMedium } from '../Presentation/Styles/Typography';
+import { BodyBold, Primary, CategoryMedium, Secondery20 } from '../utils/CommonStyles';
 
 const SearchContainer = styled.div`
   position: relative;
@@ -114,7 +113,7 @@ const SearchBar = (props: {
     <SearchContainer>
       <SearchInputContainer>
         <SearchInput 
-          placeholder="輸入景點名稱查詢"
+          placeholder='輸入景點名稱查詢'
           onChange={e => onSearchInputTextChanged?.(e.target.value)}
           onFocus={() => setCategoryListVisible(true)}
           onBlur={() => setCategoryListVisible(false)}

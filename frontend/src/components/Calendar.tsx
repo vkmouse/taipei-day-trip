@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import React from 'react';
-import { BodyMedium } from '../Presentation/Styles/Typography';
+import { BodyMedium } from '../utils/CommonStyles';
 
 const InputDate = styled.input`
   position: relative;
