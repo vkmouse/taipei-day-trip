@@ -8,7 +8,9 @@ import Footer from '../Presentation/Components/Footer';
 import Navigation from '../components/Navigation';
 import { Header, Main } from '../Presentation/Styles/SemanticStyles';
 import AttractionsList from '../components/AttractionsList';
-import Banner from '../components/Banner';
+import SearchBar from '../components/SearchBar';
+import { Secondery10 } from '../Presentation/Styles/Colors';
+import { H1, BodyBold } from '../Presentation/Styles/Typography';
 
 const AttractionsNotFound = styled.img`
   width: 100%;
@@ -27,14 +29,68 @@ const Container = styled.div`
   flex-basis: 100%;
 `;
 
+
+const BannerContainer = styled.div`
+  display: flex;  
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 320px;
+  background: url("welcome.png");
+  background-size: cover;
+`;
+
+const BannerContent = styled.div`
+  width: 1180px;
+  height: 149px;
+  margin: 0 10px 0 10px;
+  padding: 10px;
+`;
+
+const BannerContentContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+`;
+
+const BannerSlogan = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 78px;
+`;
+
+const BannerTitle = styled.div`
+  ${H1};
+  display: flex;
+  align-items: center;
+  color: ${Secondery10};
+`;
+
+const BannerDescription = styled.span`
+  ${BodyBold};
+  display: flex;
+  align-items: end;
+  flex-grow: 1;
+  color: ${Secondery10};
+`;
+
+const SearchBarContainer = styled.div`
+  display: flex;
+  flex-grow: 1;  
+  align-items: end;
+`;
+
 function HomeView() {
   const attractions = useAppSelector(state => state.attraction.data);
   const nextPage = useAppSelector(state => state.attraction.nextPage);
-  const keyword = useAppSelector(state => state.keyword.keyword);
   const observer = useRef<IntersectionObserver>();
   const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const api = useAPIContext();
+  const [searchInputText, setSearchInputText] = useState('');
+  const keyword = useRef('');
 
   const setAttractions = (body: Attractions) => {
     dispatch(setData(attractions.concat(body.data)));
@@ -67,8 +123,8 @@ function HomeView() {
   useEffect(() => {
     // Updating observer when "nextPage" or "keyword" changed.
     observer.current?.disconnect();
-    createOberserver(nextPage, keyword);
-  }, [nextPage, keyword]);
+    createOberserver(nextPage, keyword.current);
+  }, [nextPage, keyword.current]);
 
   useEffect(() => {
     if (isLoading) {
@@ -80,7 +136,27 @@ function HomeView() {
     <>
       <Navigation />
       <Header>
-        <Banner />
+        <BannerContainer>
+          <BannerContent>
+            <BannerContentContainer>
+              <BannerSlogan>
+                <BannerTitle>輕鬆享受台北一日悠閒</BannerTitle>
+                <BannerDescription>探索每個角落，體驗城市的深度旅遊行程</BannerDescription>
+              </BannerSlogan>
+              <SearchBarContainer>
+                <SearchBar
+                  searchInputText={searchInputText}
+                  onSearchButtonClick={() => {
+                    dispatch(setNextPage(0));
+                    dispatch(setData([]));
+                    keyword.current = searchInputText;
+                  }}
+                  onSearchInputTextChanged={text => setSearchInputText(text)}
+                />
+              </SearchBarContainer>
+            </BannerContentContainer>
+          </BannerContent>
+        </BannerContainer>
       </Header>
       <Main>
         <AttractionsList />

@@ -7,7 +7,7 @@ import { AuthProvider } from './context/AuthContext';
 import store from './Data/Store/store';
 import GlobalStyles from './Presentation/Styles/GlobalStyles';
 import AttractionView from './Presentation/Views/AttractionView';
-import HomeView from './pages/HomePages';
+import HomeView from './pages/HomePage';
 
 function App() {
   return (

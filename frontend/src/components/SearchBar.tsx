@@ -1,9 +1,6 @@
 import styled from '@emotion/styled';
 import React, { useEffect, useState } from 'react';
 import { useAPIContext } from '../context/APIContext';
-import { setData, setNextPage } from '../Data/Slices/attractionSlice';
-import { setSearchBarText, updateKeyword } from '../Data/Slices/keywordSlice';
-import { useAppDispatch, useAppSelector } from '../Data/Store/hooks';
 import { Primary, Secondery20 } from '../Presentation/Styles/Colors';
 import { BodyBold, CategoryMedium } from '../Presentation/Styles/Typography';
 
@@ -76,9 +73,12 @@ const CategoryName = styled.div`
   user-select:none;
 `;
 
-const SearchCategoryList = (props: { visible: boolean }) => {
+const SearchCategoryList = (props: {
+  visible: boolean,
+  onCategoryItemClick?: (text: string) => void
+}) => {
   const [categories, setCategories] = useState<string[]>([]);
-  const dispatch = useAppDispatch();
+  const { visible, onCategoryItemClick } = props;
   const api = useAPIContext();
   
   const getCategories = async () => {
@@ -91,10 +91,10 @@ const SearchCategoryList = (props: { visible: boolean }) => {
   }, []);
 
   return (
-    <CategoryList style={{ visibility: props.visible ? 'visible' : 'hidden' }}  >
+    <CategoryList style={{ visibility: visible ? 'visible' : 'hidden' }}  >
       <CategoryItems>
         {categories.map((p, i) => 
-        <CategoryItem key={i} onMouseDown={() => dispatch(setSearchBarText(p))}>
+        <CategoryItem key={i} onMouseDown={() => onCategoryItemClick?.(p)}>
           <CategoryName>{p}</CategoryName>
         </CategoryItem>)}
       </CategoryItems>
@@ -102,32 +102,32 @@ const SearchCategoryList = (props: { visible: boolean }) => {
   );
 };
 
-const SearchBar = () => {
+const SearchBar = (props: { 
+  searchInputText: string
+  onSearchButtonClick?: () => void 
+  onSearchInputTextChanged?: (text: string) => void
+}) => {
   const [categoryListVisible, setCategoryListVisible] = useState(false);
-  const searchBarText = useAppSelector(state => state.keyword.searchBarText);
-  const dispatch = useAppDispatch();
-
-  const handleSearchBarClicked = () => {
-    dispatch(setNextPage(0));
-    dispatch(setData([]));
-    dispatch(updateKeyword());
-  };
+  const { searchInputText, onSearchButtonClick, onSearchInputTextChanged } = props;
 
   return (
     <SearchContainer>
       <SearchInputContainer>
         <SearchInput 
           placeholder="輸入景點名稱查詢"
-          onChange={e => dispatch(setSearchBarText(e.target.value))}
+          onChange={e => onSearchInputTextChanged?.(e.target.value)}
           onFocus={() => setCategoryListVisible(true)}
           onBlur={() => setCategoryListVisible(false)}
-          value={searchBarText}
+          value={searchInputText}
         />
-        <SearchButton onClick={() => handleSearchBarClicked()}>
+        <SearchButton onClick={onSearchButtonClick}>
           <img src='search_icon.svg'/>
         </SearchButton>
       </SearchInputContainer>
-      <SearchCategoryList visible={categoryListVisible} />
+      <SearchCategoryList 
+        visible={categoryListVisible}
+        onCategoryItemClick={text => onSearchInputTextChanged?.(text)}
+      />
     </SearchContainer>
   );
 };
