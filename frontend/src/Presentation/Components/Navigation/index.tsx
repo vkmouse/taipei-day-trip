@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import { BodyMedium, H2 } from '../../Styles/Typography';
 import { Primary, Secondery, Secondery20 } from '../../Styles/Colors';
 import { Link, useLocation } from 'react-router-dom';
-import Dialog from './Dialog';
+import Dialog from '../../../components/LoginRegister';
 import { NavigationProvider, useNavigationContext } from '../../../context/NavigationContext';
 import { useAuthContext } from '../../../context/AuthContext';
 
