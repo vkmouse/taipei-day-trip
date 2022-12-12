@@ -1,16 +1,16 @@
 import styled from '@emotion/styled';
 import React, { useEffect, useRef, useState } from 'react';
-import { useAPIContext } from '../../../context/APIContext';
-import { Attractions } from '../../../Core/Core';
-import { setData, setNextPage } from '../../../Data/Slices/attractionSlice';
-import { useAppSelector, useAppDispatch } from '../../../Data/Store/hooks';
-import Footer from '../../Components/Footer';
-import Navigation from '../../../components/Navigation';
-import { Header, Main } from '../../Styles/SemanticStyles';
-import AttractionListComponent from './AttractionListComponent';
-import Banner from './Banner';
+import { useAPIContext } from '../context/APIContext';
+import { Attractions } from '../Core/Core';
+import { setData, setNextPage } from '../Data/Slices/attractionSlice';
+import { useAppSelector, useAppDispatch } from '../Data/Store/hooks';
+import Footer from '../Presentation/Components/Footer';
+import Navigation from '../components/Navigation';
+import { Header, Main } from '../Presentation/Styles/SemanticStyles';
+import AttractionsList from '../components/AttractionsList';
+import Banner from '../components/Banner';
 
-const AttractionNotFound = styled.img`
+const AttractionsNotFound = styled.img`
   width: 100%;
   height: 100%;
   max-width: 600px;
@@ -83,10 +83,10 @@ function HomeView() {
         <Banner />
       </Header>
       <Main>
-        <AttractionListComponent />
+        <AttractionsList />
         <Container>
           {isLoading ? <Loading /> : <></>}
-          {attractions.length === 0 && nextPage === null ? <AttractionNotFound /> : <></>}
+          {attractions.length === 0 && nextPage === null ? <AttractionsNotFound /> : <></>}
         </Container>
       </Main>
       <Footer />
