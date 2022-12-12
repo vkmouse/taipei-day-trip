@@ -1,8 +1,8 @@
 import styled from '@emotion/styled';
-import React, { useRef, useState } from 'react';
-import { useAPIContext } from '../context/APIContext';
-import { LoginResponse, useAuthContext } from '../context/AuthContext';
+import React, { useState } from 'react';
 import { useNavigationContext } from '../context/NavigationContext';
+import useLogin from '../hooks/useLogin';
+import useRegister from '../hooks/useRegister';
 import { Primary, Secondery20, Secondery50, Secondery70 } from '../Presentation/Styles/Colors';
 import { BodyMedium, H3 } from '../Presentation/Styles/Typography';
 import { validateEmail, validateName, validatePassword } from '../utils/validate';
@@ -178,23 +178,22 @@ const InputField = (props: {
   );
 };
 
-const Dialog = () => {
+const LoginRegister = () => {
   const [isLogin, setIsLogin] = useState(true);
-  const [responseText, setResponseText] = useState('');
   const [email, setEmail] = useState('');
   const [emailValid, setEmailValid] = useState(false);
   const [name, setName] = useState('');
   const [nameValid, setNameValid] = useState(false);
   const [password, setPassword] = useState('');
   const [passwordValid, setPasswordValid] = useState(false);
-  const requireSuccess = useRef(true);
   const { dialog } = useNavigationContext();
   const description: Description = isLogin ? loginDescription : registerDescription;
-  const api = useAPIContext();
-  const auth = useAuthContext();
+  const loginHandler = useLogin();
+  const registerHandler = useRegister();
 
   const switchForm = () => {
-    setResponseText('');
+    loginHandler.clear();
+    registerHandler.clear();
     setIsLogin(() => !isLogin);
     setEmail('');
     setEmailValid(false);
@@ -204,55 +203,11 @@ const Dialog = () => {
     setNameValid(false);
   };
 
-  const register = async () => {
-    const response = await api.register(name, email, password);
-    requireSuccess.current = false;
-    switch (response.status) {
-      case 200:
-        setResponseText('✔ 註冊成功！');
-        requireSuccess.current = true;
-        break;
-      case 400:
-        setResponseText('⚠ 註冊失敗');
-        break;
-      case 409:
-        setResponseText('⚠ 電子郵件已經被註冊');
-        break;
-      case 500:
-        setResponseText('⚠ 伺服器異常');
-        break;
-    }
-  };
-
-  const login = async () => {
-    const response = await auth.login(email, password);
-    requireSuccess.current = false;
-    switch (response) {
-      case LoginResponse.Success: 
-        setResponseText('✔ 登入成功');
-        requireSuccess.current = true;
-        dialog.hide();
-        break;
-      case LoginResponse.EmailNotExist:
-        setResponseText('⚠ 電子郵件不存在');
-        break;
-      case LoginResponse.LoginFailed:
-        setResponseText('⚠ 登入失敗');
-        break;
-      case LoginResponse.PasswordError:
-        setResponseText('⚠ 密碼錯誤');
-        break;
-      case LoginResponse.ServerFailed:
-        setResponseText('⚠ 伺服器異常');
-        break;
-    }
-  };
-
   const handleClick = () => {
     if (isLogin) {
-      login();
+      loginHandler.login(email, password);
     } else {
-      register();
+      registerHandler.register(name, email, password);
     }
   };
 
@@ -310,7 +265,8 @@ const Dialog = () => {
             {description.button}
           </Button>
           <TextContainer>
-            <HintText style={{color: requireSuccess.current ? 'blue' : 'red' }}>{responseText}</HintText>
+            {isLogin ? <HintText style={{color: loginHandler.success ? 'blue' : 'red' }}>{loginHandler.message}</HintText> : <></>}
+            {!isLogin ? <HintText style={{color: registerHandler.success ? 'blue' : 'red' }}>{registerHandler.message}</HintText> : <></>}
           </TextContainer>
           <TextContainer>
             <Text>{description.text}</Text>
@@ -322,4 +278,4 @@ const Dialog = () => {
   );
 };
 
-export default Dialog;
+export default LoginRegister;
