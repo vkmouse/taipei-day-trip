@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import React, { useState } from 'react';
+import React, { useReducer, useState } from 'react';
 import { useNavigationContext } from '../context/NavigationContext';
 import useLogin from '../hooks/useLogin';
 import useRegister from '../hooks/useRegister';
@@ -127,7 +127,7 @@ const DangerInput = styled(BaseInput)`
   }
 `;
 
-const HintText = styled.span`
+const HintTextStyle = styled.span`
   font-family: 'Noto Sans TC';
   font-style: normal;
   font-weight: 500;
@@ -157,35 +157,100 @@ const registerDescription: Description = {
   textButton: '點此登入',
 };
 
+const HintText = (props: { status: string, message: string }) => {
+  const color = props.status === 'Success' ? 'blue' : 'red';
+  if (props.status === 'Success' || props.status === 'Failed') {
+    return <HintTextStyle style={{ color }}>{props.message}</HintTextStyle>;
+  }
+  return <></>;
+};
+
 const InputField = (props: { 
   autoFocus?: boolean
   dangerMessage: string
-  isValid: boolean
   placeholder: string
   type?: React.HTMLInputTypeAttribute
   value: string
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
 }) => {
-  const { dangerMessage, isValid } = props;
-  const Input = isValid ? BaseInput : DangerInput;
+  const { dangerMessage } = props;
+  const Input = dangerMessage ? DangerInput : BaseInput;
   return (
     <>
       <InputContainer>
         <Input {...props} />
-        {isValid ? <></> : <HintText>{dangerMessage}</HintText>}
+        {dangerMessage ? <HintTextStyle>{dangerMessage}</HintTextStyle> : <></>}
       </InputContainer>
     </>
   );
 };
 
+type LoginRegisterState = {
+  email: string
+  emailValid: boolean
+  name: string
+  nameValid: boolean
+  password: string
+  passwordValid: boolean
+}
+
+type LoginRegisterAction = 
+  | { type: 'SET_EMAIL', payload: string }
+  | { type: 'SET_NAME', payload: string }
+  | { type: 'SET_PASSWORD', payload: string }
+  | { type: 'CLEAR' };
+const setEmail = (email: string): LoginRegisterAction => { return { type: 'SET_EMAIL', payload: email }; };
+const setName = (name: string): LoginRegisterAction => { return { type: 'SET_NAME', payload: name }; };
+const setPassword = (password: string): LoginRegisterAction => { return { type: 'SET_PASSWORD', payload: password }; };
+const clear = (): LoginRegisterAction => { return { type: 'CLEAR' }; };
+
+const initialState: LoginRegisterState = {
+  email: '',
+  emailValid: false,
+  name: '',
+  nameValid: false,
+  password: '',
+  passwordValid: false,
+};
+
+const loginRegisterReducer = (state: LoginRegisterState, action: LoginRegisterAction): LoginRegisterState => {
+  switch (action.type) {
+    case 'SET_EMAIL':
+      return { 
+        ...state,
+        email: action.payload,
+        emailValid: validateEmail(action.payload),
+      };
+    case 'SET_NAME':
+      return { 
+        ...state,
+        name: action.payload,
+        nameValid: validateName(action.payload),
+      };
+    case 'SET_PASSWORD':
+      return { 
+        ...state,
+        password: action.payload,
+        passwordValid: validatePassword(action.payload),
+      };
+    case 'CLEAR':
+      return {
+        email: '',
+        emailValid: false,
+        name: '',
+        nameValid: false,
+        password: '',
+        passwordValid: false,
+      };
+    default:
+      return state;
+  }
+};
+
 const LoginRegister = () => {
   const [isLogin, setIsLogin] = useState(true);
-  const [email, setEmail] = useState('');
-  const [emailValid, setEmailValid] = useState(false);
-  const [name, setName] = useState('');
-  const [nameValid, setNameValid] = useState(false);
-  const [password, setPassword] = useState('');
-  const [passwordValid, setPasswordValid] = useState(false);
+  const [state, dispatch] = useReducer(loginRegisterReducer, initialState);
+  const { email, emailValid, name, nameValid, password, passwordValid } = state;
   const { dialog } = useNavigationContext();
   const description: Description = isLogin ? loginDescription : registerDescription;
   const loginHandler = useLogin();
@@ -195,12 +260,7 @@ const LoginRegister = () => {
     loginHandler.clear();
     registerHandler.clear();
     setIsLogin(() => !isLogin);
-    setEmail('');
-    setEmailValid(false);
-    setPassword('');
-    setPasswordValid(false);
-    setName('');
-    setNameValid(false);
+    dispatch(clear());
   };
 
   const handleClick = () => {
@@ -210,10 +270,27 @@ const LoginRegister = () => {
       registerHandler.register(name, email, password);
     }
   };
-
   const isValid = (isLogin && emailValid && passwordValid) || 
                   (emailValid && passwordValid && nameValid);
   const buttonCursor = isValid ? 'pointer' : 'not-allowed';
+
+  let emailMessage = '';
+  if (loginHandler.status === 'EmailFailed') {
+    emailMessage = loginHandler.message;
+  } else if (registerHandler.status === 'EmailFailed') {
+    emailMessage = registerHandler.message;
+  } else if (!emailValid && email.length) {
+    emailMessage = '⚠ 請輸入正確的電子郵件';
+  }
+
+  let passwordMessage = '';
+  if (loginHandler.status === 'PasswordFailed') {
+    passwordMessage = loginHandler.message;
+  } else if (registerHandler.status === 'PasswordFailed') {
+    passwordMessage = registerHandler.message;
+  } else if (!passwordValid && password.length) {
+    passwordMessage = '⚠ 請輸入 4 ~ 100 個字元的英文字母、數字';
+  }
   return (
     <Container>
       <InnerContainer>
@@ -226,37 +303,25 @@ const LoginRegister = () => {
           {isLogin ? <></> : 
             <InputField
               autoFocus
-              dangerMessage='⚠ 請輸入 1 ~ 20 個字元'
-              isValid={nameValid || name.length === 0}
+              dangerMessage={nameValid || name.length === 0 ? '' : '⚠ 請輸入 1 ~ 20 個字元'}
               placeholder='輸入姓名'
               value={name}
-              onChange={e => {
-                setNameValid(validateName(e.target.value));
-                setName(e.target.value);
-              }}
+              onChange={e => dispatch(setName(e.target.value))}
             /> }
           <InputField 
             autoFocus
-            dangerMessage='⚠ 請輸入正確的電子郵件'
-            isValid={emailValid || email.length === 0}
+            dangerMessage={emailMessage}
             placeholder='輸入電子信箱'
             value={email}
-            onChange={e => {
-              setEmailValid(validateEmail(e.target.value));
-              setEmail(e.target.value);
-            }}
+            onChange={e => dispatch(setEmail(e.target.value))}
           />
-          <InputField 
+          <InputField
             autoFocus
-            dangerMessage='⚠ 請輸入 4 ~ 100 個字元的英文字母、數字'
-            isValid={passwordValid || password.length === 0}
+            dangerMessage={passwordMessage}
             placeholder='輸入密碼'
             type='password'
             value={password}
-            onChange={e => {
-              setPasswordValid(validatePassword(e.target.value));
-              setPassword(e.target.value);
-            }}
+            onChange={e => dispatch(setPassword(e.target.value))}
           />
           <Button 
             style={{cursor: buttonCursor}} 
@@ -265,8 +330,8 @@ const LoginRegister = () => {
             {description.button}
           </Button>
           <TextContainer>
-            {isLogin ? <HintText style={{color: loginHandler.success ? 'blue' : 'red' }}>{loginHandler.message}</HintText> : <></>}
-            {!isLogin ? <HintText style={{color: registerHandler.success ? 'blue' : 'red' }}>{registerHandler.message}</HintText> : <></>}
+            {isLogin ? <HintText {...loginHandler} /> : <></>}
+            {!isLogin ? <HintText {...registerHandler} /> : <></>}
           </TextContainer>
           <TextContainer>
             <Text>{description.text}</Text>
