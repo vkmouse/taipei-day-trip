@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { APIProvider } from './context/APIContext';
 import { AuthProvider } from './context/AuthContext';
 import GlobalStyles from './Presentation/Styles/GlobalStyles';
-import AttractionView from './Presentation/Views/AttractionView';
+import AttractionView from './pages/AttractionPage';
 import HomeView from './pages/HomePage';
 
 function App() {
