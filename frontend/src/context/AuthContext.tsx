@@ -111,8 +111,8 @@ const AuthProvider = (props: { children: JSX.Element[] | JSX.Element }) => {
   return <AuthContext.Provider value={auth} {...props} />;
 };
 
-const useAuthContext = () => {
+const useAuthContext = (): Auth => {
   return useContext(AuthContext);
 };
 
-export { AuthContext, AuthProvider, LoginResponse, useAuthContext };
+export { type Auth, AuthContext, AuthProvider, LoginResponse, useAuthContext };

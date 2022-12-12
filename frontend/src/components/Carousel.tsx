@@ -1,9 +1,8 @@
-import { css, keyframes } from '@emotion/react';
+import { keyframes, css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React, { useState } from 'react';
-import { Attraction } from '../../../Core/Core';
-import { Secondery20 } from '../../Styles/Colors';
-import { CenterCropped } from '../../Styles/ImageCropped';
+import { Attraction } from '../context/APIContext';
+import { CenterCropped, Secondery20 } from '../utils/CommonStyles';
 
 const Container = styled.div`
   position: relative;

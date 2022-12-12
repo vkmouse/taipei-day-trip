@@ -1,7 +1,6 @@
 import styled from '@emotion/styled';
 import React, { useState } from 'react';
-import { Primary } from '../Styles/Colors';
-import { BodyMedium } from '../Styles/Typography';
+import { Primary, BodyMedium } from '../utils/CommonStyles';
 
 const RadioContainer = styled.div`
   display: flex;

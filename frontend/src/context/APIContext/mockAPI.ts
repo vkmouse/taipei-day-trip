@@ -1,5 +1,5 @@
-import { API } from ".";
-import { Attraction, Attractions } from "../../Core/Core";
+import { API } from '.';
+import { Attraction, Attractions } from '../APIContext';
 
 const ms = 1000;
 
@@ -125,24 +125,24 @@ const createResponse = (status: number): Response => {
     type: 'basic',
     url: '',
     clone: function (): Response {
-      throw new Error("Function not implemented.");
+      throw new Error('Function not implemented.');
     },
     body: null,
     bodyUsed: false,
     arrayBuffer: function (): Promise<ArrayBuffer> {
-      throw new Error("Function not implemented.");
+      throw new Error('Function not implemented.');
     },
     blob: function (): Promise<Blob> {
-      throw new Error("Function not implemented.");
+      throw new Error('Function not implemented.');
     },
     formData: function (): Promise<FormData> {
-      throw new Error("Function not implemented.");
+      throw new Error('Function not implemented.');
     },
     json: function (): Promise<any> {
-      throw new Error("Function not implemented.");
+      throw new Error('Function not implemented.');
     },
     text: function (): Promise<string> {
-      throw new Error("Function not implemented.");
+      throw new Error('Function not implemented.');
     }
   };
 };

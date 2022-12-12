@@ -1,34 +1,30 @@
 import { Global } from '@emotion/react';
 import React from 'react';
-import { Provider } from 'react-redux';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { APIProvider } from './context/APIContext';
 import { AuthProvider } from './context/AuthContext';
-import store from './Data/Store/store';
-import GlobalStyles from './Presentation/Styles/GlobalStyles';
-import AttractionView from './Presentation/Views/AttractionView';
-import HomeView from './Presentation/Views/HomeView';
+import AttractionView from './pages/AttractionPage';
+import HomeView from './pages/HomePage';
+import { GlobalStyles } from './utils/CommonStyles';
 
 function App() {
   return (
-    <Provider store={store}>
-      <APIProvider>
-      {/* <APIProvider isMock> */}
-        <AuthProvider>
-          <Global styles={GlobalStyles} />
-          <Router>
-            <Routes>
-              <Route path='/'>
-                <Route index element={<HomeView />} />
-                <Route path='attraction'>
-                  <Route path=":attractionId"  element={<AttractionView />} />
-                </Route>
+    <APIProvider>
+    {/* <APIProvider isMock> */}
+      <AuthProvider>
+        <Global styles={GlobalStyles} />
+        <Router>
+          <Routes>
+            <Route path='/'>
+              <Route index element={<HomeView />} />
+              <Route path='attraction'>
+                <Route path=':attractionId'  element={<AttractionView />} />
               </Route>
-            </Routes>
-          </Router>
-        </AuthProvider>
-      </APIProvider>
-    </Provider>
+            </Route>
+          </Routes>
+        </Router>
+      </AuthProvider>
+    </APIProvider>
   );
 }
 

@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import React from 'react';
-import { BodyBold } from '../Styles/Typography';
+import { BodyBold } from '../utils/CommonStyles';
 
 const Container = styled.footer`
   display: flex;  
@@ -26,4 +26,17 @@ const Footer = () => (
   </Container>
 );
 
-export default Footer;
+const Header = styled.header`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 54px;
+`;
+
+const Main = styled.main`
+  display: flex;
+  justify-content: center;
+  flex-flow: wrap;
+`;
+
+export { Header, Main, Footer };

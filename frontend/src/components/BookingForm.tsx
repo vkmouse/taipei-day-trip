@@ -1,10 +1,9 @@
 import styled from '@emotion/styled';
-import React, { useRef, useState } from 'react';
-import { Attraction } from '../../../../Core/Core';
-import { Primary, Secondery20, Secondery70 } from '../../../Styles/Colors';
-import { BodyBold, BodyMedium, H3 } from '../../../Styles/Typography';
+import React, { useState, useRef } from 'react';
+import { Attraction } from '../context/APIContext';
+import { H3, Secondery70, BodyMedium, BodyBold, Secondery20, Primary } from '../utils/CommonStyles';
 import Calendar from './Calendar';
-import { Radio, RadioGroup } from '../../../Components/RadioButton';
+import { RadioGroup, Radio } from './RadioButton';
 
 const Container = styled.div`
   display: flex;
