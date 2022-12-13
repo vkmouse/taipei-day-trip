@@ -40,6 +40,10 @@ def booking_test_case(db: Database):
     assert booking_list[0].price == 2500
     assert booking_list[0].attraction.name == 'attr1'
 
+    assert db.bookings.add(1, 1, datetime(2000, 1, 1, 14), datetime(2000, 1, 1, 17), 2000) == True
+    db.bookings.remove_by_member_id(1)
+    assert len(db.bookings.get_by_member_id(1)) == 0
+
 def test_memory_based_model():
     db = MemoryDatabase()
     booking_test_case(db)

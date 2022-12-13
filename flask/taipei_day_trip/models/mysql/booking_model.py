@@ -89,6 +89,12 @@ class MySQLBookingModel(MySQLModel, BookingModel):
         cursor.execute(query, (id,))
         cnx.commit()
 
+    @MySQLModel.with_connection
+    def remove_by_member_id(self, member_id: int, cnx, cursor):
+        query = 'DELETE FROM {} WHERE member_id = (%s)'.format(self.tablename)
+        cursor.execute(query, (member_id,))
+        cnx.commit()
+
     @property
     def tablename(self) -> str:
         if self.debug:

@@ -9,3 +9,5 @@ class BookingModel:
         return NotImplemented
     def remove_by_id(self, id: int):
         return NotImplemented
+    def remove_by_member_id(self, member_id: int):
+        return NotImplemented       
