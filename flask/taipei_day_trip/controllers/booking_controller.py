@@ -17,20 +17,18 @@ class BookingController:
         except:
             return self.view.render_unexpected()
 
-    def add(self, member_id: int, attraction_id: str | None, starttime: str | None, endtime: str | None, price: str | None):
+    def add(self, member_id: int, attraction_id: int, starttime: str | None, endtime: str | None, price: int):
         try:
-            if (not self.validator.validate_number(attraction_id) or
-                not self.validator.validate_date(starttime) or
+            if (not self.validator.validate_date(starttime) or
                 not self.validator.validate_date(endtime) or
-                not self.validator.validate_number(price) or 
                 not self.validator.validate_starttime_to_endtime(starttime, endtime)):
                 return self.view.render_invalid_parameter()
             success = self.__db.bookings.add(
                 member_id,
-                int(attraction_id),
+                attraction_id,
                 parse_datestr(starttime),
                 parse_datestr(endtime),
-                int(price))
+                price)
             if not success:
                 return self.view.render_member_or_attraction_not_exists()
             return self.view.render_add_success()
@@ -38,9 +36,6 @@ class BookingController:
             return self.view.render_unexpected(e)
 
 class BookingValidator:
-    def validate_number(self, id: str | None) -> bool:
-        return id != None and id.isdigit()
-
     def validate_date(self, date: str | None) -> bool:
         return parse_datestr(date) != None
 

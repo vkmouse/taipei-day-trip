@@ -44,20 +44,16 @@ def test_get_by_member_id():
 
 def test_add_success():
     controller = create_controller()
-    assert controller.add(1, '1', '2020-3-1 10:30:20', '2020-3-1 10:30:30', '2000') == controller.view.render_add_success()
+    assert controller.add(1, 1, '2020-3-1 10:30:20', '2020-3-1 10:30:30', 2000) == controller.view.render_add_success()
     body, status_code = controller.get_by_member_id(1)
     assert status_code == 200
     assert len(body['data']) == 3
 
 def test_add_with_wrong_time_format():
     controller = create_controller()
-    assert controller.add(1, '1', '2020-3-1T10:30:20', '2020-3-1T10:30:30', '2000') == controller.view.render_invalid_parameter()
-
-def test_add_with_wrong_price():
-    controller = create_controller()
-    assert controller.add(1, '1', '2020-3-1 10:30:20', '2020-3-1 10:30:30', 'aaa') == controller.view.render_invalid_parameter()
-
+    assert controller.add(1, 1, '2020-3-1T10:30:20', '2020-3-1T10:30:30', 2000) == controller.view.render_invalid_parameter()
+    
 def test_add_with_not_exists_member_or_attraction():
     controller = create_controller()
-    assert controller.add(999, '1', '2020-3-1 10:30:20', '2020-3-1 10:30:30', '2000') == controller.view.render_member_or_attraction_not_exists()
-    assert controller.add(1, '999', '2020-3-1 10:30:20', '2020-3-1 10:30:30', '2000') == controller.view.render_member_or_attraction_not_exists()
+    assert controller.add(999, 1, '2020-3-1 10:30:20', '2020-3-1 10:30:30', 2000) == controller.view.render_member_or_attraction_not_exists()
+    assert controller.add(1, 999, '2020-3-1 10:30:20', '2020-3-1 10:30:30', 2000) == controller.view.render_member_or_attraction_not_exists()
