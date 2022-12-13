@@ -32,7 +32,11 @@ def booking_test_case(db: Database):
     assert booking_list[1].price == 2500
     assert booking_list[1].attraction.name == 'attr1'
 
-    db.bookings.remove_by_id(booking_list[0].id)
+    db.bookings.remove_by_id(2, booking_list[0].id)
+    booking_list = db.bookings.get_by_member_id(1)
+    assert len(booking_list) == 2
+
+    db.bookings.remove_by_id(1, booking_list[0].id)
     booking_list = db.bookings.get_by_member_id(1)
     assert len(booking_list) == 1
     assert booking_list[0].starttime == datetime(2000, 1, 1, 17)

@@ -84,14 +84,14 @@ class MySQLBookingModel(MySQLModel, BookingModel):
         ), rows))
 
     @MySQLModel.with_connection
-    def remove_by_id(self, id: int, cnx, cursor):
-        query = 'DELETE FROM {} WHERE id = (%s)'.format(self.tablename)
-        cursor.execute(query, (id,))
+    def remove_by_id(self, member_id: int, id: int, cnx, cursor):
+        query = 'DELETE FROM {} WHERE id = %s AND member_id = %s'.format(self.tablename)
+        cursor.execute(query, (id, member_id, ))
         cnx.commit()
 
     @MySQLModel.with_connection
     def remove_by_member_id(self, member_id: int, cnx, cursor):
-        query = 'DELETE FROM {} WHERE member_id = (%s)'.format(self.tablename)
+        query = 'DELETE FROM {} WHERE member_id = %s'.format(self.tablename)
         cursor.execute(query, (member_id,))
         cnx.commit()
 
