@@ -1,4 +1,5 @@
 import re
+from taipei_day_trip.controllers.base import BaseValidator, BaseView
 
 from taipei_day_trip.middleware import JWT
 from taipei_day_trip.models import Cache
@@ -60,10 +61,7 @@ class MemberController:
         access_token = self.jwt.make_access_token(id)
         return self.view.render_login_success(access_token)
 
-class MemberValidator:
-    def validate_id(self, id: str | None) -> bool:
-        return id != None and id.isdigit()
-
+class MemberValidator(BaseValidator):
     def validate_name(self, name: str | None):
         if name == None:
             return False
@@ -82,10 +80,7 @@ class MemberValidator:
         match = re.search(r'[.*a-zA-Z\d]{4,100}', password)
         return match != None and match.group() == password
 
-class MemberView:
-    def render_success(self):
-        return { 'ok': True }, 200
-
+class MemberView(BaseView):
     def render_login_success(self, token: str):
         return { 'ok': True, 'access_token': token }, 200
 
@@ -111,9 +106,3 @@ class MemberView:
 
     def render_password_is_incorrect(self):
         return { 'error': True, 'message': 'Login password is incorrect' }, 400
-
-    def render_invalid_parameter(self):
-        return { 'error': True, 'message': 'Invalid parameter' }, 400
-
-    def render_unexpected(self, e: Exception):
-        return { 'error': True, 'message': str(e) }, 500

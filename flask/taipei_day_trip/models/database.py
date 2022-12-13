@@ -1,4 +1,5 @@
 from taipei_day_trip.models.attraction_model import AttractionModel
+from taipei_day_trip.models.booking_model import BookingModel
 from taipei_day_trip.models.category_model import CategoryModel
 from taipei_day_trip.models.member_model import MemberModel
 from taipei_day_trip.models.mrt_model import MRTModel
@@ -9,10 +10,15 @@ class Database:
         self.__mrts = self._create_mrt_model()
         self.__attractions = self._create_attraction_model()
         self.__members = self._create_member_model()
+        self.__bookings = self._create_booking_model()
 
     @property
     def attractions(self) -> AttractionModel:
         return self.__attractions
+
+    @property
+    def bookings(self) -> BookingModel:
+        return self.__bookings
 
     @property
     def categories(self) -> CategoryModel:
@@ -27,6 +33,9 @@ class Database:
         return self.__mrts
 
     def _create_attraction_model(self) -> AttractionModel:
+        return NotImplemented
+
+    def _create_booking_model(self) -> BookingModel:
         return NotImplemented
 
     def _create_category_model(self) -> CategoryModel:

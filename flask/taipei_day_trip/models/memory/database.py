@@ -2,9 +2,11 @@ import json
 import re
 
 from taipei_day_trip.models.attraction_model import AttractionModel
+from taipei_day_trip.models.booking_model import BookingModel
 from taipei_day_trip.models.category_model import CategoryModel
 from taipei_day_trip.models.member_model import MemberModel
 from taipei_day_trip.models.memory.attraction_model import MemoryAttractionModel
+from taipei_day_trip.models.memory.booking_model import MemoryBookingModelModel
 from taipei_day_trip.models.memory.category_model import MemoryCategoryModel
 from taipei_day_trip.models.memory.member_model import MemoryMemberModel
 from taipei_day_trip.models.memory.mrt_model import MemoryMRTModel
@@ -15,6 +17,9 @@ from taipei_day_trip.models.database import Database
 class MemoryDatabase(Database):
     def _create_attraction_model(self) -> AttractionModel:
         return MemoryAttractionModel(self.categories, self.mrts)
+
+    def _create_booking_model(self) -> BookingModel:
+        return MemoryBookingModelModel(self.members, self.attractions)
 
     def _create_category_model(self) -> CategoryModel:
         return MemoryCategoryModel()
