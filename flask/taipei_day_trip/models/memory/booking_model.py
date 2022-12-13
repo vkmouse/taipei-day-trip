@@ -1,5 +1,4 @@
 from datetime import datetime
-from datetime import timedelta
 from taipei_day_trip.models.booking_model import BookingModel
 from taipei_day_trip.models.memory.attraction_model import MemoryAttractionModel
 from taipei_day_trip.models.memory.member_model import MemoryMemberModel
@@ -13,19 +12,19 @@ class MemoryBookingModelModel(BookingModel):
         self.__members = members
         self.__attractions = attractions
 
-    def add(self, memberId: int, attractionId: int, starttime: datetime, duration: timedelta, price: int) -> bool:
+    def add(self, memberId: int, attractionId: int, starttime: datetime, endtime: datetime, price: int) -> bool:
         invalid = (self.__members.get_by_id(memberId) == None or 
                    self.__attractions.get_by_id(attractionId) == None)
         if invalid:
             return False
 
         exists = len(list(filter(lambda i: (
-            i.memberId == memberId and self.__time_overlay(i.starttime, i.duration, starttime, duration)
+            i.memberId == memberId and self.__time_overlay(i.starttime, i.endtime, starttime, endtime)
         ), self.__db))) > 0
         if exists:
             return False
 
-        element = Booking(self.__next_id, memberId, attractionId, starttime, duration, price)
+        element = Booking(self.__next_id, memberId, attractionId, starttime, endtime, price)
         self.__db.append(element)
         return True
 
@@ -40,5 +39,5 @@ class MemoryBookingModelModel(BookingModel):
         self.__id += 1
         return self.__id
 
-    def __time_overlay(self, starttime1: datetime, duration1: timedelta, starttime2: datetime, duration2: timedelta):
-        return not (starttime2 >= starttime1 + duration1 or starttime2 + duration2 <= starttime1)
+    def __time_overlay(self, starttime1: datetime, endtime1: datetime, starttime2: datetime, endtime2: datetime):
+        return not (endtime1 <= starttime2 or endtime2 <= starttime1)
