@@ -10,5 +10,6 @@ from taipei_day_trip.utils.env import refresh_token_lifetime
 from taipei_day_trip.utils.env import secret_key
 from taipei_day_trip.utils.time import generate_access_token_exp
 from taipei_day_trip.utils.time import generate_refresh_token_exp
+from taipei_day_trip.utils.time import parse_datestr
 from taipei_day_trip.utils.utils import checkpw
 from taipei_day_trip.utils.utils import hashpw
