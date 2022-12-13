@@ -8,7 +8,7 @@ from taipei_day_trip.models import Database
 from taipei_day_trip.tests import util
 
 def booking_test_case(db: Database):
-    assert len(db.bookings.get_by_memberId(1)) == 0
+    assert len(db.bookings.get_by_member_id(1)) == 0
     assert db.bookings.add(1, 1, datetime(2000, 1, 1, 14), datetime(2000, 1, 1, 14) + timedelta(hours=3), 2000) == False
     db.categories.add('category1')
     db.mrts.add('mrt1')
@@ -20,7 +20,7 @@ def booking_test_case(db: Database):
     assert db.bookings.add(1, 1, datetime(2000, 1, 1, 10), datetime(2000, 1, 1, 23), 2500) == False
     assert db.bookings.add(1, 1, datetime(2000, 1, 1, 15), datetime(2000, 1, 1, 16), 2500) == False
     
-    booking_list = db.bookings.get_by_memberId(1)
+    booking_list = db.bookings.get_by_member_id(1)
     assert len(booking_list) == 2
     assert booking_list[0].starttime == datetime(2000, 1, 1, 14)
     assert booking_list[0].endtime == datetime(2000, 1, 1, 17)
@@ -30,7 +30,7 @@ def booking_test_case(db: Database):
     assert booking_list[1].price == 2500
 
     db.bookings.remove_by_id(booking_list[0].id)
-    booking_list = db.bookings.get_by_memberId(1)
+    booking_list = db.bookings.get_by_member_id(1)
     assert len(booking_list) == 1
     assert booking_list[0].starttime == datetime(2000, 1, 1, 17)
     assert booking_list[0].endtime == datetime(2000, 1, 1, 21)

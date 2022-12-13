@@ -12,24 +12,24 @@ class MemoryBookingModelModel(BookingModel):
         self.__members = members
         self.__attractions = attractions
 
-    def add(self, memberId: int, attractionId: int, starttime: datetime, endtime: datetime, price: int) -> bool:
-        invalid = (self.__members.get_by_id(memberId) == None or 
-                   self.__attractions.get_by_id(attractionId) == None)
+    def add(self, member_id: int, attraction_id: int, starttime: datetime, endtime: datetime, price: int) -> bool:
+        invalid = (self.__members.get_by_id(member_id) == None or 
+                   self.__attractions.get_by_id(attraction_id) == None)
         if invalid:
             return False
 
         exists = len(list(filter(lambda i: (
-            i.memberId == memberId and self.__time_overlay(i.starttime, i.endtime, starttime, endtime)
+            i.member_id == member_id and self.__time_overlay(i.starttime, i.endtime, starttime, endtime)
         ), self.__db))) > 0
         if exists:
             return False
 
-        element = Booking(self.__next_id, memberId, attractionId, starttime, endtime, price)
+        element = Booking(self.__next_id, member_id, attraction_id, starttime, endtime, price)
         self.__db.append(element)
         return True
 
-    def get_by_memberId(self, memberId: int) -> List[Booking]:
-        return list(filter(lambda i: (i.memberId == memberId), self.__db))
+    def get_by_member_id(self, member_id: int) -> List[Booking]:
+        return list(filter(lambda i: (i.member_id == member_id), self.__db))
 
     def remove_by_id(self, id: int):
         self.__db = list(filter(lambda i: i.id != id, self.__db))

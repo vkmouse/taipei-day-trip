@@ -41,10 +41,10 @@ class Attraction:
         }
 
 class Booking:
-    def __init__(self, id: int, memberId: int, attractionId: int, starttime: datetime, endtime: datetime, price: int):
+    def __init__(self, id: int, member_id: int, attraction_id: int, starttime: datetime, endtime: datetime, price: int):
         self.id = id
-        self.memberId = memberId
-        self.attractionId = attractionId
+        self.member_id = member_id
+        self.attraction_id = attraction_id
         self.starttime = starttime
         self.endtime = endtime
         self.price = price

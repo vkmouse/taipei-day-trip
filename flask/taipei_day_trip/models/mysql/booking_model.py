@@ -11,7 +11,7 @@ class MySQLBookingModel(MySQLModel, BookingModel):
         MySQLModel.__init__(self, cnxpool, debug)
 
     @MySQLModel.with_connection
-    def add(self, memberId: int, attractionId: int, starttime: datetime, endtime: datetime, price: int, cnx, cursor) -> bool:
+    def add(self, member_id: int, attraction_id: int, starttime: datetime, endtime: datetime, price: int, cnx, cursor) -> bool:
         query = (
             'INSERT INTO {booking} ('
             '    member_id, '
@@ -23,21 +23,21 @@ class MySQLBookingModel(MySQLModel, BookingModel):
             'FROM dual '
             'WHERE NOT EXISTS (SELECT * FROM {booking} WHERE NOT (endtime <= %s OR %s <= starttime))'
         ).format(booking=self.tablename)
-        data = (memberId, attractionId, starttime, endtime, price, starttime, endtime)
+        data = (member_id, attraction_id, starttime, endtime, price, starttime, endtime)
         cursor.execute(query, data)
         cnx.commit()
         return cursor.rowcount == 1
         
     @MySQLModel.with_connection
-    def get_by_memberId(self, memberId: int, cnx, cursor) -> List[Booking]:
+    def get_by_member_id(self, member_id: int, cnx, cursor) -> List[Booking]:
         cursor = cnx.cursor(dictionary=True)
         query = 'SELECT * FROM {} WHERE member_id = %s'.format(self.tablename)
-        cursor.execute(query, (memberId,))
+        cursor.execute(query, (member_id,))
         rows = cursor.fetchall()
         return list(map(lambda row: Booking(
             id=row['id'],
-            memberId=row['member_id'],
-            attractionId=row['attraction_id'],
+            member_id=row['member_id'],
+            attraction_id=row['attraction_id'],
             starttime=row['starttime'],
             endtime=row['endtime'],
             price=row['price'],
