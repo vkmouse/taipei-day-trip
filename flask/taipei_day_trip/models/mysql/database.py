@@ -40,7 +40,13 @@ class MySQLDatabase(Database):
         return MySQLAttractionModel(self.__cnxpool, self.categories.tablename, self.mrts.tablename, self.__debug)
 
     def _create_booking_model(self) -> BookingModel:
-        return MySQLBookingModel(self.__cnxpool, self.members.tablename, self.attractions.tablename, self.__debug)
+        return MySQLBookingModel(
+            cnxpool=self.__cnxpool,
+            member_tablename=self.members.tablename, 
+            attraction_tablename=self.attractions.tablename, 
+            attraction_image_tablename=self.attractions.attraction_images.tablename, 
+            debug=self.__debug
+        )
         
     def _create_category_model(self) -> CategoryModel:
         return MySQLCategoryModel(self.__cnxpool, self.__debug)

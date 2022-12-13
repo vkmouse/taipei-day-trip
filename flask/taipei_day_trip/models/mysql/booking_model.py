@@ -1,13 +1,15 @@
 from datetime import datetime
 from taipei_day_trip.models.booking_model import BookingModel
 from taipei_day_trip.models.mysql.mysql_model import MySQLModel
+from taipei_day_trip.models.types import Attraction
 from taipei_day_trip.models.types import Booking
 from taipei_day_trip.models.types import List
 
 class MySQLBookingModel(MySQLModel, BookingModel):
-    def __init__(self, cnxpool, member_tablename: str, attraction_tablename: str, debug: bool):
+    def __init__(self, cnxpool, member_tablename: str, attraction_tablename: str, attraction_image_tablename: str, debug: bool):
         self.member_tablename = member_tablename
         self.attraction_tablename = attraction_tablename
+        self.attraction_image_tablename = attraction_image_tablename
         MySQLModel.__init__(self, cnxpool, debug)
 
     @MySQLModel.with_connection
@@ -31,13 +33,51 @@ class MySQLBookingModel(MySQLModel, BookingModel):
     @MySQLModel.with_connection
     def get_by_member_id(self, member_id: int, cnx, cursor) -> List[Booking]:
         cursor = cnx.cursor(dictionary=True)
-        query = 'SELECT * FROM {} WHERE member_id = %s'.format(self.tablename)
+        query = (
+            'SELECT'
+            '    {booking}.id,'
+            '    {booking}.member_id, '
+            '    {booking}.starttime, '
+            '    {booking}.endtime, '
+            '    {booking}.price, '
+            '    tb.id AS attraction_id, '
+            '    tb.name AS attraction_name, '
+            '    tb.address AS attraction_address, '
+            '    tb.images AS attraction_images '
+            'FROM {booking} '
+            'INNER JOIN ('
+            '    SELECT '
+            '        {attraction}.id AS id, '
+            '        {attraction}.name AS name, '
+            '        {attraction}.address AS address, '
+            '        GROUP_CONCAT(DISTINCT {attraction_image}.url) AS images '
+            '    FROM {attraction_image} '
+            '    INNER JOIN {attraction} '
+            '        ON {attraction_image}.attraction_id={attraction}.id '
+            '    GROUP BY {attraction}.id'
+            ') tb'
+            '    ON {booking}.attraction_id=tb.id '
+            'WHERE member_id = %s'
+        ).format(
+            booking=self.tablename,
+            attraction=self.attraction_tablename,
+            attraction_image=self.attraction_image_tablename)
         cursor.execute(query, (member_id,))
         rows = cursor.fetchall()
         return list(map(lambda row: Booking(
             id=row['id'],
             member_id=row['member_id'],
-            attraction_id=row['attraction_id'],
+            attraction=Attraction(
+                id=row['attraction_id'],
+                name=row['attraction_name'],
+                address=row['attraction_address'],
+                images=row['attraction_images'].split(','),
+                description='',
+                lat=0,
+                lng=0,
+                transport='',
+                category='',
+                mrt=''),
             starttime=row['starttime'],
             endtime=row['endtime'],
             price=row['price'],

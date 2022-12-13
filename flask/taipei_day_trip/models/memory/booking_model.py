@@ -24,7 +24,8 @@ class MemoryBookingModelModel(BookingModel):
         if exists:
             return False
 
-        element = Booking(self.__next_id, member_id, attraction_id, starttime, endtime, price)
+        attraction = self.__attractions.get_by_id(attraction_id)
+        element = Booking(self.__next_id, member_id, attraction, starttime, endtime, price)
         self.__db.append(element)
         return True
 

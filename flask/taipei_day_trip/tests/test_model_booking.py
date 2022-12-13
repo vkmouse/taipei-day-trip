@@ -12,7 +12,7 @@ def booking_test_case(db: Database):
     assert db.bookings.add(1, 1, datetime(2000, 1, 1, 14), datetime(2000, 1, 1, 14) + timedelta(hours=3), 2000) == False
     db.categories.add('category1')
     db.mrts.add('mrt1')
-    util.add_attraction(db)
+    util.add_attraction(db, name='attr1')
     db.members.add("name1", "1@1", "pass1")
     assert db.bookings.add(1, 1, datetime(2000, 1, 1, 14), datetime(2000, 1, 1, 17), 2000) == True
     assert db.bookings.add(1, 1, datetime(2000, 1, 1, 16), datetime(2000, 1, 1, 20), 2500) == False
@@ -25,9 +25,12 @@ def booking_test_case(db: Database):
     assert booking_list[0].starttime == datetime(2000, 1, 1, 14)
     assert booking_list[0].endtime == datetime(2000, 1, 1, 17)
     assert booking_list[0].price == 2000
+    assert booking_list[0].attraction.name == 'attr1'
+    assert booking_list[0].attraction.images[0] == '123'
     assert booking_list[1].starttime == datetime(2000, 1, 1, 17)
     assert booking_list[1].endtime == datetime(2000, 1, 1, 21)
     assert booking_list[1].price == 2500
+    assert booking_list[1].attraction.name == 'attr1'
 
     db.bookings.remove_by_id(booking_list[0].id)
     booking_list = db.bookings.get_by_member_id(1)
@@ -35,6 +38,7 @@ def booking_test_case(db: Database):
     assert booking_list[0].starttime == datetime(2000, 1, 1, 17)
     assert booking_list[0].endtime == datetime(2000, 1, 1, 21)
     assert booking_list[0].price == 2500
+    assert booking_list[0].attraction.name == 'attr1'
 
 def test_memory_based_model():
     db = MemoryDatabase()
