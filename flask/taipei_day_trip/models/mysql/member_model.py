@@ -5,8 +5,16 @@ from taipei_day_trip.models.types import Member
 class MySQLMemberModel(MySQLModel, MemberModel):
     @MySQLModel.with_connection
     def add(self, name: str, email: str, password: str, cnx, cursor) -> bool:
-        query = 'INSERT IGNORE INTO {} (name, email, password) VALUES (%s, %s, %s)'.format(self.tablename)
-        data = (name, email, password)
+        query = (
+            'INSERT INTO {member} ('
+            '    name, '
+            '    email, '
+            '    password) '
+            'SELECT %s, %s, %s '
+            'FROM dual '
+            'WHERE NOT EXISTS (SELECT * FROM {member} WHERE email = %s)'
+        ).format(member=self.tablename)
+        data = (name, email, password, email)
         cursor.execute(query, data)
         cnx.commit()
         return cursor.rowcount == 1
