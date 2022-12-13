@@ -26,6 +26,7 @@ def test_get_by_member_id():
                 'address': 'addr',
                 'image': '123'
             },
+            'bookingId': 1,
             'starttime': datetime(2020, 1, 1, 10, 30, 20),
             'endtime': datetime(2020, 1, 1, 10, 30, 30),
             'price': 2500
@@ -36,6 +37,7 @@ def test_get_by_member_id():
                 'address': 'addr',
                 'image': '123'
             },
+            'bookingId': 2,
             'starttime': datetime(2020, 2, 1, 10, 30, 20),
             'endtime': datetime(2020, 2, 1, 10, 30, 30),
             'price': 2000

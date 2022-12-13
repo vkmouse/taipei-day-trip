@@ -37,12 +37,6 @@ def test_member_login_failed():
     assert controller.login('', '')[0] == controller.view.render_email_is_not_exists()
     assert controller.login(None, '')[0] == controller.view.render_email_is_not_exists()
 
-def test_member_validate_id():
-    controller = create_controller()
-    assert controller.validator.validate_id('10') == True
-    assert controller.validator.validate_id(None) == False
-    assert controller.validator.validate_id('fdsf') == False
-
 def test_member_validate_name():
     controller = create_controller()
     assert controller.validator.validate_name(None) == False

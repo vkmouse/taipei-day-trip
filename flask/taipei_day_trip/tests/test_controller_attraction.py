@@ -34,15 +34,15 @@ def test_attraction_id_if_not_exists():
 
 def test_attractions_if_missing_requestment():
     controller = create_controller()
-    assert controller.attractions(None, None) == controller.view.render_missing_required_parameter('page')
+    assert controller.attractions(None, None) == controller.view.render_invalid_parameter()
 
 def test_attractions_if_page_not_a_number():
     controller = create_controller()
-    assert controller.attractions('not a number', None) == controller.view.render_page_is_invalid()
+    assert controller.attractions('not a number', None) == controller.view.render_invalid_parameter()
 
 def test_attractions_if_page_number_invalid():
     controller = create_controller()
-    assert controller.attractions('-10', None) == controller.view.render_page_is_invalid()
+    assert controller.attractions('-10', None) == controller.view.render_invalid_parameter()
 
 def test_attractions_if_having_next_page():
     controller = create_controller()

@@ -1,3 +1,4 @@
+from taipei_day_trip.controllers.base import BaseValidator, BaseView
 from taipei_day_trip.models import Booking
 from taipei_day_trip.models import Database
 from taipei_day_trip.models import List
@@ -50,10 +51,7 @@ class BookingController:
         except Exception as e:
             return self.view.render_unexpected(e)
 
-class BookingValidator:
-    def validate_number(self, value: str | None) -> bool:
-        return value != None and value.isdigit()
-
+class BookingValidator(BaseValidator):
     def validate_date(self, date: str | None) -> bool:
         return parse_datestr(date) != None
 
@@ -62,33 +60,24 @@ class BookingValidator:
         end = parse_datestr(endtime)
         return end > start
 
-class BookingView:
+class BookingView(BaseView):
     def render_get_by_member_id(self, bookings: List[Booking]):
         data = list(map(lambda x: {
-            'id': x.id,
             'attraction': {
                 'id': x.attraction.id,
                 'name': x.attraction.name,
                 'address': x.attraction.address,
                 'image': x.attraction.images[0]
             },
+            'bookingId': x.id,
             'starttime': x.starttime,
             'endtime': x.endtime,
             'price': x.price
         }, bookings))
         return { 'data': data }, 200
 
-    def render_success(self):
-        return { 'ok': True }, 200
-
     def render_add_success(self):
         return { 'ok': True }, 201
 
     def render_member_or_attraction_not_exists(self):
         return { 'error': True, 'message': 'Invalid member or attraction' }, 400
-
-    def render_invalid_parameter(self):
-        return { 'error': True, 'message': 'Invalid parameter' }, 400
-
-    def render_unexpected(self, e: Exception):
-        return { 'error': True, 'message': str(e) }, 500
