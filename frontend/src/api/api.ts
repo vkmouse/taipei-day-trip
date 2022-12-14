@@ -16,7 +16,15 @@ export interface Attractions {
   nextPage: number | null
 }
 
+export type Booking = {
+  attractionId: number
+  starttime: Date,
+  endtime: Date,
+  price: number
+}
+
 export type API = {
+  addBooking: (booking: Booking) => Promise<boolean>
   getAttraction: (id: number) => Promise<Attraction>
   getAttractions : (page: number, keyword: string) => Promise<Attractions>
   getCategories: () => Promise<{ data: string[] }>

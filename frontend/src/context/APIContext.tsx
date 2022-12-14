@@ -4,6 +4,7 @@ import mockAPI from '../api/mockAPI';
 import realAPI from '../api/realAPI';
 
 const initialState: API = {
+  addBooking: () => new Promise(() => void 0),
   getAttraction: () => new Promise(() => void 0),
   getAttractions: () => new Promise(() => void 0),
   getCategories: () => new Promise(() => void 0),
