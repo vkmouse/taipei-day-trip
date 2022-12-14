@@ -3,8 +3,8 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { APIProvider } from './context/APIContext';
 import { AuthProvider } from './context/AuthContext';
-import AttractionView from './pages/AttractionPage';
-import HomeView from './pages/HomePage';
+import AttractionPage from './pages/AttractionPage';
+import HomePage from './pages/HomePage';
 import { GlobalStyles } from './utils/CommonStyles';
 
 function App() {
@@ -16,9 +16,9 @@ function App() {
         <Router>
           <Routes>
             <Route path='/'>
-              <Route index element={<HomeView />} />
+              <Route index element={<HomePage />} />
               <Route path='attraction'>
-                <Route path=':attractionId'  element={<AttractionView />} />
+                <Route path=':attractionId'  element={<AttractionPage />} />
               </Route>
             </Route>
           </Routes>

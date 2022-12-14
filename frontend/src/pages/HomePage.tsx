@@ -76,7 +76,7 @@ const SearchBarContainer = styled.div`
   align-items: end;
 `;
 
-function HomeView() {
+const HomePage = () => {
   const observer = useRef<IntersectionObserver>();
   const [isLoading, setIsLoading] = useState(false);
   const api = useAPIContext();
@@ -157,6 +157,6 @@ function HomeView() {
       <Footer />
     </>
   );
-}
+};
 
-export default HomeView;
+export default HomePage;

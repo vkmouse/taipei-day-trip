@@ -42,7 +42,7 @@ const TextBold = styled.div`
   line-height: 28px;
 `;
 
-function AttractionView() {
+const AttractionPage = () => {
   const params = useParams();
   if (params.attractionId === undefined) {
     return <></>;
@@ -82,6 +82,6 @@ function AttractionView() {
       <Footer />
     </>
   );
-}
+};
 
-export default AttractionView;
+export default AttractionPage;
