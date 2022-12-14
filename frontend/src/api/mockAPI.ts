@@ -3,7 +3,7 @@ import { API, Attraction, Attractions, Booking } from "./api";
 const ms = 1000;
 
 const mockAPI: API = {
-  addBooking: (booking: Booking): Promise<boolean> => {
+  addBooking: (token: string, booking: Booking): Promise<boolean> => {
     throw 'Not Implement';
   },
 

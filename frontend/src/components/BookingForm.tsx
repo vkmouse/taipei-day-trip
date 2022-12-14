@@ -1,10 +1,10 @@
 import styled from '@emotion/styled';
 import React, { useState, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Attraction } from '../api/api';
+import { Attraction, Booking } from '../api/api';
 import { useAuthContext } from '../context/AuthContext';
 import { useLoginRegisterContext } from '../context/LoginRegisterContext';
 import { H3, Secondery70, BodyMedium, BodyBold, Secondery20, Primary } from '../utils/CommonStyles';
+import { convertTimeToDate, getNextDate, parseDateString } from '../utils/time';
 import Calendar from './Calendar';
 import { RadioGroup, Radio } from './RadioButton';
 
@@ -66,20 +66,6 @@ const Button = styled.button`
   cursor: pointer;
 `;
 
-const getDay = (offsetDay: number) => {
-  const dayMilli = 1000 * 60 * 60 * 24;
-  const date = new Date(new Date().getTime() + (offsetDay * dayMilli));
-  const year = date.getFullYear();
-  
-  let month: number | string = date.getMonth() + 1;
-  let day: number | string = date.getDate();
-  
-  if (month < 10) month = '0' + month;
-  if (day < 10) day = '0' + day;
-  
-  return `${year}-${month}-${day}`;
-};
-
 const BookingForm = (props: { attraction?: Attraction }) => {
   if (props.attraction === undefined) {
     return (
@@ -93,11 +79,10 @@ const BookingForm = (props: { attraction?: Attraction }) => {
 
   const { id, name, category, mrt } = props.attraction;
   const [price, setPrice] = useState(2000);
-  const [date, setDate] = useState(getDay(1));
+  const [date, setDate] = useState(getNextDate(1));
   const timeRef = useRef('morning');
   const auth = useAuthContext();
   const { show } = useLoginRegisterContext();
-  const navigate = useNavigate();
 
   const handleRadioChanged = (val: string) => {
     timeRef.current = val;
@@ -108,15 +93,24 @@ const BookingForm = (props: { attraction?: Attraction }) => {
     }
   };
 
-  const startBooking = () => {
-    const out = {
+  const startBooking = async () => {
+    const starttime = new Date(date);
+    const endtime = new Date(date);
+    if (timeRef.current === 'morning') {
+      starttime.setHours(date.getHours() + 8);
+      endtime.setHours(date.getHours() + 12);
+    } else if (timeRef.current === 'afternoon') {
+      starttime.setHours(date.getHours() + 14);
+      endtime.setHours(date.getHours() + 18);
+    }
+    const booking: Booking = {
       attractionId: id,
-      date: date,
-      time: timeRef.current,
+      starttime: starttime,
+      endtime: endtime,
       price: price
     };
-    console.log(out);
-    navigate('/booking');
+    const success = await auth.addBooking(booking);
+    console.log(success); ///////////////////////////////////////////////////////////////
   };
 
   return (
@@ -129,10 +123,10 @@ const BookingForm = (props: { attraction?: Attraction }) => {
         <Row>
           <RowTitle>選擇日期：</RowTitle>
           <Calendar
-            min={getDay(1)}
-            max={getDay(90)}
-            value={date}
-            onChange={value => setDate(value)}
+            min={convertTimeToDate(getNextDate(1))}
+            max={convertTimeToDate(getNextDate(90))}
+            value={convertTimeToDate(date)}
+            onChange={value => setDate(parseDateString(value))}
           />
         </Row>
         <Row>
@@ -146,7 +140,7 @@ const BookingForm = (props: { attraction?: Attraction }) => {
           <RowTitle>導覽費用：</RowTitle>
           新台幣 {price} 元
         </Row>
-        <Button onClick={auth.isLogin ? startBooking : show }>開始預約行程</Button>
+        <Button onClick={ auth.isLogin ? startBooking : show }>開始預約行程</Button>
       </Form>
     </Container>
   );

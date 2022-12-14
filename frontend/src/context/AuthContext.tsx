@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useRef, useState } from 'react';
+import { Booking } from '../api/api';
 import { useAPIContext } from './APIContext';
 
 enum LoginResponse {
@@ -18,6 +19,7 @@ type Member = {
 type Auth = {
   token: string
   isLogin: boolean
+  addBooking: (booking: Booking) => Promise<boolean>
   login: (email: string, password: string) => Promise<LoginResponse>
   logout: () => Promise<void>
   getUserInfo: (refresh: boolean) => Promise<Member | null>
@@ -26,6 +28,7 @@ type Auth = {
 const initialState: Auth = {
   token: '',
   isLogin: false,
+  addBooking: (): Promise<boolean> => { throw new Error('Function not implemented.'); },
   login: (): Promise<LoginResponse> => { throw new Error('Function not implemented.'); },
   logout: (): Promise<void> => { throw new Error('Function not implemented.'); },
   getUserInfo: (): Promise<Member> => { throw new Error('Function not implemented.'); }
@@ -67,6 +70,9 @@ const AuthProvider = (props: { children: JSX.Element[] | JSX.Element }) => {
   const auth: Auth = {
     token: token.current,
     isLogin: isLogin,
+    addBooking: async (booking) => {
+      return await api.addBooking(token.current, booking);
+    },
     login: async (email, password) => {
       const response = await api.login(email, password);
       if (response.status === 200) {

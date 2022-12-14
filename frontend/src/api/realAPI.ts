@@ -1,21 +1,22 @@
-import { convertDateToStr } from "../utils/time";
+import { convertTimeToDateTime } from "../utils/time";
 import { API, Attraction, Attractions, Booking } from "./api";
 
 const realAPI: API = {
-  addBooking: async (booking: Booking): Promise<boolean> => {
+  addBooking: async (token: string, booking: Booking): Promise<boolean> => {
     const response = await fetch('/api/booking', {
       method: 'POST',
       body: JSON.stringify({
         'attractionId': booking.attractionId,
-        'starttime': convertDateToStr(booking.starttime),
-        'endtime': convertDateToStr(booking.endtime),
+        'starttime': convertTimeToDateTime(booking.starttime),
+        'endtime': convertTimeToDateTime(booking.endtime),
         'price': booking.price,
       }),
       headers: new Headers({
+        'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
       })
     });
-    if (response.status === 200) {
+    if (response.status === 201) {
       return true;
     } else {
       return false;
