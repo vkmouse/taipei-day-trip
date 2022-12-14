@@ -19,6 +19,7 @@ type Member = {
 type Auth = {
   token: string
   isLogin: boolean
+  hasInit: boolean
   addBooking: (booking: Booking) => Promise<boolean>
   login: (email: string, password: string) => Promise<LoginResponse>
   logout: () => Promise<void>
@@ -28,6 +29,7 @@ type Auth = {
 const initialState: Auth = {
   token: '',
   isLogin: false,
+  hasInit: false,
   addBooking: (): Promise<boolean> => { throw new Error('Function not implemented.'); },
   login: (): Promise<LoginResponse> => { throw new Error('Function not implemented.'); },
   logout: (): Promise<void> => { throw new Error('Function not implemented.'); },
@@ -38,6 +40,7 @@ const AuthContext = createContext<Auth>(initialState);
 
 const AuthProvider = (props: { children: JSX.Element[] | JSX.Element }) => {
   const [isLogin, setIsLogin] = useState(false);
+  const [hasInit, setHasInit] = useState(false);
   const token = useRef('');
   const api = useAPIContext();
   const parseLoginSuccess = async (response: Response) => {
@@ -70,6 +73,7 @@ const AuthProvider = (props: { children: JSX.Element[] | JSX.Element }) => {
   const auth: Auth = {
     token: token.current,
     isLogin: isLogin,
+    hasInit: hasInit,
     addBooking: async (booking) => {
       return await api.addBooking(token.current, booking);
     },
@@ -94,6 +98,7 @@ const AuthProvider = (props: { children: JSX.Element[] | JSX.Element }) => {
       switch (response.status) {
         case 200:
           setIsLogin(true);
+          setHasInit(true);
           return response.json();
         case 401:
           if (refresh) {
@@ -103,15 +108,19 @@ const AuthProvider = (props: { children: JSX.Element[] | JSX.Element }) => {
             return auth.getUserInfo(false);
           } else {
             setIsLogin(false);
-            return null;
+            setHasInit(true);
           }
+          break;
         case 403:
           setIsLogin(false);
-          return null;
+          setHasInit(true);
+          break;
         case 500:
           setIsLogin(false);
-          return null;
+          setHasInit(true);
+          break;
       }
+      return null;
     },
   };
   return <AuthContext.Provider value={auth} {...props} />;
