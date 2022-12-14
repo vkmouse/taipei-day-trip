@@ -14,7 +14,9 @@ def booking_test_case(db: Database):
     db.mrts.add('mrt1')
     util.add_attraction(db, name='attr1')
     db.members.add("name1", "1@1", "pass1")
+    db.members.add("name2", "2@2", "pass2")
     assert db.bookings.add(1, 1, datetime(2000, 1, 1, 14), datetime(2000, 1, 1, 17), 2000) == True
+    assert db.bookings.add(2, 1, datetime(2000, 1, 1, 14), datetime(2000, 1, 1, 17), 2000) == True
     assert db.bookings.add(1, 1, datetime(2000, 1, 1, 16), datetime(2000, 1, 1, 20), 2500) == False
     assert db.bookings.add(1, 1, datetime(2000, 1, 1, 17), datetime(2000, 1, 1, 21), 2500) == True
     assert db.bookings.add(1, 1, datetime(2000, 1, 1, 10), datetime(2000, 1, 1, 23), 2500) == False
