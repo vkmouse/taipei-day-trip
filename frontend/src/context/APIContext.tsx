@@ -7,6 +7,7 @@ const initialState: API = {
   addBooking: () => new Promise(() => void 0),
   getAttraction: () => new Promise(() => void 0),
   getAttractions: () => new Promise(() => void 0),
+  getBookings: () => new Promise(() => void 0),
   getCategories: () => new Promise(() => void 0),
   getUserInfo: () => new Promise(() => void 0),
   login: () => new Promise(() => void 0),

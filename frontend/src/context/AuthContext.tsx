@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useRef, useState } from 'react';
-import { Booking } from '../api/api';
+import { Booking, BookingResponse } from '../api/api';
 import { useAPIContext } from './APIContext';
 
 enum LoginResponse {
@@ -20,9 +20,10 @@ type Auth = {
   token: string
   isLogin: boolean
   hasInit: boolean
-  addBooking: (booking: Booking) => Promise<boolean>
+  addBooking: (refresh: boolean, booking: Booking) => Promise<boolean>
   login: (email: string, password: string) => Promise<LoginResponse>
   logout: () => Promise<void>
+  getBookings: (refresh: boolean) => Promise<BookingResponse | null>
   getUserInfo: (refresh: boolean) => Promise<Member | null>
 }
 
@@ -33,6 +34,7 @@ const initialState: Auth = {
   addBooking: (): Promise<boolean> => { throw new Error('Function not implemented.'); },
   login: (): Promise<LoginResponse> => { throw new Error('Function not implemented.'); },
   logout: (): Promise<void> => { throw new Error('Function not implemented.'); },
+  getBookings: (): Promise<BookingResponse | null> => { throw new Error('Function not implemented.'); },
   getUserInfo: (): Promise<Member> => { throw new Error('Function not implemented.'); }
 };
 
@@ -74,8 +76,20 @@ const AuthProvider = (props: { children: JSX.Element[] | JSX.Element }) => {
     token: token.current,
     isLogin: isLogin,
     hasInit: hasInit,
-    addBooking: async (booking) => {
-      return await api.addBooking(token.current, booking);
+    addBooking: async (refresh, booking) => {
+      const response = await api.addBooking(token.current, booking);
+      switch (response.status) {
+        case 201:
+          return true;
+        case 401:
+          if (refresh) {
+            const response = await api.refresh();
+            const body: { 'ok': boolean, 'access_token': string } = await response.json();
+            token.current = body.access_token;
+            return auth.addBooking(false, booking);
+          }
+      }
+      return false;
     },
     login: async (email, password) => {
       const response = await api.login(email, password);
@@ -99,7 +113,8 @@ const AuthProvider = (props: { children: JSX.Element[] | JSX.Element }) => {
         case 200:
           setIsLogin(true);
           setHasInit(true);
-          return response.json();
+          const body: { data: Member } = await response.json();
+          return body.data;
         case 401:
           if (refresh) {
             const response = await api.refresh();
@@ -119,6 +134,22 @@ const AuthProvider = (props: { children: JSX.Element[] | JSX.Element }) => {
           setIsLogin(false);
           setHasInit(true);
           break;
+      }
+      return null;
+    },
+    getBookings: async (refresh: boolean) => {
+      const response = await api.getBookings(token.current);
+      switch (response.status) {
+        case 200:
+          return await response.json();
+        case 401:
+          console.log(401);
+          if (refresh) {
+            const response = await api.refresh();
+            const body: { 'ok': boolean, 'access_token': string } = await response.json();
+            token.current = body.access_token;
+            return auth.getBookings(false);
+          }
       }
       return null;
     },

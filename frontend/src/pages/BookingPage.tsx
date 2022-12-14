@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navigation from '../components/Navigation';
 import { Header, Main, Footer } from '../components/Semantic';
@@ -32,9 +32,20 @@ const Title = styled.div`
 const BookingPage = () => {
   const auth = useAuthContext();
   const navigate = useNavigate();
+  const [name, setName] = useState('');
+
   useEffect(() => {
     if (auth.hasInit && !auth.isLogin) {
       navigate('/');
+    } else {
+      auth.getUserInfo(true).then(member => {
+        if (member !== null) {
+          setName(member.name);
+        }
+      });
+      auth.getBookings(true).then(booking => {
+        console.log(booking);
+      });
     }
   }, [auth.hasInit]);
   
@@ -45,7 +56,7 @@ const BookingPage = () => {
       <Main>
         <Section>
           <SectionContainer>
-            <Title>您好，Yakko，待預定的行程如下：</Title>
+            <Title>您好，{name}，待預定的行程如下：</Title>
           </SectionContainer>
         </Section>
         

@@ -1,9 +1,9 @@
-import { API, Attraction, Attractions, Booking } from "./api";
+import { API, Attraction, Attractions, Booking, BookingResponse } from "./api";
 
 const ms = 1000;
 
 const mockAPI: API = {
-  addBooking: (token: string, booking: Booking): Promise<boolean> => {
+  addBooking: (token: string, booking: Booking): Promise<Response> => {
     throw 'Not Implement';
   },
 
@@ -35,6 +35,10 @@ const mockAPI: API = {
     return new Promise((resolve, reject) => {
       setTimeout(() => resolve({ data, nextPage }), ms);
     });
+  },
+
+  getBookings: (token: string) : Promise<Response> => {
+    throw 'Not Implement';
   },
 
   getCategories: () : Promise<{ data: string[] }> => {

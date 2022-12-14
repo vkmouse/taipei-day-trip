@@ -23,10 +23,24 @@ export type Booking = {
   price: number
 }
 
+export type BookingResponse = {
+  attraction: {
+    id: number
+    name: string
+    address: string
+    image: string
+  },
+  bookingId: number
+  starttime: Date
+  endtime: Date
+  price: number
+}
+
 export type API = {
-  addBooking: (token: string, booking: Booking) => Promise<boolean>
+  addBooking: (token: string, booking: Booking) => Promise<Response>
   getAttraction: (id: number) => Promise<Attraction>
-  getAttractions : (page: number, keyword: string) => Promise<Attractions>
+  getAttractions: (page: number, keyword: string) => Promise<Attractions>
+  getBookings: (token: string) => Promise<Response>
   getCategories: () => Promise<{ data: string[] }>
   getUserInfo: (token: string) => Promise<Response>
   login: (email: string, password: string) => Promise<Response>

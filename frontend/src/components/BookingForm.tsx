@@ -68,7 +68,6 @@ const Button = styled.button`
 `;
 
 const BookingForm = (props: { attraction?: Attraction, navigate: NavigateFunction }) => {
-
   if (props.attraction === undefined) {
     return (
       <Container>
@@ -114,7 +113,7 @@ const BookingForm = (props: { attraction?: Attraction, navigate: NavigateFunctio
       endtime: endtime,
       price: price
     };
-    const success = await auth.addBooking(booking);
+    const success = await auth.addBooking(true, booking);
     if (success) {
       setTimeout(() => navigate('/booking'), 2000);
       setBookingStatus('預約成功 ✔');

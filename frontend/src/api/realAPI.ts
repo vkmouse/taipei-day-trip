@@ -1,9 +1,9 @@
 import { convertTimeToDateTime } from "../utils/time";
-import { API, Attraction, Attractions, Booking } from "./api";
+import { API, Attraction, Attractions, Booking, BookingResponse } from "./api";
 
 const realAPI: API = {
-  addBooking: async (token: string, booking: Booking): Promise<boolean> => {
-    const response = await fetch('/api/booking', {
+  addBooking: async (token: string, booking: Booking): Promise<Response> => {
+    return await fetch('/api/booking', {
       method: 'POST',
       body: JSON.stringify({
         'attractionId': booking.attractionId,
@@ -16,11 +16,6 @@ const realAPI: API = {
         'Content-Type': 'application/json'
       })
     });
-    if (response.status === 201) {
-      return true;
-    } else {
-      return false;
-    }
   },
 
   getAttraction: async (id: number) : Promise<Attraction> => {
@@ -40,6 +35,15 @@ const realAPI: API = {
     const response = await fetch(url);
     const body = await response.json();
     return body;
+  },
+
+  getBookings: async (token: string) : Promise<Response> => {
+    return await fetch('/api/booking', {
+      method: 'GET',
+      headers: new Headers({
+        'Authorization': `Bearer ${token}`
+      })
+    });
   },
 
   getCategories: async () : Promise<{ data: string[] }> => {
