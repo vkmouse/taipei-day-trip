@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { APIProvider } from './context/APIContext';
 import { AuthProvider } from './context/AuthContext';
 import AttractionPage from './pages/AttractionPage';
+import BookingPage from './pages/BookingPage';
 import HomePage from './pages/HomePage';
 import { GlobalStyles } from './utils/CommonStyles';
 
@@ -20,6 +21,7 @@ function App() {
               <Route path='attraction'>
                 <Route path=':attractionId'  element={<AttractionPage />} />
               </Route>
+              <Route path='booking' element={<BookingPage />} />
             </Route>
           </Routes>
         </Router>

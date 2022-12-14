@@ -26,7 +26,6 @@ const Article = styled.article`
   max-width: 1180px;
   border-top: 1px solid #E8E8E8;
   padding: 50px 10px 80px 10px;
-  margin-bottom: 40px;
 `;
 
 const Text = styled.div`

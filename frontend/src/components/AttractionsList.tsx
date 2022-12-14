@@ -24,7 +24,7 @@ const AttractionsListContainer  = styled.div`
   ${Grid};
   width: 1170px;
   padding: 15px;
-  margin: 40px 4px 40px 4px;
+  margin: 40px 4px 0 4px;
 `;
 
 const AttractionTitleContainer = styled.div`
