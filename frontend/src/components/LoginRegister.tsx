@@ -1,6 +1,5 @@
 import styled from '@emotion/styled';
 import React, { useState, useReducer } from 'react';
-import { useAuthContext } from '../context/AuthContext';
 import useLogin from '../hooks/useLogin';
 import useRegister from '../hooks/useRegister';
 import { H3, Secondery70, Secondery20, Primary, BodyMedium, Secondery50 } from '../utils/CommonStyles';
@@ -8,6 +7,7 @@ import { validateEmail, validateName, validatePassword } from '../utils/validate
 
 const FullPage = styled.div`
   position: fixed;
+  z-index: 1000;
   width: 100vw;
   height: 100vh;
 `;
@@ -186,6 +186,7 @@ const HintText = (props: { status: string, message: string }) => {
 
 const InputField = (props: { 
   autoFocus?: boolean
+  autoComplete?: string
   dangerMessage: string
   placeholder: string
   type?: React.HTMLInputTypeAttribute
@@ -266,17 +267,13 @@ const loginRegisterReducer = (state: LoginRegisterState, action: LoginRegisterAc
   }
 };
 
-const LoginRegister = (props: {
-  display: string,
-  hide?: () => void,
-}) => {
+const LoginRegister = (props: { hide?: () => void }) => {
   const [isLogin, setIsLogin] = useState(true);
   const [state, dispatch] = useReducer(loginRegisterReducer, initialState);
   const { email, emailValid, name, nameValid, password, passwordValid } = state;
   const description: Description = isLogin ? loginDescription : registerDescription;
   const loginHandler = useLogin();
   const registerHandler = useRegister();
-  const auth = useAuthContext();
 
   const switchForm = () => {
     loginHandler.clear();
@@ -308,7 +305,7 @@ const LoginRegister = (props: {
   }
 
   return (
-    <FullPage style={{ display: props.display }}>
+    <FullPage>
       <Modal>
         <ModalOverlay onClick={props.hide}/>
         <ModalContent>
@@ -336,6 +333,7 @@ const LoginRegister = (props: {
               />
               <InputField
                 autoFocus
+                autoComplete='off'
                 dangerMessage={passwordMessage}
                 placeholder='輸入密碼'
                 type='password'
