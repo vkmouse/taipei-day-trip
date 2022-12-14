@@ -1,10 +1,9 @@
 import styled from '@emotion/styled';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuthContext } from '../context/AuthContext';
 import { useLoginRegisterContext } from '../context/LoginRegisterContext';
 import { H2, Primary, BodyMedium, Secondery, Secondery20 } from '../utils/CommonStyles';
-import LoginRegister from './LoginRegister';
 
 const Container = styled.nav`
   display: flex;  

@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Attraction } from '../api/api';
 import BookingForm from '../components/BookingForm';
 import Carousel from '../components/Carousel';
@@ -51,6 +51,7 @@ const AttractionPage = () => {
   const id = parseInt(params.attractionId);
   const [attraction, setAttraction] = useState<Attraction>();
   const api = useAPIContext();
+  const navigate = useNavigate();
   
   const getAttraction = async (id: number) => {
     const attraction = await api.getAttraction(id);
@@ -67,7 +68,7 @@ const AttractionPage = () => {
       <Header>
         <Section>
           <Carousel attraction={attraction} />
-          <BookingForm attraction={attraction} />
+          <BookingForm attraction={attraction} navigate={navigate} />
         </Section>
       </Header>
       <Main>

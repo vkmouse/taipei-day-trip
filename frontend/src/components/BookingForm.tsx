@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import React, { useState, useRef } from 'react';
+import { NavigateFunction } from 'react-router-dom';
 import { Attraction, Booking } from '../api/api';
 import { useAuthContext } from '../context/AuthContext';
 import { useLoginRegisterContext } from '../context/LoginRegisterContext';
@@ -55,7 +56,7 @@ const Form = styled.div`
 `;
 
 const Button = styled.button`
-  margin: 25px 0 0 0;
+  margin: 5px 10px 5px 0;
   padding: 10px 20px;
   background-color: ${Primary};
   color: white;
@@ -66,7 +67,8 @@ const Button = styled.button`
   cursor: pointer;
 `;
 
-const BookingForm = (props: { attraction?: Attraction }) => {
+const BookingForm = (props: { attraction?: Attraction, navigate: NavigateFunction }) => {
+
   if (props.attraction === undefined) {
     return (
       <Container>
@@ -77,13 +79,15 @@ const BookingForm = (props: { attraction?: Attraction }) => {
     );
   }
 
+  const { navigate } = props;
   const { id, name, category, mrt } = props.attraction;
   const [price, setPrice] = useState(2000);
   const [date, setDate] = useState(getNextDate(1));
+  const [bookingStatus, setBookingStatus] = useState('');
   const timeRef = useRef('morning');
   const auth = useAuthContext();
   const { show } = useLoginRegisterContext();
-
+  
   const handleRadioChanged = (val: string) => {
     timeRef.current = val;
     if (val === 'morning') {
@@ -94,6 +98,7 @@ const BookingForm = (props: { attraction?: Attraction }) => {
   };
 
   const startBooking = async () => {
+    setBookingStatus('預約中 ...');
     const starttime = new Date(date);
     const endtime = new Date(date);
     if (timeRef.current === 'morning') {
@@ -110,7 +115,12 @@ const BookingForm = (props: { attraction?: Attraction }) => {
       price: price
     };
     const success = await auth.addBooking(booking);
-    console.log(success); ///////////////////////////////////////////////////////////////
+    if (success) {
+      setTimeout(() => navigate('/booking'), 2000);
+      setBookingStatus('預約成功 ✔');
+    } else {
+      setBookingStatus('預約失敗 ✘');
+    }
   };
 
   return (
@@ -140,7 +150,10 @@ const BookingForm = (props: { attraction?: Attraction }) => {
           <RowTitle>導覽費用：</RowTitle>
           新台幣 {price} 元
         </Row>
-        <Button onClick={ auth.isLogin ? startBooking : show }>開始預約行程</Button>
+        <Row>
+          <Button onClick={ auth.isLogin ? startBooking : show }>開始預約行程</Button>
+          {bookingStatus}
+        </Row>
       </Form>
     </Container>
   );
