@@ -1,11 +1,12 @@
 import styled from '@emotion/styled';
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import { Attraction } from '../api/api';
 import BookingForm from '../components/BookingForm';
 import Carousel from '../components/Carousel';
 import Navigation from '../components/Navigation';
 import { Header, Main, Footer } from '../components/Semantic';
-import { Attraction, useAPIContext } from '../context/APIContext';
+import { useAPIContext } from '../context/APIContext';
 import { BodyMedium, Secondery, BodyBold } from '../utils/CommonStyles';
 
 const Section = styled.section`

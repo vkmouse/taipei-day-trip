@@ -2,7 +2,7 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Attraction } from '../context/APIContext';
+import { Attraction } from '../api/api';
 import { AbsoluteBottom, AbsoluteFull, BodyBold, RatioContainer, CenterCropped, BodyMedium, Secondery50 } from '../utils/CommonStyles';
 
 const Grid = css`

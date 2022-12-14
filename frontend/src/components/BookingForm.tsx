@@ -1,6 +1,9 @@
 import styled from '@emotion/styled';
 import React, { useState, useRef } from 'react';
-import { Attraction } from '../context/APIContext';
+import { useNavigate } from 'react-router-dom';
+import { Attraction } from '../api/api';
+import { useAuthContext } from '../context/AuthContext';
+import { useLoginRegisterContext } from '../context/LoginRegisterContext';
 import { H3, Secondery70, BodyMedium, BodyBold, Secondery20, Primary } from '../utils/CommonStyles';
 import Calendar from './Calendar';
 import { RadioGroup, Radio } from './RadioButton';
@@ -92,7 +95,10 @@ const BookingForm = (props: { attraction?: Attraction }) => {
   const [price, setPrice] = useState(2000);
   const [date, setDate] = useState(getDay(1));
   const timeRef = useRef('morning');
-  
+  const auth = useAuthContext();
+  const { show } = useLoginRegisterContext();
+  const navigate = useNavigate();
+
   const handleRadioChanged = (val: string) => {
     timeRef.current = val;
     if (val === 'morning') {
@@ -110,6 +116,7 @@ const BookingForm = (props: { attraction?: Attraction }) => {
       price: price
     };
     console.log(out);
+    navigate('/booking');
   };
 
   return (
@@ -139,7 +146,7 @@ const BookingForm = (props: { attraction?: Attraction }) => {
           <RowTitle>導覽費用：</RowTitle>
           新台幣 {price} 元
         </Row>
-        <Button onClick={startBooking}>開始預約行程</Button>
+        <Button onClick={auth.isLogin ? startBooking : show }>開始預約行程</Button>
       </Form>
     </Container>
   );

@@ -1,7 +1,7 @@
 import { keyframes, css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React, { useState } from 'react';
-import { Attraction } from '../context/APIContext';
+import { Attraction } from '../api/api';
 import { CenterCropped, Secondery20 } from '../utils/CommonStyles';
 
 const Container = styled.div`

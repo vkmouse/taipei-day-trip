@@ -1,5 +1,4 @@
-import { API } from '.';
-import { Attraction, Attractions } from '../APIContext';
+import { API, Attraction, Attractions } from "./api";
 
 const ms = 1000;
 

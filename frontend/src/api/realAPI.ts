@@ -1,5 +1,4 @@
-import { API } from '.';
-import { Attraction, Attractions } from '../APIContext';
+import { API, Attraction, Attractions } from "./api";
 
 const realAPI: API = {
   getAttraction: async (id: number) : Promise<Attraction> => {

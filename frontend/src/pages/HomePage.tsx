@@ -1,10 +1,11 @@
 import styled from '@emotion/styled';
 import React, { useRef, useState, useEffect } from 'react';
+import { Attraction } from '../api/api';
 import AttractionsList from '../components/AttractionsList';
 import Navigation from '../components/Navigation';
 import SearchBar from '../components/SearchBar';
 import { Header, Main, Footer } from '../components/Semantic';
-import { useAPIContext, Attraction } from '../context/APIContext';
+import { useAPIContext } from '../context/APIContext';
 import { H1, Secondery10, BodyBold } from '../utils/CommonStyles';
 
 const AttractionsNotFound = styled.img`
