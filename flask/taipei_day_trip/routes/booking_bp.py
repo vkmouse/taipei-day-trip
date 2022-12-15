@@ -31,9 +31,9 @@ def booking_bp(db: Database, cache: Cache):
         return controller.add(member_id, body['attractionId'], body['starttime'], body['endtime'], body['price'])
 
     def booking_delete(member_id: int):
-        id = request.args.get('id')
-        if id:
-            return controller.remove_by_id(member_id, id)
+        if request.content_type == 'application/json':
+            body = request.get_json()
+            return controller.remove_by_id(member_id, body['bookingId'])
         return controller.remove_by_member_id(member_id)
 
     return bp

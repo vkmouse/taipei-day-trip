@@ -1,6 +1,6 @@
 class BaseValidator:
     def validate_number(self, value: str | None) -> bool:
-        return value != None and value.isdigit()
+        return type(value) == int or (value != None and value.isdigit())
 
 class BaseView:
     def render_success(self):
