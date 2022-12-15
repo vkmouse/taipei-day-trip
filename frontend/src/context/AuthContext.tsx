@@ -26,6 +26,7 @@ type Auth = {
   logout: () => Promise<void>
   getBookings: (refresh: boolean) => Promise<BookingResponse[]>
   getUserInfo: (refresh: boolean) => Promise<Member | null>
+  removeBooking: (refresh: boolean, bookingId: number) => Promise<boolean>
 }
 
 const initialState: Auth = {
@@ -36,7 +37,8 @@ const initialState: Auth = {
   login: (): Promise<LoginResponse> => { throw new Error('Function not implemented.'); },
   logout: (): Promise<void> => { throw new Error('Function not implemented.'); },
   getBookings: (): Promise<BookingResponse[]> => { throw new Error('Function not implemented.'); },
-  getUserInfo: (): Promise<Member> => { throw new Error('Function not implemented.'); }
+  getUserInfo: (): Promise<Member> => { throw new Error('Function not implemented.'); },
+  removeBooking: (): Promise<boolean> => { throw new Error('Function not implemented.'); },
 };
 
 const AuthContext = createContext<Auth>(initialState);
@@ -108,7 +110,7 @@ const AuthProvider = (props: { children: JSX.Element[] | JSX.Element }) => {
         setIsLogin(false);
       }
     },
-    getUserInfo: async (refresh: boolean) => {
+    getUserInfo: async (refresh) => {
       const response = await api.getUserInfo(token.current);
       switch (response.status) {
         case 200:
@@ -138,7 +140,7 @@ const AuthProvider = (props: { children: JSX.Element[] | JSX.Element }) => {
       }
       return null;
     },
-    getBookings: async (refresh: boolean) => {
+    getBookings: async (refresh) => {
       const response = await api.getBookings(token.current);
       switch (response.status) {
         case 200:
@@ -170,6 +172,21 @@ const AuthProvider = (props: { children: JSX.Element[] | JSX.Element }) => {
           }
       }
       return [];
+    },
+    removeBooking: async (refresh, bookingId) => {
+      const response = await api.removeBooking(token.current, bookingId);
+      switch (response.status) {
+        case 200:
+          return true;
+        case 401:
+          if (refresh) {
+            const response = await api.refresh();
+            const body: { 'ok': boolean, 'access_token': string } = await response.json();
+            token.current = body.access_token;
+            return auth.removeBooking(false, bookingId);
+          }
+      }
+      return false;
     },
   };
   return <AuthContext.Provider value={auth} {...props} />;

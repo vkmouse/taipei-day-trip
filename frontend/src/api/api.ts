@@ -47,4 +47,5 @@ export type API = {
   logout: () => Promise<Response>
   refresh: () => Promise<Response>
   register: (name: string, email: string, password: string) => Promise<Response>
+  removeBooking: (token: string, bookingId: number) => Promise<Response>
 }

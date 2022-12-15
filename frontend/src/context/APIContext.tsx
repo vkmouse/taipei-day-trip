@@ -14,6 +14,7 @@ const initialState: API = {
   logout: () => new Promise(() => void 0),
   refresh: () => new Promise(() => void 0),
   register: () => new Promise(() => void 0),
+  removeBooking: () => new Promise(() => void 0),
 };
 
 const APIContext = createContext<API>(initialState);

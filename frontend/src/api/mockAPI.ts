@@ -7,13 +7,13 @@ const mockAPI: API = {
     throw 'Not Implement';
   },
 
-  getAttraction: (id: number) : Promise<Attraction> => {
+  getAttraction: (id: number): Promise<Attraction> => {
     return new Promise((resolve, reject) => {
       setTimeout(() => resolve(createAttraction(id)), ms);
     });
   },
 
-  getAttractions: (page: number, keyword: string) : Promise<Attractions> => {
+  getAttractions: (page: number, keyword: string): Promise<Attractions> => {
     let data: Attraction[] = [];
     let nextPage: number | null = page + 1;
     for (let i = 0; i < 12; i++) {
@@ -37,11 +37,11 @@ const mockAPI: API = {
     });
   },
 
-  getBookings: (token: string) : Promise<Response> => {
+  getBookings: (token: string): Promise<Response> => {
     throw 'Not Implement';
   },
 
-  getCategories: () : Promise<{ data: string[] }> => {
+  getCategories: (): Promise<{ data: string[]; }> => {
     const data = [
       '綠野現蹤', '你是笨蛋', '哈哈哈哈', '輸入景點',
       '綠野現蹤', '你是笨蛋', '哈哈哈哈', '輸入景點',
@@ -53,7 +53,7 @@ const mockAPI: API = {
     });
   },
 
-  getUserInfo: (token: string) : Promise<Response> => {
+  getUserInfo: (token: string): Promise<Response> => {
     let response = createResponse(200);
     return new Promise((resolve, reject) => {
       setTimeout(() => resolve(response), ms);
@@ -75,7 +75,7 @@ const mockAPI: API = {
     });
   },
 
-  logout: () : Promise<Response> => {
+  logout: (): Promise<Response> => {
     let response = createResponse(200);
     return new Promise((resolve, reject) => {
       setTimeout(() => resolve(response), ms);
@@ -103,6 +103,10 @@ const mockAPI: API = {
       setTimeout(() => resolve(response), ms);
     });
   },
+  
+  removeBooking: function (token: string, bookingId: number): Promise<Response> {
+    throw new Error("Function not implemented.");
+  }
 };
 
 const createAttraction = (id: number) : Attraction => {

@@ -100,6 +100,20 @@ const realAPI: API = {
     });
     return response;
   },
+
+  removeBooking: async (token: string, bookingId: number): Promise<Response> => {
+    const response = await fetch('/api/booking', {
+      method: 'DELETE',
+      body: JSON.stringify({
+        'bookingId': bookingId
+      }),
+      headers: new Headers({
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      })
+    });
+    return response;
+  },
 };
 
 export default realAPI;
