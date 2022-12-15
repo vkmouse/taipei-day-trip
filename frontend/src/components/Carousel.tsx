@@ -92,9 +92,9 @@ const DotContainer = styled.div`
 
 const DotStyle = css`
   display: inline-block;
-  margin: 0 6px 0 6px;
-  width: 10px;
-  height: 10px;
+  margin: 0 2px 0 2px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   border: 1px solid;
 `;
@@ -158,7 +158,7 @@ const Carousel = (props: { attraction?: Attraction }) => {
             </ArrowContainer>
           </ControlPanel>
         </ControlPanelContainer>
-      ) : 
+      ) :
         <LoaderContainer>
           <Loader percent={percentage}/>
         </LoaderContainer>        
