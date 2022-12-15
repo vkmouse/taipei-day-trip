@@ -1,45 +1,20 @@
 import React, { createContext, useContext } from 'react';
-import mockAPI from './mockAPI';
-import realAPI from './realAPI';
-
-export interface Attraction {
-  id: number
-  name: string
-  description: string
-  address: string
-  lat: number
-  lng: number
-  transport: string
-  images: string[]
-  category: string
-  mrt?: string
-}
-
-export interface Attractions { 
-  data: Attraction[]
-  nextPage: number | null
-}
-
-export type API = {
-  getAttraction: (id: number) => Promise<Attraction>
-  getAttractions : (page: number, keyword: string) => Promise<Attractions>
-  getCategories: () => Promise<{ data: string[] }>
-  getUserInfo: (token: string) => Promise<Response>
-  login: (email: string, password: string) => Promise<Response>
-  logout: () => Promise<Response>
-  refresh: () => Promise<Response>
-  register: (name: string, email: string, password: string) => Promise<Response>
-}
+import { API } from '../api/api';
+import mockAPI from '../api/mockAPI';
+import realAPI from '../api/realAPI';
 
 const initialState: API = {
+  addBooking: () => new Promise(() => void 0),
   getAttraction: () => new Promise(() => void 0),
   getAttractions: () => new Promise(() => void 0),
+  getBookings: () => new Promise(() => void 0),
   getCategories: () => new Promise(() => void 0),
   getUserInfo: () => new Promise(() => void 0),
   login: () => new Promise(() => void 0),
   logout: () => new Promise(() => void 0),
   refresh: () => new Promise(() => void 0),
   register: () => new Promise(() => void 0),
+  removeBooking: () => new Promise(() => void 0),
 };
 
 const APIContext = createContext<API>(initialState);

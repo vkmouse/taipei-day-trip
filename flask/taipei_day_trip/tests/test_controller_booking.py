@@ -27,8 +27,8 @@ def test_get_by_member_id():
                 'image': '123'
             },
             'bookingId': 1,
-            'starttime': datetime(2020, 1, 1, 10, 30, 20),
-            'endtime': datetime(2020, 1, 1, 10, 30, 30),
+            'starttime': '2020-01-01 10:30:20',
+            'endtime': '2020-01-01 10:30:30',
             'price': 2500
         }, {
             'attraction': {
@@ -38,8 +38,8 @@ def test_get_by_member_id():
                 'image': '123'
             },
             'bookingId': 2,
-            'starttime': datetime(2020, 2, 1, 10, 30, 20),
-            'endtime': datetime(2020, 2, 1, 10, 30, 30),
+            'starttime': '2020-02-01 10:30:20',
+            'endtime': '2020-02-01 10:30:30',
             'price': 2000
         }]
     }

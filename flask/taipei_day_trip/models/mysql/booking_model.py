@@ -23,9 +23,13 @@ class MySQLBookingModel(MySQLModel, BookingModel):
             '    price) '
             'SELECT %s, %s, %s, %s, %s '
             'FROM dual '
-            'WHERE NOT EXISTS (SELECT * FROM {booking} WHERE NOT (endtime <= %s OR %s <= starttime))'
+            'WHERE NOT EXISTS ('
+            '    SELECT * '
+            '    FROM {booking} '
+            '    WHERE member_id = %s AND NOT (endtime <= %s OR %s <= starttime)'
+            ')'
         ).format(booking=self.tablename)
-        data = (member_id, attraction_id, starttime, endtime, price, starttime, endtime)
+        data = (member_id, attraction_id, starttime, endtime, price, member_id, starttime, endtime)
         cursor.execute(query, data)
         cnx.commit()
         return cursor.rowcount == 1

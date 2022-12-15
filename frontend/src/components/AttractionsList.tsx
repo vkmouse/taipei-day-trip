@@ -2,7 +2,7 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Attraction } from '../context/APIContext';
+import { Attraction } from '../api/api';
 import { AbsoluteBottom, AbsoluteFull, BodyBold, RatioContainer, CenterCropped, BodyMedium, Secondery50 } from '../utils/CommonStyles';
 
 const Grid = css`
@@ -24,7 +24,7 @@ const AttractionsListContainer  = styled.div`
   ${Grid};
   width: 1170px;
   padding: 15px;
-  margin: 40px 4px 40px 4px;
+  margin: 40px 4px 0 4px;
 `;
 
 const AttractionTitleContainer = styled.div`

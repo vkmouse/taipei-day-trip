@@ -70,8 +70,8 @@ class BookingView(BaseView):
                 'image': x.attraction.images[0]
             },
             'bookingId': x.id,
-            'starttime': x.starttime,
-            'endtime': x.endtime,
+            'starttime': x.starttime.strftime("%Y-%m-%d %H:%M:%S"),
+            'endtime': x.endtime.strftime("%Y-%m-%d %H:%M:%S"),
             'price': x.price
         }, bookings))
         return { 'data': data }, 200

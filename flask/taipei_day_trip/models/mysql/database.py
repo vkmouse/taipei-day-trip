@@ -71,6 +71,7 @@ class MySQLDatabase(Database):
         with mysql.connector.connect(**config) as cnx:
             with cnx.cursor() as cursor:
                 cursor.execute(f'CREATE DATABASE IF NOT EXISTS {database}')
+                cursor.execute(f'SET GLOBAL group_concat_max_len = 10000;')
 
     def create_connectpool(self) -> mysql.connector.pooling.MySQLConnectionPool:
         return mysql.connector.pooling.MySQLConnectionPool(

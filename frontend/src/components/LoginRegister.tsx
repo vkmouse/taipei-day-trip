@@ -1,13 +1,14 @@
 import styled from '@emotion/styled';
 import React, { useState, useReducer } from 'react';
-import { useAuthContext } from '../context/AuthContext';
 import useLogin from '../hooks/useLogin';
 import useRegister from '../hooks/useRegister';
 import { H3, Secondery70, Secondery20, Primary, BodyMedium, Secondery50 } from '../utils/CommonStyles';
 import { validateEmail, validateName, validatePassword } from '../utils/validate';
+import InputField from './InputField';
 
 const FullPage = styled.div`
   position: fixed;
+  z-index: 1000;
   width: 100vw;
   height: 100vh;
 `;
@@ -119,33 +120,6 @@ const TextButton = styled(Text)`
   }
 `;
 
-const InputContainer = styled.div`
-  margin: 10px 0;
-  padding: 0 32px 0 0;
-`;
-
-const BaseInput = styled.input`
-  padding: 10px 15px;
-  width: 100%;
-  ${BodyMedium}
-  color: ${Secondery50};
-  border: 1px solid #CCCCCC;
-  border-radius: 5px;
-  &:focus {
-    outline: none;
-    border: 1px solid ${Primary};
-    box-shadow: 0 0 4px ${Primary};
-  }
-`;
-
-const DangerInput = styled(BaseInput)`
-  &:focus {
-    outline: none;
-    border: 1px solid red;
-    box-shadow: 0 0 4px red;
-  }
-`;
-
 const HintTextStyle = styled.span`
   font-family: 'Noto Sans TC';
   font-style: normal;
@@ -182,26 +156,6 @@ const HintText = (props: { status: string, message: string }) => {
     return <HintTextStyle style={{ color }}>{props.message}</HintTextStyle>;
   }
   return <></>;
-};
-
-const InputField = (props: { 
-  autoFocus?: boolean
-  dangerMessage: string
-  placeholder: string
-  type?: React.HTMLInputTypeAttribute
-  value: string
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
-}) => {
-  const { dangerMessage } = props;
-  const Input = dangerMessage ? DangerInput : BaseInput;
-  return (
-    <>
-      <InputContainer>
-        <Input {...props} />
-        {dangerMessage ? <HintTextStyle>{dangerMessage}</HintTextStyle> : <></>}
-      </InputContainer>
-    </>
-  );
 };
 
 type LoginRegisterState = {
@@ -266,17 +220,13 @@ const loginRegisterReducer = (state: LoginRegisterState, action: LoginRegisterAc
   }
 };
 
-const LoginRegister = (props: {
-  display: string,
-  hide?: () => void,
-}) => {
+const LoginRegister = (props: { hide?: () => void }) => {
   const [isLogin, setIsLogin] = useState(true);
   const [state, dispatch] = useReducer(loginRegisterReducer, initialState);
   const { email, emailValid, name, nameValid, password, passwordValid } = state;
   const description: Description = isLogin ? loginDescription : registerDescription;
   const loginHandler = useLogin();
   const registerHandler = useRegister();
-  const auth = useAuthContext();
 
   const switchForm = () => {
     loginHandler.clear();
@@ -308,7 +258,7 @@ const LoginRegister = (props: {
   }
 
   return (
-    <FullPage style={{ display: props.display }}>
+    <FullPage>
       <Modal>
         <ModalOverlay onClick={props.hide}/>
         <ModalContent>
@@ -336,6 +286,7 @@ const LoginRegister = (props: {
               />
               <InputField
                 autoFocus
+                autoComplete='off'
                 dangerMessage={passwordMessage}
                 placeholder='輸入密碼'
                 type='password'

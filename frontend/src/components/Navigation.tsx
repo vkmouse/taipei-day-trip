@@ -1,9 +1,9 @@
 import styled from '@emotion/styled';
-import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuthContext } from '../context/AuthContext';
+import { useLoginRegisterContext } from '../context/LoginRegisterContext';
 import { H2, Primary, BodyMedium, Secondery, Secondery20 } from '../utils/CommonStyles';
-import LoginRegister from './LoginRegister';
 
 const Container = styled.nav`
   display: flex;  
@@ -57,10 +57,9 @@ const NavItem = styled.button`
 
 const Navigation = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const auth = useAuthContext();
-  const [display, setDisplay] = useState('none');
-  const show = () => setDisplay('block');
-  const hide = () => setDisplay('none');
+  const { show, hide } = useLoginRegisterContext();
 
   useEffect(() => {
     auth.getUserInfo(true);
@@ -74,12 +73,13 @@ const Navigation = () => {
 
   return (
     <Container>
-      {auth.isLogin ? <></> : <LoginRegister display={display} hide={hide}/>}
       <Navbar>
         <NavBrand to='/' onClick={handleBrandClicked}>台北一日遊</NavBrand>
         <NavItems>
-          <NavItem>預定行程</NavItem>
-          <NavItem onClick={auth.isLogin ? () => { auth.logout(); hide(); } : show}>
+          <NavItem onClick={ auth.isLogin ? () => navigate('/booking') : show }>
+            預定行程
+          </NavItem>
+          <NavItem onClick={ auth.isLogin ? () => { auth.logout(); hide(); } : show }>
             {auth.isLogin ? '登出' : '登入/註冊'}
           </NavItem>
         </NavItems>

@@ -1,7 +1,23 @@
-import { API } from '.';
-import { Attraction, Attractions } from '../APIContext';
+import { convertTimeToDateTime } from "../utils/time";
+import { API, Attraction, Attractions, Booking, BookingResponse } from "./api";
 
 const realAPI: API = {
+  addBooking: async (token: string, booking: Booking): Promise<Response> => {
+    return await fetch('/api/booking', {
+      method: 'POST',
+      body: JSON.stringify({
+        'attractionId': booking.attractionId,
+        'starttime': convertTimeToDateTime(booking.starttime),
+        'endtime': convertTimeToDateTime(booking.endtime),
+        'price': booking.price,
+      }),
+      headers: new Headers({
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      })
+    });
+  },
+
   getAttraction: async (id: number) : Promise<Attraction> => {
     let url = `/api/attraction/${id}`;
     const response = await fetch(url);
@@ -19,6 +35,15 @@ const realAPI: API = {
     const response = await fetch(url);
     const body = await response.json();
     return body;
+  },
+
+  getBookings: async (token: string) : Promise<Response> => {
+    return await fetch('/api/booking', {
+      method: 'GET',
+      headers: new Headers({
+        'Authorization': `Bearer ${token}`
+      })
+    });
   },
 
   getCategories: async () : Promise<{ data: string[] }> => {
@@ -70,6 +95,20 @@ const realAPI: API = {
         'password': password,
       }),
       headers: new Headers({
+        'Content-Type': 'application/json'
+      })
+    });
+    return response;
+  },
+
+  removeBooking: async (token: string, bookingId: number): Promise<Response> => {
+    const response = await fetch('/api/booking', {
+      method: 'DELETE',
+      body: JSON.stringify({
+        'bookingId': bookingId
+      }),
+      headers: new Headers({
+        'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
       })
     });

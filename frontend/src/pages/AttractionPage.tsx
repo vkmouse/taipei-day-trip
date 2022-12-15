@@ -1,11 +1,12 @@
 import styled from '@emotion/styled';
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { Attraction } from '../api/api';
 import BookingForm from '../components/BookingForm';
 import Carousel from '../components/Carousel';
 import Navigation from '../components/Navigation';
 import { Header, Main, Footer } from '../components/Semantic';
-import { Attraction, useAPIContext } from '../context/APIContext';
+import { useAPIContext } from '../context/APIContext';
 import { BodyMedium, Secondery, BodyBold } from '../utils/CommonStyles';
 
 const Section = styled.section`
@@ -26,7 +27,6 @@ const Article = styled.article`
   max-width: 1180px;
   border-top: 1px solid #E8E8E8;
   padding: 50px 10px 80px 10px;
-  margin-bottom: 40px;
 `;
 
 const Text = styled.div`
@@ -42,7 +42,7 @@ const TextBold = styled.div`
   line-height: 28px;
 `;
 
-function AttractionView() {
+const AttractionPage = () => {
   const params = useParams();
   if (params.attractionId === undefined) {
     return <></>;
@@ -51,10 +51,18 @@ function AttractionView() {
   const id = parseInt(params.attractionId);
   const [attraction, setAttraction] = useState<Attraction>();
   const api = useAPIContext();
+  const navigate = useNavigate();
+  const hasInit = useRef(false);
   
   const getAttraction = async (id: number) => {
+    if (hasInit.current) {
+      return;
+    }
+    hasInit.current = true;
+
     const attraction = await api.getAttraction(id);
     setAttraction(attraction);
+    document.title = attraction.name;
   };
 
   useEffect(() => {
@@ -82,6 +90,6 @@ function AttractionView() {
       <Footer />
     </>
   );
-}
+};
 
-export default AttractionView;
+export default AttractionPage;

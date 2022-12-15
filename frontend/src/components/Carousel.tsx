@@ -1,8 +1,9 @@
 import { keyframes, css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React, { useState } from 'react';
-import { Attraction } from '../context/APIContext';
+import { Attraction } from '../api/api';
 import { CenterCropped, Secondery20 } from '../utils/CommonStyles';
+import Loader from './Loader';
 
 const Container = styled.div`
   position: relative;
@@ -10,6 +11,7 @@ const Container = styled.div`
   height: 400px;
   max-width: 540px;
   margin: 0 15px 0 15px;
+  background-color: ${Secondery20};
   @media (max-width: 800px) {
     height: 350px;
     max-width: 600px;
@@ -26,7 +28,7 @@ const bounce = keyframes`
   }
 `;
 
-const Image = styled.img`
+const Picture = styled.img`
   ${CenterCropped}
   position: absolute;
   width: 100%;
@@ -36,6 +38,16 @@ const Image = styled.img`
   @media (max-width: 540px) {
     border-radius: 0;
   }
+`;
+
+const LoaderContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
 `;
 
 const ControlPanelContainer = styled.div`
@@ -80,9 +92,9 @@ const DotContainer = styled.div`
 
 const DotStyle = css`
   display: inline-block;
-  margin: 0 6px 0 6px;
-  width: 10px;
-  height: 10px;
+  margin: 0 2px 0 2px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   border: 1px solid;
 `;
@@ -102,13 +114,17 @@ const SelectedDot = styled.div`
 `;
 
 const Carousel = (props: { attraction?: Attraction }) => {
-  if (props.attraction === undefined) {
-    return <Container style={{ backgroundColor: Secondery20 }} />;
+  const { attraction } = props;
+  if (attraction === undefined) {
+    return <Container />;
   }
 
-  const { images } = props.attraction;
-  const length = images.length;
+  const { images } = attraction;
+  const [loadedCount, setLoadedCount] = useState(0);
   const [selectedImage, setSelectedImage] = useState(0);
+  const length = images.length;
+  const percentage = loadedCount / length;
+  const loadingFinish = loadedCount === length;
 
   const getList = () => {
     const list = Array(length).fill(false);
@@ -119,28 +135,34 @@ const Carousel = (props: { attraction?: Attraction }) => {
   return (
     <Container>
       {getList().map((selected, i) => 
-        <Image 
+        <Picture
           key={i} 
           src={images[i]}
-          style={{display: selected ? 'block' : 'none'}}
-        >
-        </Image>
+          style={{display: selected && loadingFinish ? 'block' : 'none'}}
+          onLoad={() => setLoadedCount(loadedCount => loadedCount + 1)}
+        />
       )}
-      <ControlPanelContainer>
-        <ControlPanel>
-          <ArrowContainer onClick={() => setSelectedImage((length + selectedImage - 1) % length)}>
-            <LeftArrow />
-          </ArrowContainer>
-          <DotContainer>
-            {getList().map((selected, i) => 
-              selected ? <SelectedDot key={i} /> : <Dot key={i} onClick={() => setSelectedImage(i)} />
-            )}
-          </DotContainer>
-          <ArrowContainer onClick={() => setSelectedImage((selectedImage + 1) % length)}>
-            <RightArrow />
-          </ArrowContainer>
-        </ControlPanel>
-      </ControlPanelContainer>
+      {loadingFinish ? (
+        <ControlPanelContainer>
+          <ControlPanel>
+            <ArrowContainer onClick={() => setSelectedImage((length + selectedImage - 1) % length)}>
+              <LeftArrow />
+            </ArrowContainer>
+            <DotContainer>
+              {getList().map((selected, i) => 
+                selected ? <SelectedDot key={i} /> : <Dot key={i} onClick={() => setSelectedImage(i)} />
+              )}
+            </DotContainer>
+            <ArrowContainer onClick={() => setSelectedImage((selectedImage + 1) % length)}>
+              <RightArrow />
+            </ArrowContainer>
+          </ControlPanel>
+        </ControlPanelContainer>
+      ) :
+        <LoaderContainer>
+          <Loader percent={percentage}/>
+        </LoaderContainer>        
+      }
     </Container>
   );
 };
