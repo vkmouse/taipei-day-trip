@@ -4,6 +4,7 @@ import useLogin from '../hooks/useLogin';
 import useRegister from '../hooks/useRegister';
 import { H3, Secondery70, Secondery20, Primary, BodyMedium, Secondery50 } from '../utils/CommonStyles';
 import { validateEmail, validateName, validatePassword } from '../utils/validate';
+import InputField from './InputField';
 
 const FullPage = styled.div`
   position: fixed;
@@ -119,33 +120,6 @@ const TextButton = styled(Text)`
   }
 `;
 
-const InputContainer = styled.div`
-  margin: 10px 0;
-  padding: 0 32px 0 0;
-`;
-
-const BaseInput = styled.input`
-  padding: 10px 15px;
-  width: 100%;
-  ${BodyMedium}
-  color: ${Secondery50};
-  border: 1px solid #CCCCCC;
-  border-radius: 5px;
-  &:focus {
-    outline: none;
-    border: 1px solid ${Primary};
-    box-shadow: 0 0 4px ${Primary};
-  }
-`;
-
-const DangerInput = styled(BaseInput)`
-  &:focus {
-    outline: none;
-    border: 1px solid red;
-    box-shadow: 0 0 4px red;
-  }
-`;
-
 const HintTextStyle = styled.span`
   font-family: 'Noto Sans TC';
   font-style: normal;
@@ -182,27 +156,6 @@ const HintText = (props: { status: string, message: string }) => {
     return <HintTextStyle style={{ color }}>{props.message}</HintTextStyle>;
   }
   return <></>;
-};
-
-const InputField = (props: { 
-  autoFocus?: boolean
-  autoComplete?: string
-  dangerMessage: string
-  placeholder: string
-  type?: React.HTMLInputTypeAttribute
-  value: string
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
-}) => {
-  const { dangerMessage } = props;
-  const Input = dangerMessage ? DangerInput : BaseInput;
-  return (
-    <>
-      <InputContainer>
-        <Input {...props} />
-        {dangerMessage ? <HintTextStyle>{dangerMessage}</HintTextStyle> : <></>}
-      </InputContainer>
-    </>
-  );
 };
 
 type LoginRegisterState = {

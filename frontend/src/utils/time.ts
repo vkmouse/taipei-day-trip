@@ -16,6 +16,11 @@ const convertTimeToDateTime = (value: Date) => {
   return `${year}-${month}-${day} ${hour}:${minute}:${second}`;
 };
 
+const getShortTimeString = (value: Date) => {
+  const { hour, minute } = formatDateTime(value);
+  return `${hour}:${minute}`;
+};
+
 const getNextDate = (days: number) => {
   const date = new Date();
   date.setUTCHours(0, 0, 0);
@@ -33,4 +38,21 @@ const parseDateString = (dateString: string) => {
   return date;
 };
 
-export { convertTimeToDate, convertTimeToDateTime, formatDateTime, getNextDate, parseDateString };
+const parseDateTimeString = (dateTimeString: string) => {
+  const dateParts = dateTimeString.split(' ');
+  const dateString = dateParts[0];
+  const timeString = dateParts[1];
+
+  const date = parseDateString(dateString);
+
+  const timeParts = timeString.split(':');
+  const hours = parseInt(timeParts[0], 10);
+  const minutes = parseInt(timeParts[1], 10);
+  const seconds = parseInt(timeParts[2], 10);
+
+  date.setUTCHours(hours, minutes, seconds);
+
+  return date;
+};
+
+export { convertTimeToDate, convertTimeToDateTime, formatDateTime, getNextDate, getShortTimeString, parseDateString, parseDateTimeString };

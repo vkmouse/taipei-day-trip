@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useRef, useState } from 'react';
 import { Booking, BookingResponse } from '../api/api';
+import { parseDateTimeString } from '../utils/time';
 import { useAPIContext } from './APIContext';
 
 enum LoginResponse {
@@ -23,7 +24,7 @@ type Auth = {
   addBooking: (refresh: boolean, booking: Booking) => Promise<boolean>
   login: (email: string, password: string) => Promise<LoginResponse>
   logout: () => Promise<void>
-  getBookings: (refresh: boolean) => Promise<BookingResponse | null>
+  getBookings: (refresh: boolean) => Promise<BookingResponse[]>
   getUserInfo: (refresh: boolean) => Promise<Member | null>
 }
 
@@ -34,7 +35,7 @@ const initialState: Auth = {
   addBooking: (): Promise<boolean> => { throw new Error('Function not implemented.'); },
   login: (): Promise<LoginResponse> => { throw new Error('Function not implemented.'); },
   logout: (): Promise<void> => { throw new Error('Function not implemented.'); },
-  getBookings: (): Promise<BookingResponse | null> => { throw new Error('Function not implemented.'); },
+  getBookings: (): Promise<BookingResponse[]> => { throw new Error('Function not implemented.'); },
   getUserInfo: (): Promise<Member> => { throw new Error('Function not implemented.'); }
 };
 
@@ -141,9 +142,26 @@ const AuthProvider = (props: { children: JSX.Element[] | JSX.Element }) => {
       const response = await api.getBookings(token.current);
       switch (response.status) {
         case 200:
-          return await response.json();
+          const body: { data: {
+            attraction: {
+              id: number
+              name: string
+              address: string
+              image: string
+            },
+            bookingId: number
+            starttime: string
+            endtime: string
+            price: number
+          }[] } = await response.json();
+          return body.data.map(m => {
+            return {
+              ...m,
+              starttime: parseDateTimeString(m.starttime),
+              endtime: parseDateTimeString(m.endtime),
+            };
+          });
         case 401:
-          console.log(401);
           if (refresh) {
             const response = await api.refresh();
             const body: { 'ok': boolean, 'access_token': string } = await response.json();
@@ -151,7 +169,7 @@ const AuthProvider = (props: { children: JSX.Element[] | JSX.Element }) => {
             return auth.getBookings(false);
           }
       }
-      return null;
+      return [];
     },
   };
   return <AuthContext.Provider value={auth} {...props} />;
