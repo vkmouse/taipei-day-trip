@@ -122,6 +122,10 @@ const HomePage = () => {
     }
   }, [isLoading]);
 
+  useEffect(() => {
+    document.title = '台北一日遊 - 首頁';
+  }, []);
+
   return (
     <>
       <Navigation />

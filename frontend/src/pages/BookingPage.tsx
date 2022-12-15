@@ -187,6 +187,7 @@ type State = {
   contactEmail: string
   contactEmailValid: boolean
   contactPhone: string
+  contactPhoneDisplay: string,
   contactPhoneValid: boolean
   cardNumber: string
   cardNumberDisplay: string
@@ -219,6 +220,7 @@ const initialState: State = {
   contactEmail: '',
   contactEmailValid: false,
   contactPhone: '',
+  contactPhoneDisplay: '',
   contactPhoneValid: false,
   cardNumber: '',
   cardNumberDisplay: '',
@@ -257,9 +259,13 @@ const reducer = (state: State, action: Action): State => {
     }
     case 'SET_CONTACT_PHONE': {
       const contactPhone = action.payload.replace(/\D/g, '').substring(0, 10);
+      const contactPhoneDisplay = contactPhone
+        .replace(/^(09[\d]{2})(\d{3})(\d{0,3})$/g, '$1-$2-$3')
+        .replace(/^(09[\d]{2})(\d{0,3})$/g, '$1-$2')
+        .replace(/-$/, '');
       const contactPhoneValid = validatePhone(contactPhone);
       const isValid = checkValid({ ...state, contactPhoneValid });
-      return { ...state, contactPhone, contactPhoneValid, isValid };
+      return { ...state, contactPhone, contactPhoneDisplay, contactPhoneValid, isValid };
     }
     case 'SET_CARD_NUMBER': {
       const cardNumber = action.payload.replace(/\D/g, '').substring(0, 16);
@@ -293,7 +299,7 @@ const BookingPage = () => {
   const { 
     contactName, contactNameValid, 
     contactEmail, contactEmailValid, 
-    contactPhone, contactPhoneValid,
+    contactPhoneDisplay, contactPhoneValid,
     cardNumberDisplay, cardNumberValid,
     cardExpirationDisplay, cardExpirationValid,
     cardVerificationCode, cardVerificationCodeValid,
@@ -323,6 +329,10 @@ const BookingPage = () => {
     window.scrollTo({ top: 0 });
   }, [bookingResponses]);
   
+  useEffect(() => {
+    document.title = '台北一日遊 - 預定行程';
+  }, []);
+
   return (
     <>
       <Navigation />
@@ -370,9 +380,9 @@ const BookingPage = () => {
             <Row>
               <RowText>手機號碼：</RowText>
               <Input 
-                dangerMessage={contactPhoneValid || contactPhone.length === 0 ? '' : '⚠ 請輸入正確的手機號碼'}
+                dangerMessage={contactPhoneValid || contactPhoneDisplay.length === 0 ? '' : '⚠ 請輸入正確的手機號碼'}
                 placeholder=''
-                value={contactPhone}
+                value={contactPhoneDisplay}
                 onChange={e => dispatch(setContactPhone(e.target.value))}
               />
             </Row>

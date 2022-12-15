@@ -115,10 +115,9 @@ const BookingForm = (props: { attraction?: Attraction, navigate: NavigateFunctio
     };
     const success = await auth.addBooking(true, booking);
     if (success) {
-      setTimeout(() => navigate('/booking'), 2000);
-      setBookingStatus('預約成功 ✔');
+      setBookingStatus('✔ 預約成功，前往預定行程查看');
     } else {
-      setBookingStatus('預約失敗 ✘');
+      setBookingStatus('✘ 已預約該時段，預約失敗');
     }
   };
 

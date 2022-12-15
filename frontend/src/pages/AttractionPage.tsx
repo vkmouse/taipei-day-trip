@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Attraction } from '../api/api';
 import BookingForm from '../components/BookingForm';
@@ -52,10 +52,17 @@ const AttractionPage = () => {
   const [attraction, setAttraction] = useState<Attraction>();
   const api = useAPIContext();
   const navigate = useNavigate();
+  const hasInit = useRef(false);
   
   const getAttraction = async (id: number) => {
+    if (hasInit.current) {
+      return;
+    }
+    hasInit.current = true;
+
     const attraction = await api.getAttraction(id);
     setAttraction(attraction);
+    document.title = attraction.name;
   };
 
   useEffect(() => {
