@@ -1,6 +1,5 @@
 import styled from '@emotion/styled';
 import React, { useState, useRef } from 'react';
-import { NavigateFunction } from 'react-router-dom';
 import { Attraction, Booking } from '../api/api';
 import { useAuthContext } from '../context/AuthContext';
 import { useLoginRegisterContext } from '../context/LoginRegisterContext';
@@ -39,6 +38,14 @@ const Row = styled.div`
   ${BodyMedium}
 `;
 
+const FlexRow = styled.div`
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  padding-top: 15px;
+  ${BodyMedium}
+`;
+
 const Bold = styled.div`
   ${BodyBold}
 `;
@@ -48,7 +55,7 @@ const RowTitle = styled(Bold)`
 `;
 
 const Form = styled.div`
-  padding: 0 20px 0 20px;
+  padding: 0 20px 20px 20px;
   flex-grow: 1;
   background-color: ${Secondery20};
   border-radius: 5px;
@@ -67,7 +74,7 @@ const Button = styled.button`
   cursor: pointer;
 `;
 
-const BookingForm = (props: { attraction?: Attraction, navigate: NavigateFunction }) => {
+const BookingForm = (props: { attraction?: Attraction }) => {
   if (props.attraction === undefined) {
     return (
       <Container>
@@ -78,7 +85,6 @@ const BookingForm = (props: { attraction?: Attraction, navigate: NavigateFunctio
     );
   }
 
-  const { navigate } = props;
   const { id, name, category, mrt } = props.attraction;
   const [price, setPrice] = useState(2000);
   const [date, setDate] = useState(getNextDate(1));
@@ -148,10 +154,10 @@ const BookingForm = (props: { attraction?: Attraction, navigate: NavigateFunctio
           <RowTitle>導覽費用：</RowTitle>
           新台幣 {price} 元
         </Row>
-        <Row>
+        <FlexRow>
           <Button onClick={ auth.isLogin ? startBooking : show }>開始預約行程</Button>
           {bookingStatus}
-        </Row>
+        </FlexRow>
       </Form>
     </Container>
   );

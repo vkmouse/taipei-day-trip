@@ -75,7 +75,7 @@ const AttractionPage = () => {
       <Header>
         <Section>
           <Carousel attraction={attraction} />
-          <BookingForm attraction={attraction} navigate={navigate} />
+          <BookingForm attraction={attraction} />
         </Section>
       </Header>
       <Main>
