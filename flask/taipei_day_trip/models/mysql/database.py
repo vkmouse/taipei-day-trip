@@ -1,10 +1,12 @@
 import mysql.connector
 
 from taipei_day_trip.models.attraction_model import AttractionModel
+from taipei_day_trip.models.booking_model import BookingModel
 from taipei_day_trip.models.category_model import CategoryModel
 from taipei_day_trip.models.member_model import MemberModel
 from taipei_day_trip.models.mrt_model import MRTModel
 from taipei_day_trip.models.mysql.attraction_model import MySQLAttractionModel
+from taipei_day_trip.models.mysql.booking_model import MySQLBookingModel
 from taipei_day_trip.models.mysql.category_model import MySQLCategoryModel
 from taipei_day_trip.models.mysql.member_model import MySQLMemberModel
 from taipei_day_trip.models.mysql.mrt_model import MySQLMRTModel
@@ -15,7 +17,7 @@ from taipei_day_trip.utils import mysql_password
 from taipei_day_trip.utils import mysql_user
 
 class MySQLDatabase(Database):
-    def __init__(self, debug=False, load_dotenv=True):
+    def __init__(self, debug=False):
         self.__debug = debug
         self.create_database()
         self.__cnxpool = self.create_connectpool()
@@ -24,9 +26,11 @@ class MySQLDatabase(Database):
         self.mrts.create_table()
         self.attractions.create_table()
         self.members.create_table()
+        self.bookings.create_table()
 
     def __del__(self):
         if self.__debug:
+            self.bookings.drop_table_if_exists()
             self.members.drop_table_if_exists()
             self.attractions.drop_table_if_exists()
             self.categories.drop_table_if_exists()
@@ -35,6 +39,15 @@ class MySQLDatabase(Database):
     def _create_attraction_model(self) -> AttractionModel:
         return MySQLAttractionModel(self.__cnxpool, self.categories.tablename, self.mrts.tablename, self.__debug)
 
+    def _create_booking_model(self) -> BookingModel:
+        return MySQLBookingModel(
+            cnxpool=self.__cnxpool,
+            member_tablename=self.members.tablename, 
+            attraction_tablename=self.attractions.tablename, 
+            attraction_image_tablename=self.attractions.attraction_images.tablename, 
+            debug=self.__debug
+        )
+        
     def _create_category_model(self) -> CategoryModel:
         return MySQLCategoryModel(self.__cnxpool, self.__debug)
         
@@ -58,6 +71,7 @@ class MySQLDatabase(Database):
         with mysql.connector.connect(**config) as cnx:
             with cnx.cursor() as cursor:
                 cursor.execute(f'CREATE DATABASE IF NOT EXISTS {database}')
+                cursor.execute(f'SET GLOBAL group_concat_max_len = 10000;')
 
     def create_connectpool(self) -> mysql.connector.pooling.MySQLConnectionPool:
         return mysql.connector.pooling.MySQLConnectionPool(
