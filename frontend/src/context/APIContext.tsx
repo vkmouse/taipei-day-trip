@@ -1,8 +1,8 @@
 import React, { createContext, useContext, useRef, useState } from 'react';
 import mockAPI from '../api/mockAPI';
 import realAPI from '../api/realAPI';
-import { useAppDispatch } from '../store/store';
-import { setIsLogin } from '../store/userSlice';
+import { useAppDispatch, useAppSelector } from '../store/store';
+import { reset, setToken } from '../store/userSlice';
 import { Attraction, Attractions } from '../types/AttractionTypes';
 import { Booking, BookingResponse } from '../types/BookingTypes';
 import { parseDateTimeString } from '../utils/time';
@@ -22,7 +22,6 @@ type Member = {
 }
 
 type Auth = {
-  token: string
   hasInit: boolean
 
   getAttraction: (id: number) => Promise<Attraction>
@@ -40,7 +39,6 @@ type Auth = {
 }
 
 const initialState: Auth = {
-  token: '',
   hasInit: false,
 
   getAttraction: () => { throw new Error('Function not implemented.'); },
@@ -61,52 +59,35 @@ const AuthContext = createContext<Auth>(initialState);
 
 const AuthProvider = (props: { isMock?: boolean, children: JSX.Element[] | JSX.Element }) => {
   const dispatch = useAppDispatch();
+  const token = useAppSelector(state => state.user.userToken);
   const [hasInit, setHasInit] = useState(false);
-  const token = useRef('');
   const api = props.isMock ? mockAPI : realAPI;
-  const parseLoginSuccess = async (response: Response) => {
-    try {
-      const body: { 'ok': boolean, 'access_token': string } = await response.json();
-      token.current = body.access_token;
-      dispatch(setIsLogin(true));
-      return LoginResponse.Success;
-    } catch (e) {
-      token.current = '';
-      dispatch(setIsLogin(false));
-      return LoginResponse.LoginFailed;
-    }
-  };
-  const parseLoginFailed = async (response: Response) => {
-    token.current = '';
-    dispatch(setIsLogin(false));
-    const body: { 'error': boolean, 'message': string } = await response.json();
-    if (body.message.includes('email')) {
-      return LoginResponse.EmailNotExist;
-    } else if (body.message.includes('password')) {
-      return LoginResponse.PasswordError;
-    } else if (response.status === 500) {
-      return LoginResponse.ServerFailed;
-    } else {
-      return LoginResponse.LoginFailed;
-    }
-  };
 
-  const runRefreshToken = async (callback: () => Promise<Response>) => {
-    const response = await callback();
-    if (response.status === 401) {
+  const runRefreshToken = async (token: string | null, callback: (token: string) => Promise<Response>) => {
+    if (token) {
+      const response = await callback(token);
+      if (response.status === 401) {
+        const response = await api.refresh();
+        if (response.status === 200) {
+          const body: { ok: boolean, access_token: string } = await response.json();
+          dispatch(setToken(body.access_token));
+          return await callback(body.access_token);
+        }
+        return response;
+      }
+      return response;
+    } else {
       const response = await api.refresh();
       if (response.status === 200) {
         const body: { ok: boolean, access_token: string } = await response.json();
-        token.current = body.access_token;
-        return await callback();
+        dispatch(setToken(body.access_token));
+        return await callback(body.access_token);
       }
       return response;
     }
-    return response;
   };
 
   const auth: Auth = {
-    token: token.current,
     hasInit: hasInit,
 
     getAttraction: api.getAttraction,
@@ -116,7 +97,7 @@ const AuthProvider = (props: { isMock?: boolean, children: JSX.Element[] | JSX.E
     register: api.register,
 
     addBooking: async (booking) => {
-      const response = await runRefreshToken(() => api.addBooking(token.current, booking));
+      const response = await runRefreshToken(token, (token) => api.addBooking(token, booking));
       if (response.status === 201) {
         return true;
       }
@@ -125,31 +106,46 @@ const AuthProvider = (props: { isMock?: boolean, children: JSX.Element[] | JSX.E
     login: async (email, password) => {
       const response = await api.login(email, password);
       if (response.status === 200) {
-        return parseLoginSuccess(response);
+        try {
+          const body: { 'ok': boolean, 'access_token': string } = await response.json();
+          dispatch(setToken(body.access_token));
+          return LoginResponse.Success;
+        } catch (e) {
+          dispatch(reset());
+          return LoginResponse.LoginFailed;
+        }
       } else {
-        return parseLoginFailed(response);
+        dispatch(reset());
+        const body: { 'error': boolean, 'message': string } = await response.json();
+        if (body.message.includes('email')) {
+          return LoginResponse.EmailNotExist;
+        } else if (body.message.includes('password')) {
+          return LoginResponse.PasswordError;
+        } else if (response.status === 500) {
+          return LoginResponse.ServerFailed;
+        } else {
+          return LoginResponse.LoginFailed;
+        }
       }
     },
     logout: async () => {
       const response = await api.logout();
       const body: { 'ok': boolean } = await response.json();
       if (body.ok) {
-        token.current = '';
-        dispatch(setIsLogin(false));
+        dispatch(reset());
       }
     },
     getUserInfo: async () => {
-      const response = await runRefreshToken(() => api.getUserInfo(token.current));
+      const response = await runRefreshToken(token, (token) => api.getUserInfo(token));
       setHasInit(true);
       if (response.status === 200) {
-        dispatch(setIsLogin(true));
         const body: { data: Member } = await response.json();
         return body.data;
       }
       return null;
     },
     getBookings: async () => {
-      const response = await runRefreshToken(() => api.getBookings(token.current));
+      const response = await runRefreshToken(token, (token) => api.getBookings(token));
       if (response.status === 200) {
         const body: { 
           data: {
@@ -176,7 +172,7 @@ const AuthProvider = (props: { isMock?: boolean, children: JSX.Element[] | JSX.E
       return [];
     },
     removeBooking: async (bookingId) => {
-      const response = await runRefreshToken(() => api.removeBooking(token.current, bookingId));
+      const response = await runRefreshToken(token, (token) => api.removeBooking(token, bookingId));
       if (response.status === 200) {
         return true;
       }
