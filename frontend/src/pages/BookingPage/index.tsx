@@ -43,19 +43,22 @@ type State = {
   isValid: boolean
 }
 
-type Action = 
-  | { type: 'SET_CONTACT_NAME', payload: string }
-  | { type: 'SET_CONTACT_EMAIL', payload: string }
-  | { type: 'SET_CONTACT_PHONE', payload: string }
-  | { type: 'SET_CARD_NUMBER', payload: string }
-  | { type: 'SET_CARD_EXPIRATION', payload: string }
-  | { type: 'SET_CARD_VERIFICATION_CODE', payload: string };
-const setContactName = (value: string): Action => { return { type: 'SET_CONTACT_NAME', payload: value }; };
-const setContactEmail = (value: string): Action => { return { type: 'SET_CONTACT_EMAIL', payload: value }; };
-const setContactPhone = (value: string): Action => { return { type: 'SET_CONTACT_PHONE', payload: value }; };
-const setCardNumber = (value: string): Action => { return { type: 'SET_CARD_NUMBER', payload: value }; };
-const setCardExpiration = (value: string): Action => { return { type: 'SET_CARD_EXPIRATION', payload: value }; };
-const setCardVerificationCode = (value: string): Action => { return { type: 'SET_CARD_VERIFICATION_CODE', payload: value }; };
+enum Type {
+  SET_CONTACT_NAME,
+  SET_CONTACT_EMAIL,
+  SET_CONTACT_PHONE,
+  SET_CARD_NUMBER,
+  SET_CARD_EXPIRATION,
+  SET_CARD_VERIFICATION_CODE,
+}
+
+type Action = { type: Type, payload: string };
+const setContactName = (value: string): Action => { return { type: Type.SET_CONTACT_NAME, payload: value }; };
+const setContactEmail = (value: string): Action => { return { type: Type.SET_CONTACT_EMAIL, payload: value }; };
+const setContactPhone = (value: string): Action => { return { type: Type.SET_CONTACT_PHONE, payload: value }; };
+const setCardNumber = (value: string): Action => { return { type: Type.SET_CARD_NUMBER, payload: value }; };
+const setCardExpiration = (value: string): Action => { return { type: Type.SET_CARD_EXPIRATION, payload: value }; };
+const setCardVerificationCode = (value: string): Action => { return { type: Type.SET_CARD_VERIFICATION_CODE, payload: value }; };
 
 const initialState: State = {
   contactName: '',
@@ -88,19 +91,19 @@ const reducer = (state: State, action: Action): State => {
     );
   };
   switch (action.type) {
-    case 'SET_CONTACT_NAME': {
+    case Type.SET_CONTACT_NAME: {
       const contactName = action.payload;
       const contactNameValid = validateName(contactName);
       const isValid = checkValid({ ...state, contactNameValid });
       return { ...state, contactName, contactNameValid, isValid };
     }
-    case 'SET_CONTACT_EMAIL': {
+    case Type.SET_CONTACT_EMAIL: {
       const contactEmail = action.payload;
       const contactEmailValid = validateEmail(contactEmail);
       const isValid = checkValid({ ...state, contactEmailValid });
       return { ...state, contactEmail, contactEmailValid, isValid };
     }
-    case 'SET_CONTACT_PHONE': {
+    case Type.SET_CONTACT_PHONE: {
       const contactPhone = action.payload.replace(/\D/g, '').substring(0, 10);
       const contactPhoneDisplay = contactPhone
         .replace(/^(09[\d]{2})(\d{3})(\d{0,3})$/g, '$1-$2-$3')
@@ -110,21 +113,21 @@ const reducer = (state: State, action: Action): State => {
       const isValid = checkValid({ ...state, contactPhoneValid });
       return { ...state, contactPhone, contactPhoneDisplay, contactPhoneValid, isValid };
     }
-    case 'SET_CARD_NUMBER': {
+    case Type.SET_CARD_NUMBER: {
       const cardNumber = action.payload.replace(/\D/g, '').substring(0, 16);
       const cardNumberDisplay = cardNumber.replace(/(\d{4})/g, '$1 ').trim();
       const cardNumberValid = validateNumberOnly(cardNumber, 16);
       const isValid = checkValid({ ...state, cardNumberValid });
       return { ...state, cardNumber, cardNumberDisplay, cardNumberValid, isValid };
     }
-    case 'SET_CARD_EXPIRATION': {
+    case Type.SET_CARD_EXPIRATION: {
       const cardExpiration = action.payload.replace(/\D/g, '').substring(0, 4);
       const cardExpirationDisplay = cardExpiration.replace(/^(0[1-9]|1[0-2])(\d{2})$/, '$1/$2');
       const cardExpirationValid = validateCardExpiration(cardExpiration);
       const isValid = checkValid({ ...state, cardExpirationValid });
       return { ...state, cardExpiration, cardExpirationDisplay, cardExpirationValid, isValid };
     }
-    case 'SET_CARD_VERIFICATION_CODE': {
+    case Type.SET_CARD_VERIFICATION_CODE: {
       const cardVerificationCode = action.payload.replace(/\D/g, '').substring(0, 3);
       const cardVerificationCodeValid = validateNumberOnly(cardVerificationCode, 3);
       const isValid = checkValid({ ...state, cardVerificationCodeValid });
