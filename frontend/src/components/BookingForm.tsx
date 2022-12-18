@@ -75,7 +75,7 @@ const Button = styled.button`
   cursor: pointer;
 `;
 
-const BookingForm = (props: { attraction?: Attraction }) => {
+const BookingForm = (props: { attraction?: Attraction, isLoggedIn: boolean }) => {
   if (props.attraction === undefined) {
     return (
       <Container>
@@ -91,7 +91,7 @@ const BookingForm = (props: { attraction?: Attraction }) => {
   const [date, setDate] = useState(getNextDate(1));
   const [bookingStatus, setBookingStatus] = useState('');
   const timeRef = useRef('morning');
-  const auth = useAuthContext();
+  const { addBooking } = useAuthContext();
   const { show } = useLoginRegisterContext();
   
   const handleRadioChanged = (val: string) => {
@@ -120,7 +120,7 @@ const BookingForm = (props: { attraction?: Attraction }) => {
       endtime: endtime,
       price: price
     };
-    const success = await auth.addBooking(true, booking);
+    const success = await addBooking(true, booking);
     if (success) {
       setBookingStatus('✔ 預約成功，前往預定行程查看');
     } else {
@@ -156,7 +156,7 @@ const BookingForm = (props: { attraction?: Attraction }) => {
           新台幣 {price} 元
         </Row>
         <FlexRow>
-          <Button onClick={ auth.isLogin ? startBooking : show }>開始預約行程</Button>
+          <Button onClick={ props.isLoggedIn ? startBooking : show }>開始預約行程</Button>
           {bookingStatus}
         </FlexRow>
       </Form>

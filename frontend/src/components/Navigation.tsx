@@ -3,6 +3,7 @@ import React, { useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuthContext } from '../context/APIContext';
 import { useLoginRegisterContext } from '../context/LoginRegisterContext';
+import { useAppSelector } from '../store/store';
 import { H2, Primary, BodyMedium, Secondery, Secondery20 } from '../utils/CommonStyles';
 
 const Container = styled.nav`
@@ -58,11 +59,12 @@ const NavItem = styled.button`
 const Navigation = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const auth = useAuthContext();
+  const isLoggedIn = useAppSelector(state => state.user.isLoggedIn);
+  const { getUserInfo, logout } = useAuthContext();
   const { show, hide } = useLoginRegisterContext();
 
   useEffect(() => {
-    auth.getUserInfo(true);
+    getUserInfo(true);
   }, []);
 
   const handleBrandClicked = () => {
@@ -76,11 +78,11 @@ const Navigation = () => {
       <Navbar>
         <NavBrand to='/' onClick={handleBrandClicked}>台北一日遊</NavBrand>
         <NavItems>
-          <NavItem onClick={ auth.isLogin ? () => navigate('/booking') : show }>
+          <NavItem onClick={ isLoggedIn ? () => navigate('/booking') : show }>
             預定行程
           </NavItem>
-          <NavItem onClick={ auth.isLogin ? () => { auth.logout(); hide(); } : show }>
-            {auth.isLogin ? '登出' : '登入/註冊'}
+          <NavItem onClick={ isLoggedIn ? () => { logout(); hide(); } : show }>
+            {isLoggedIn ? '登出' : '登入/註冊'}
           </NavItem>
         </NavItems>
       </Navbar>

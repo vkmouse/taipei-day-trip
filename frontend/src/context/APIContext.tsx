@@ -2,6 +2,8 @@ import React, { createContext, useContext, useRef, useState } from 'react';
 import { API } from '../api/api';
 import mockAPI from '../api/mockAPI';
 import realAPI from '../api/realAPI';
+import { useAppDispatch } from '../store/store';
+import { setIsLogin } from '../store/userSlice';
 import { Attraction, Attractions } from '../types/AttractionTypes';
 import { Booking, BookingResponse } from '../types/BookingTypes';
 import { parseDateTimeString } from '../utils/time';
@@ -22,7 +24,6 @@ type Member = {
 
 type Auth = {
   token: string
-  isLogin: boolean
   hasInit: boolean
 
   getAttraction: (id: number) => Promise<Attraction>
@@ -41,7 +42,6 @@ type Auth = {
 
 const initialState: Auth = {
   token: '',
-  isLogin: false,
   hasInit: false,
 
   getAttraction: () => { throw new Error('Function not implemented.'); },
@@ -61,7 +61,7 @@ const initialState: Auth = {
 const AuthContext = createContext<Auth>(initialState);
 
 const AuthProvider = (props: { isMock?: boolean, children: JSX.Element[] | JSX.Element }) => {
-  const [isLogin, setIsLogin] = useState(false);
+  const dispatch = useAppDispatch();
   const [hasInit, setHasInit] = useState(false);
   const token = useRef('');
   const api = props.isMock ? mockAPI : realAPI;
@@ -69,17 +69,17 @@ const AuthProvider = (props: { isMock?: boolean, children: JSX.Element[] | JSX.E
     try {
       const body: { 'ok': boolean, 'access_token': string } = await response.json();
       token.current = body.access_token;
-      setIsLogin(true);
+      dispatch(setIsLogin(true));
       return LoginResponse.Success;
     } catch (e) {
       token.current = '';
-      setIsLogin(false);
+      dispatch(setIsLogin(false));
       return LoginResponse.LoginFailed;
     }
   };
   const parseLoginFailed = async (response: Response) => {
     token.current = '';
-    setIsLogin(false);
+    dispatch(setIsLogin(false));
     const body: { 'error': boolean, 'message': string } = await response.json();
     if (body.message.includes('email')) {
       return LoginResponse.EmailNotExist;
@@ -94,7 +94,6 @@ const AuthProvider = (props: { isMock?: boolean, children: JSX.Element[] | JSX.E
 
   const auth: Auth = {
     token: token.current,
-    isLogin: isLogin,
     hasInit: hasInit,
 
     getAttraction: api.getAttraction,
@@ -131,14 +130,14 @@ const AuthProvider = (props: { isMock?: boolean, children: JSX.Element[] | JSX.E
       const body: { 'ok': boolean } = await response.json();
       if (body.ok) {
         token.current = '';
-        setIsLogin(false);
+        dispatch(setIsLogin(false));
       }
     },
     getUserInfo: async (refresh) => {
       const response = await api.getUserInfo(token.current);
       switch (response.status) {
         case 200:
-          setIsLogin(true);
+          dispatch(setIsLogin(true));
           setHasInit(true);
           const body: { data: Member } = await response.json();
           return body.data;
@@ -149,16 +148,16 @@ const AuthProvider = (props: { isMock?: boolean, children: JSX.Element[] | JSX.E
             token.current = body.access_token;
             return auth.getUserInfo(false);
           } else {
-            setIsLogin(false);
+            dispatch(setIsLogin(false));
             setHasInit(true);
           }
           break;
         case 403:
-          setIsLogin(false);
+          dispatch(setIsLogin(false));
           setHasInit(true);
           break;
         case 500:
-          setIsLogin(false);
+          dispatch(setIsLogin(false));
           setHasInit(true);
           break;
       }

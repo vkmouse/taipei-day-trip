@@ -6,6 +6,7 @@ import Carousel from '../components/Carousel';
 import Navigation from '../components/Navigation';
 import { Header, Main, Footer } from '../components/Semantic';
 import { useAuthContext } from '../context/APIContext';
+import { useAppSelector } from '../store/store';
 import { Attraction } from '../types/AttractionTypes';
 import { BodyMedium, Secondery, BodyBold } from '../utils/CommonStyles';
 
@@ -51,8 +52,8 @@ const AttractionPage = () => {
   const id = parseInt(params.attractionId);
   const [attraction, setAttraction] = useState<Attraction>();
   const api = useAuthContext();
-  const navigate = useNavigate();
   const hasInit = useRef(false);
+  const isLoggedIn = useAppSelector(state => state.user.isLoggedIn);
   
   const getAttraction = async (id: number) => {
     if (hasInit.current) {
@@ -75,7 +76,7 @@ const AttractionPage = () => {
       <Header>
         <Section>
           <Carousel attraction={attraction} />
-          <BookingForm attraction={attraction} />
+          <BookingForm attraction={attraction} isLoggedIn={isLoggedIn} />
         </Section>
       </Header>
       <Main>

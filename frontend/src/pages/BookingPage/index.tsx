@@ -4,6 +4,7 @@ import InputField from '../../components/InputField';
 import Navigation from '../../components/Navigation';
 import { Header, Main, Footer } from '../../components/Semantic';
 import { useAuthContext } from '../../context/APIContext';
+import { useAppSelector } from '../../store/store';
 import { BookingResponse } from '../../types/BookingTypes';
 import { validateName, validateEmail, validatePhone, validateNumberOnly, validateCardExpiration } from '../../utils/validate';
 import AttractionsInfo from './AttractionsInfo';
@@ -139,7 +140,8 @@ const reducer = (state: State, action: Action): State => {
 };
 
 const BookingPage = () => {
-  const auth = useAuthContext();
+  const isLoggedIn = useAppSelector(state => state.user.isLoggedIn);
+  const { hasInit, getUserInfo, getBookings, removeBooking } = useAuthContext();
   const navigate = useNavigate();
   const [state, dispatch] = useReducer(reducer, initialState);
   const { 
@@ -155,21 +157,21 @@ const BookingPage = () => {
   const [bookingResponses, setBookingResponses] = useState<BookingResponse[]>([]);
 
   useEffect(() => {
-    if (auth.hasInit) {
-      if (!auth.isLogin) {
+    if (hasInit) {
+      if (!isLoggedIn) {
         navigate('/');
       } else {
-        auth.getUserInfo(true).then(member => {
+        getUserInfo(true).then(member => {
           if (member !== null) {
             setName(member.name);
           }
         });
-        auth.getBookings(true).then(bookings => {
+        getBookings(true).then(bookings => {
           setBookingResponses(bookings);
         });
       }
     }
-  }, [auth.hasInit]);
+  }, [hasInit]);
 
   useEffect(() => {
     window.scrollTo({ top: 0 });
@@ -188,7 +190,7 @@ const BookingPage = () => {
           <SectionContainer>
             <Title>您好，{name}，待預定的行程如下：</Title>
             <AttractionsInfo bookingResponses={bookingResponses} onDeleteClick={async bookingId => {
-                const success = await auth.removeBooking(true, bookingId);
+                const success = await removeBooking(true, bookingId);
                 if (success) {
                   setBookingResponses(bookingResponses => bookingResponses.filter(p => p.bookingId !== bookingId));
                 }
