@@ -1,170 +1,13 @@
-import styled from '@emotion/styled';
 import React, { useEffect, useReducer, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import InputField from '../components/InputField';
-import Navigation from '../components/Navigation';
-import { Header, Main, Footer } from '../components/Semantic';
-import { useAuthContext } from '../context/AuthContext';
-import { BookingResponse } from '../types/BookingTypes';
-import { BodyBold, BodyMedium, CenterCropped, Primary, Secondery20, Secondery70 } from '../utils/CommonStyles';
-import { convertTimeToDate, getShortTimeString } from '../utils/time';
-import { validateCardExpiration, validateEmail, validateName, validateNumberOnly, validatePhone } from '../utils/validate';
-
-const Section = styled.section`
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  padding: 40px 10px 40px 10px;
-  border-top: 1px solid #E8E8E8;
-  border-width: 1px;
-`;
-
-const SectionContainer = styled.div`
-  max-width: 1000px;
-  flex-grow: 1;
-`;
-
-const Title = styled.div`
-  flex-grow: 1;
-  margin: 0 0 10px 0;
-  ${BodyBold}
-  font-size: 19px;
-  color: ${Secondery70};
-`;
-
-const Row = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-const RowText = styled.div`
-  margin: 7px 0 7px 0;
-  ${BodyMedium}
-  color: ${Secondery70};
-  min-width: 80px;
-`;
-
-const RowBoldText = styled.div`
-  margin: 7px 0 7px 0;
-  ${BodyBold}
-  color: ${Secondery70};
-`;
-
-const RowPrimaryText = styled.div`
-  margin-bottom: 10px;
-  ${BodyBold}
-  color: ${Primary};
-`;
-
-const Button = styled.button`
-  margin: 5px 0 5px 0;
-  padding: 10px 20px;
-  background-color: ${Primary};
-  color: white;
-  font-size: 19px;
-  line-height: 16px;
-  border-radius: 5px;
-  border-width: 0;
-  cursor: pointer;
-  &:disabled {
-    background-color: ${Secondery20};
-    color: ${Secondery70};
-  }
-`;
-
-const AttractionsInfoContainer = styled.div`
-  display: flex;
-  padding-top: 20px;
-  @media (max-width: 600px) {
-    display: block;
-  }
-`;
-
-const AttractionsImage = styled.img`
-  ${CenterCropped}
-  width: 260px;
-  height: 200px;
-  @media (max-width: 600px) {
-    width: 100%;
-  }
-`;
-
-const AttractionsDetail = styled.div`
-  padding-left: 25px;
-  flex-grow: 1;
-  @media (max-width: 600px) {
-    padding: 25px 0 0 0;
-  }
-`;
-
-const AttractionsAction = styled.div`
-  display: flex;
-  justify-content: flex-end;
-`;
-
-const AttractionsActionIcon = styled.img`
-  width: 30px;
-  height: 30px;
-  cursor: pointer;
-  border-radius: 5px;
-  &:hover {
-    background-color: ${Secondery20}
-  }
-`;
-
-const FlexEnd = styled.div`
-  display: flex;
-  justify-content: flex-end;
-`;
-
-const AttractionsInfo = (props: { 
-  bookingResponses: BookingResponse[],
-  onDeleteClick?: (bookingId: number) => void
-}) => {
-  const { bookingResponses, onDeleteClick } = props;
-
-  if (bookingResponses.length === 0) {
-    return (
-      <AttractionsInfoContainer>
-        <RowText>目前沒有任何待預訂的行程</RowText>
-      </AttractionsInfoContainer>
-    );
-  }
-  
-  return (
-    <>
-      {bookingResponses.map((booking, i) => 
-        <AttractionsInfoContainer key={i}>
-          <AttractionsImage src={booking.attraction.image} />
-          <AttractionsDetail>
-            <Row><RowPrimaryText>台北一日遊：{booking.attraction.name}</RowPrimaryText></Row>
-            <Row>
-              <RowBoldText>日期：</RowBoldText>
-              <RowText>{convertTimeToDate(booking.starttime)}</RowText>
-            </Row>
-            <Row>
-              <RowBoldText>時間：</RowBoldText>
-              <RowText>
-                {getShortTimeString(booking.starttime)} 到 {getShortTimeString(booking.endtime)} 
-              </RowText>
-            </Row>
-            <Row>
-              <RowBoldText>費用：</RowBoldText>
-              <RowText>新台幣 {booking.price} 元</RowText>
-            </Row>
-            <Row>
-              <RowBoldText>地點：</RowBoldText>
-              <RowText>臺北市 大安區忠孝東路4段</RowText>
-            </Row>
-          </AttractionsDetail>
-          <AttractionsAction>
-            <AttractionsActionIcon src='trash.png' onClick={() => onDeleteClick?.(booking.bookingId)}/>
-          </AttractionsAction>
-        </AttractionsInfoContainer>
-      )}
-    </>
-  );
-};
+import InputField from '../../components/InputField';
+import Navigation from '../../components/Navigation';
+import { Header, Main, Footer } from '../../components/Semantic';
+import { useAuthContext } from '../../context/AuthContext';
+import { BookingResponse } from '../../types/BookingTypes';
+import { validateName, validateEmail, validatePhone, validateNumberOnly, validateCardExpiration } from '../../utils/validate';
+import AttractionsInfo from './AttractionsInfo';
+import { Section, SectionContainer, Title, Row, RowText, RowTextBold, FlexEnd, Button } from './styles';
 
 const Input = (props: {
   dangerMessage: string
@@ -341,15 +184,11 @@ const BookingPage = () => {
         <Section>
           <SectionContainer>
             <Title>您好，{name}，待預定的行程如下：</Title>
-            <AttractionsInfo 
-              bookingResponses={bookingResponses}
-              onDeleteClick={(bookingId) => {
-                auth.removeBooking(true, bookingId)
-                .then(success => {
-                  if (success) {
-                    setBookingResponses(() => bookingResponses.filter(p => p.bookingId !== bookingId));
-                  }
-                });
+            <AttractionsInfo bookingResponses={bookingResponses} onDeleteClick={async bookingId => {
+                const success = await auth.removeBooking(true, bookingId);
+                if (success) {
+                  setBookingResponses(bookingResponses => bookingResponses.filter(p => p.bookingId !== bookingId));
+                }
               }}
             />
           </SectionContainer>
@@ -386,7 +225,7 @@ const BookingPage = () => {
                 onChange={e => dispatch(setContactPhone(e.target.value))}
               />
             </Row>
-            <RowBoldText>請保持手機暢通，準時到達，導覽人員將用手機與您聯繫，務必留下正確的聯絡方式。</RowBoldText>
+            <RowTextBold>請保持手機暢通，準時到達，導覽人員將用手機與您聯繫，務必留下正確的聯絡方式。</RowTextBold>
           </SectionContainer>
           </Section>
           <Section>
@@ -424,10 +263,10 @@ const BookingPage = () => {
           <Section>
             <SectionContainer>
               <FlexEnd>
-                <RowBoldText>總價：新台幣 
+                <RowTextBold>總價：新台幣 
                   {bookingResponses.map(m => m.price).reduce((total, price) => total + price, 0)} 
                   元
-                </RowBoldText>
+                </RowTextBold>
               </FlexEnd>
               <FlexEnd>
                 <Button 
