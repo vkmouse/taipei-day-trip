@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useAuthContext, LoginResponse } from '../context/AuthContext';
+import { useAuthContext, LoginResponse } from '../context/APIContext';
 
 type Status = 
   | 'Pending'

@@ -4,7 +4,7 @@ import AttractionsList from '../components/AttractionsList';
 import Navigation from '../components/Navigation';
 import SearchBar from '../components/SearchBar';
 import { Header, Main, Footer } from '../components/Semantic';
-import { useAPIContext } from '../context/APIContext';
+import { useAuthContext } from '../context/APIContext';
 import { Attraction } from '../types/AttractionTypes';
 import { H1, Secondery10, BodyBold } from '../utils/CommonStyles';
 
@@ -80,7 +80,7 @@ const SearchBarContainer = styled.div`
 const HomePage = () => {
   const observer = useRef<IntersectionObserver>();
   const [isLoading, setIsLoading] = useState(false);
-  const api = useAPIContext();
+  const api = useAuthContext();
   const [searchInputText, setSearchInputText] = useState('');
   const keyword = useRef('');
   const nextPage = useRef<number | null>(0);

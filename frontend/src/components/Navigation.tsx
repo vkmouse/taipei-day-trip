@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import React, { useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { useAuthContext } from '../context/AuthContext';
+import { useAuthContext } from '../context/APIContext';
 import { useLoginRegisterContext } from '../context/LoginRegisterContext';
 import { H2, Primary, BodyMedium, Secondery, Secondery20 } from '../utils/CommonStyles';
 

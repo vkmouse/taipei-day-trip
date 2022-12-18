@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import React, { useState, useRef } from 'react';
-import { useAuthContext } from '../context/AuthContext';
+import { useAuthContext } from '../context/APIContext';
 import { useLoginRegisterContext } from '../context/LoginRegisterContext';
 import { Attraction } from '../types/AttractionTypes';
 import { Booking } from '../types/BookingTypes';

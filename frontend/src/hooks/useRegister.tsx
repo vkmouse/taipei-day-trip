@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useAPIContext } from '../context/APIContext';
+import { useAuthContext } from '../context/APIContext';
 
 type Status = 
   | 'Pending'
@@ -9,7 +9,7 @@ type Status =
   | 'PasswordFailed';
 
 const useRegister = () => {
-  const api = useAPIContext();
+  const api = useAuthContext();
   const [message, setMessage] = useState('');
   const [status, setStatus] = useState<Status>('Success');
 

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import InputField from '../../components/InputField';
 import Navigation from '../../components/Navigation';
 import { Header, Main, Footer } from '../../components/Semantic';
-import { useAuthContext } from '../../context/AuthContext';
+import { useAuthContext } from '../../context/APIContext';
 import { BookingResponse } from '../../types/BookingTypes';
 import { validateName, validateEmail, validatePhone, validateNumberOnly, validateCardExpiration } from '../../utils/validate';
 import AttractionsInfo from './AttractionsInfo';

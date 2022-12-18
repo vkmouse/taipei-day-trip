@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState } from 'react';
 import LoginRegister from '../components/LoginRegister';
-import { useAuthContext } from './AuthContext';
+import { useAuthContext } from './APIContext';
 
 type LoginRegisterState = {
   show: () => void,
