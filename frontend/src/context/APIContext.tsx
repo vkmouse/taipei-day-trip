@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useRef, useState } from 'react';
-import { API } from '../api/api';
 import mockAPI from '../api/mockAPI';
 import realAPI from '../api/realAPI';
 import { useAppDispatch } from '../store/store';
@@ -32,12 +31,12 @@ type Auth = {
   refresh: () => Promise<Response>
   register: (name: string, email: string, password: string) => Promise<Response>
 
-  addBooking: (refresh: boolean, booking: Booking) => Promise<boolean>
+  addBooking: (booking: Booking) => Promise<boolean>
   login: (email: string, password: string) => Promise<LoginResponse>
   logout: () => Promise<void>
-  getBookings: (refresh: boolean) => Promise<BookingResponse[]>
-  getUserInfo: (refresh: boolean) => Promise<Member | null>
-  removeBooking: (refresh: boolean, bookingId: number) => Promise<boolean>
+  getBookings: () => Promise<BookingResponse[]>
+  getUserInfo: () => Promise<Member | null>
+  removeBooking: (bookingId: number) => Promise<boolean>
 }
 
 const initialState: Auth = {
@@ -92,6 +91,20 @@ const AuthProvider = (props: { isMock?: boolean, children: JSX.Element[] | JSX.E
     }
   };
 
+  const runRefreshToken = async (callback: () => Promise<Response>) => {
+    const response = await callback();
+    if (response.status === 401) {
+      const response = await api.refresh();
+      if (response.status === 200) {
+        const body: { ok: boolean, access_token: string } = await response.json();
+        token.current = body.access_token;
+        return await callback();
+      }
+      return response;
+    }
+    return response;
+  };
+
   const auth: Auth = {
     token: token.current,
     hasInit: hasInit,
@@ -102,18 +115,10 @@ const AuthProvider = (props: { isMock?: boolean, children: JSX.Element[] | JSX.E
     refresh: api.refresh,
     register: api.register,
 
-    addBooking: async (refresh, booking) => {
-      const response = await api.addBooking(token.current, booking);
-      switch (response.status) {
-        case 201:
-          return true;
-        case 401:
-          if (refresh) {
-            const response = await api.refresh();
-            const body: { 'ok': boolean, 'access_token': string } = await response.json();
-            token.current = body.access_token;
-            return auth.addBooking(false, booking);
-          }
+    addBooking: async (booking) => {
+      const response = await runRefreshToken(() => api.addBooking(token.current, booking));
+      if (response.status === 201) {
+        return true;
       }
       return false;
     },
@@ -133,41 +138,21 @@ const AuthProvider = (props: { isMock?: boolean, children: JSX.Element[] | JSX.E
         dispatch(setIsLogin(false));
       }
     },
-    getUserInfo: async (refresh) => {
-      const response = await api.getUserInfo(token.current);
-      switch (response.status) {
-        case 200:
-          dispatch(setIsLogin(true));
-          setHasInit(true);
-          const body: { data: Member } = await response.json();
-          return body.data;
-        case 401:
-          if (refresh) {
-            const response = await api.refresh();
-            const body: { 'ok': boolean, 'access_token': string } = await response.json();
-            token.current = body.access_token;
-            return auth.getUserInfo(false);
-          } else {
-            dispatch(setIsLogin(false));
-            setHasInit(true);
-          }
-          break;
-        case 403:
-          dispatch(setIsLogin(false));
-          setHasInit(true);
-          break;
-        case 500:
-          dispatch(setIsLogin(false));
-          setHasInit(true);
-          break;
+    getUserInfo: async () => {
+      const response = await runRefreshToken(() => api.getUserInfo(token.current));
+      setHasInit(true);
+      if (response.status === 200) {
+        dispatch(setIsLogin(true));
+        const body: { data: Member } = await response.json();
+        return body.data;
       }
       return null;
     },
-    getBookings: async (refresh) => {
-      const response = await api.getBookings(token.current);
-      switch (response.status) {
-        case 200:
-          const body: { data: {
+    getBookings: async () => {
+      const response = await runRefreshToken(() => api.getBookings(token.current));
+      if (response.status === 200) {
+        const body: { 
+          data: {
             attraction: {
               id: number
               name: string
@@ -178,36 +163,22 @@ const AuthProvider = (props: { isMock?: boolean, children: JSX.Element[] | JSX.E
             starttime: string
             endtime: string
             price: number
-          }[] } = await response.json();
-          return body.data.map(m => {
-            return {
-              ...m,
-              starttime: parseDateTimeString(m.starttime),
-              endtime: parseDateTimeString(m.endtime),
-            };
-          });
-        case 401:
-          if (refresh) {
-            const response = await api.refresh();
-            const body: { 'ok': boolean, 'access_token': string } = await response.json();
-            token.current = body.access_token;
-            return auth.getBookings(false);
-          }
+          }[] 
+        } = await response.json();
+        return body.data.map(m => {
+          return {
+            ...m,
+            starttime: parseDateTimeString(m.starttime),
+            endtime: parseDateTimeString(m.endtime),
+          };
+        });
       }
       return [];
     },
-    removeBooking: async (refresh, bookingId) => {
-      const response = await api.removeBooking(token.current, bookingId);
-      switch (response.status) {
-        case 200:
-          return true;
-        case 401:
-          if (refresh) {
-            const response = await api.refresh();
-            const body: { 'ok': boolean, 'access_token': string } = await response.json();
-            token.current = body.access_token;
-            return auth.removeBooking(false, bookingId);
-          }
+    removeBooking: async (bookingId) => {
+      const response = await runRefreshToken(() => api.removeBooking(token.current, bookingId));
+      if (response.status === 200) {
+        return true;
       }
       return false;
     },

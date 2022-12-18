@@ -64,7 +64,7 @@ const Navigation = () => {
   const { show, hide } = useLoginRegisterContext();
 
   useEffect(() => {
-    getUserInfo(true);
+    getUserInfo();
   }, []);
 
   const handleBrandClicked = () => {

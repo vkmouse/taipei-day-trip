@@ -161,12 +161,12 @@ const BookingPage = () => {
       if (!isLoggedIn) {
         navigate('/');
       } else {
-        getUserInfo(true).then(member => {
+        getUserInfo().then(member => {
           if (member !== null) {
             setName(member.name);
           }
         });
-        getBookings(true).then(bookings => {
+        getBookings().then(bookings => {
           setBookingResponses(bookings);
         });
       }
@@ -190,7 +190,7 @@ const BookingPage = () => {
           <SectionContainer>
             <Title>您好，{name}，待預定的行程如下：</Title>
             <AttractionsInfo bookingResponses={bookingResponses} onDeleteClick={async bookingId => {
-                const success = await removeBooking(true, bookingId);
+                const success = await removeBooking(bookingId);
                 if (success) {
                   setBookingResponses(bookingResponses => bookingResponses.filter(p => p.bookingId !== bookingId));
                 }

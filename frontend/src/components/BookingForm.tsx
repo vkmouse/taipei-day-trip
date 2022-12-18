@@ -120,7 +120,7 @@ const BookingForm = (props: { attraction?: Attraction, isLoggedIn: boolean }) =>
       endtime: endtime,
       price: price
     };
-    const success = await addBooking(true, booking);
+    const success = await addBooking(booking);
     if (success) {
       setBookingStatus('✔ 預約成功，前往預定行程查看');
     } else {
