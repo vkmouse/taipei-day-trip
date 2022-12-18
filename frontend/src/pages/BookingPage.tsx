@@ -1,11 +1,11 @@
 import styled from '@emotion/styled';
 import React, { useEffect, useReducer, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { BookingResponse } from '../api/api';
 import InputField from '../components/InputField';
 import Navigation from '../components/Navigation';
 import { Header, Main, Footer } from '../components/Semantic';
 import { useAuthContext } from '../context/AuthContext';
+import { BookingResponse } from '../types/BookingTypes';
 import { BodyBold, BodyMedium, CenterCropped, Primary, Secondery20, Secondery70 } from '../utils/CommonStyles';
 import { convertTimeToDate, getShortTimeString } from '../utils/time';
 import { validateCardExpiration, validateEmail, validateName, validateNumberOnly, validatePhone } from '../utils/validate';

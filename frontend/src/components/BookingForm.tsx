@@ -1,8 +1,9 @@
 import styled from '@emotion/styled';
 import React, { useState, useRef } from 'react';
-import { Attraction, Booking } from '../api/api';
 import { useAuthContext } from '../context/AuthContext';
 import { useLoginRegisterContext } from '../context/LoginRegisterContext';
+import { Attraction } from '../types/AttractionTypes';
+import { Booking } from '../types/BookingTypes';
 import { H3, Secondery70, BodyMedium, BodyBold, Secondery20, Primary } from '../utils/CommonStyles';
 import { convertTimeToDate, getNextDate, parseDateString } from '../utils/time';
 import Calendar from './Calendar';

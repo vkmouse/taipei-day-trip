@@ -1,4 +1,6 @@
-import { API, Attraction, Attractions, Booking, BookingResponse } from "./api";
+import { Attraction, Attractions } from "../types/AttractionTypes";
+import { Booking } from "../types/BookingTypes";
+import { API } from "./api";
 
 const ms = 1000;
 

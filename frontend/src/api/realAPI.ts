@@ -1,5 +1,7 @@
+import { Attraction, Attractions } from "../types/AttractionTypes";
+import { Booking } from "../types/BookingTypes";
 import { convertTimeToDateTime } from "../utils/time";
-import { API, Attraction, Attractions, Booking, BookingResponse } from "./api";
+import { API } from "./api";
 
 const realAPI: API = {
   addBooking: async (token: string, booking: Booking): Promise<Response> => {

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useRef, useState } from 'react';
-import { Booking, BookingResponse } from '../api/api';
+import { Booking, BookingResponse } from '../types/BookingTypes';
 import { parseDateTimeString } from '../utils/time';
 import { useAPIContext } from './APIContext';
 

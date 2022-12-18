@@ -1,7 +1,7 @@
 import { keyframes, css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React, { useState } from 'react';
-import { Attraction } from '../api/api';
+import { Attraction } from '../types/AttractionTypes';
 import { CenterCropped, Secondery20 } from '../utils/CommonStyles';
 import Loader from './Loader';
 

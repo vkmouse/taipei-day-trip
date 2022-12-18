@@ -1,40 +1,5 @@
-export interface Attraction {
-  id: number
-  name: string
-  description: string
-  address: string
-  lat: number
-  lng: number
-  transport: string
-  images: string[]
-  category: string
-  mrt?: string
-}
-
-export interface Attractions { 
-  data: Attraction[]
-  nextPage: number | null
-}
-
-export type Booking = {
-  attractionId: number
-  starttime: Date,
-  endtime: Date,
-  price: number
-}
-
-export type BookingResponse = {
-  attraction: {
-    id: number
-    name: string
-    address: string
-    image: string
-  },
-  bookingId: number
-  starttime: Date
-  endtime: Date
-  price: number
-}
+import { Attraction, Attractions } from '../types/AttractionTypes';
+import { Booking } from '../types/BookingTypes';
 
 export type API = {
   addBooking: (token: string, booking: Booking) => Promise<Response>
