@@ -60,11 +60,15 @@ const Navigation = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const isLoggedIn = useAppSelector(state => state.user.isLoggedIn);
+  const userInfo = useAppSelector(state => state.user.userInfo);
+  const loading = useAppSelector(state => state.user.loading);
   const { getUserInfo, logout } = useAuthContext();
   const { show, hide } = useLoginRegisterContext();
 
   useEffect(() => {
-    getUserInfo();
+    if (!isLoggedIn || !userInfo) {
+      getUserInfo();
+    }
   }, []);
 
   const handleBrandClicked = () => {
@@ -77,14 +81,16 @@ const Navigation = () => {
     <Container>
       <Navbar>
         <NavBrand to='/' onClick={handleBrandClicked}>台北一日遊</NavBrand>
-        <NavItems>
-          <NavItem onClick={ isLoggedIn ? () => navigate('/booking') : show }>
-            預定行程
-          </NavItem>
-          <NavItem onClick={ isLoggedIn ? () => { logout(); hide(); } : show }>
-            {isLoggedIn ? '登出' : '登入/註冊'}
-          </NavItem>
-        </NavItems>
+        {loading ? '' : 
+          <NavItems>
+            <NavItem onClick={ isLoggedIn ? () => navigate('/booking') : show }>
+              預定行程
+            </NavItem>
+            <NavItem onClick={ isLoggedIn ? () => { logout(); hide(); } : show }>
+              {isLoggedIn ? '登出' : '登入/註冊'}
+            </NavItem>
+          </NavItems>
+        }
       </Navbar>
     </Container>
   );

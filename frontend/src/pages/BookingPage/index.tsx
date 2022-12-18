@@ -141,7 +141,8 @@ const reducer = (state: State, action: Action): State => {
 
 const BookingPage = () => {
   const isLoggedIn = useAppSelector(state => state.user.isLoggedIn);
-  const { hasInit, getUserInfo, getBookings, removeBooking } = useAuthContext();
+  const userInfo = useAppSelector(state => state.user.userInfo);
+  const { getUserInfo, getBookings, removeBooking } = useAuthContext();
   const navigate = useNavigate();
   const [state, dispatch] = useReducer(reducer, initialState);
   const { 
@@ -153,25 +154,21 @@ const BookingPage = () => {
     cardVerificationCode, cardVerificationCodeValid,
     isValid
   } = state;
-  const [name, setName] = useState('');
   const [bookingResponses, setBookingResponses] = useState<BookingResponse[]>([]);
 
   useEffect(() => {
-    if (hasInit) {
-      if (!isLoggedIn) {
-        navigate('/');
-      } else {
-        getUserInfo().then(member => {
-          if (member !== null) {
-            setName(member.name);
-          }
-        });
-        getBookings().then(bookings => {
-          setBookingResponses(bookings);
-        });
-      }
+    if (!isLoggedIn || !userInfo) {
+      getUserInfo().then(member => {
+        if (!member) {
+          navigate('/');
+        } else {
+          getBookings().then(bookings => setBookingResponses(bookings));
+        }
+      });
+    } else {
+      getBookings().then(bookings => setBookingResponses(bookings));
     }
-  }, [hasInit]);
+  }, []);
 
   useEffect(() => {
     window.scrollTo({ top: 0 });
@@ -188,14 +185,17 @@ const BookingPage = () => {
       <Main>
         <Section>
           <SectionContainer>
-            <Title>您好，{name}，待預定的行程如下：</Title>
-            <AttractionsInfo bookingResponses={bookingResponses} onDeleteClick={async bookingId => {
-                const success = await removeBooking(bookingId);
-                if (success) {
-                  setBookingResponses(bookingResponses => bookingResponses.filter(p => p.bookingId !== bookingId));
-                }
-              }}
-            />
+            {userInfo ? 
+            <>
+              <Title>您好，{userInfo.name}，待預定的行程如下：</Title> 
+              <AttractionsInfo bookingResponses={bookingResponses} onDeleteClick={async bookingId => {
+                  const success = await removeBooking(bookingId);
+                  if (success) {
+                    setBookingResponses(bookingResponses => bookingResponses.filter(p => p.bookingId !== bookingId));
+                  }
+                }}
+              />
+            </> : <></>}
           </SectionContainer>
         </Section>
         {bookingResponses.length === 0 ? <></> : 

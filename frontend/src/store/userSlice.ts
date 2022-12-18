@@ -1,14 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-
-type UserInfo = {
-  id: number
-  name: string
-  email: string
-}
+import { UserInfo } from "../types/UserTypes";
 
 type UserState = {
   isLoggedIn: boolean,
-  lastUpdated: Date | null,
   loading: boolean
   userInfo: UserInfo | null
   userToken: string | null
@@ -16,7 +10,6 @@ type UserState = {
 
 const initialState: UserState = {
   isLoggedIn: false,
-  lastUpdated: null,
   loading: false,
   userInfo: null,
   userToken: null,
@@ -35,13 +28,11 @@ export const userSlice = createSlice({
       state.userToken = action.payload;
     }, 
     setUser: (state, action: PayloadAction<UserInfo>) => {
-      state.lastUpdated = new Date();
       state.loading = false;
       state.userInfo = action.payload;
     },
     reset: (state) => {
       state.isLoggedIn = false;
-      state.lastUpdated = new Date();
       state.loading = false;
       state.userInfo = null;
       state.userToken = null;

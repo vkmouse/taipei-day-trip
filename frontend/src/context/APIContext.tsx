@@ -2,28 +2,13 @@ import React, { createContext, useContext, useRef, useState } from 'react';
 import mockAPI from '../api/mockAPI';
 import realAPI from '../api/realAPI';
 import { useAppDispatch, useAppSelector } from '../store/store';
-import { reset, setToken } from '../store/userSlice';
+import { reset, setToken, setUser, startLoading } from '../store/userSlice';
 import { Attraction, Attractions } from '../types/AttractionTypes';
 import { Booking, BookingResponse } from '../types/BookingTypes';
+import { LoginResponse, UserInfo } from '../types/UserTypes';
 import { parseDateTimeString } from '../utils/time';
 
-enum LoginResponse {
-  Success = 1,
-  EmailNotExist,
-  PasswordError,
-  LoginFailed,
-  ServerFailed,
-}
-
-type Member = {
-  id: number,
-  name: string,
-  email: string,
-}
-
 type Auth = {
-  hasInit: boolean
-
   getAttraction: (id: number) => Promise<Attraction>
   getAttractions: (page: number, keyword: string) => Promise<Attractions>
   getCategories: () => Promise<{ data: string[] }>
@@ -34,13 +19,11 @@ type Auth = {
   login: (email: string, password: string) => Promise<LoginResponse>
   logout: () => Promise<void>
   getBookings: () => Promise<BookingResponse[]>
-  getUserInfo: () => Promise<Member | null>
+  getUserInfo: () => Promise<UserInfo | null>
   removeBooking: (bookingId: number) => Promise<boolean>
 }
 
 const initialState: Auth = {
-  hasInit: false,
-
   getAttraction: () => { throw new Error('Function not implemented.'); },
   getAttractions: () => { throw new Error('Function not implemented.'); },
   getCategories: () => { throw new Error('Function not implemented.'); },
@@ -51,7 +34,7 @@ const initialState: Auth = {
   login: (): Promise<LoginResponse> => { throw new Error('Function not implemented.'); },
   logout: (): Promise<void> => { throw new Error('Function not implemented.'); },
   getBookings: (): Promise<BookingResponse[]> => { throw new Error('Function not implemented.'); },
-  getUserInfo: (): Promise<Member> => { throw new Error('Function not implemented.'); },
+  getUserInfo: (): Promise<UserInfo> => { throw new Error('Function not implemented.'); },
   removeBooking: (): Promise<boolean> => { throw new Error('Function not implemented.'); },
 };
 
@@ -60,7 +43,6 @@ const AuthContext = createContext<Auth>(initialState);
 const AuthProvider = (props: { isMock?: boolean, children: JSX.Element[] | JSX.Element }) => {
   const dispatch = useAppDispatch();
   const token = useAppSelector(state => state.user.userToken);
-  const [hasInit, setHasInit] = useState(false);
   const api = props.isMock ? mockAPI : realAPI;
 
   const runRefreshToken = async (token: string | null, callback: (token: string) => Promise<Response>) => {
@@ -88,8 +70,6 @@ const AuthProvider = (props: { isMock?: boolean, children: JSX.Element[] | JSX.E
   };
 
   const auth: Auth = {
-    hasInit: hasInit,
-
     getAttraction: api.getAttraction,
     getAttractions: api.getAttractions,
     getCategories: api.getCategories,
@@ -104,10 +84,11 @@ const AuthProvider = (props: { isMock?: boolean, children: JSX.Element[] | JSX.E
       return false;
     },
     login: async (email, password) => {
+      dispatch(startLoading());
       const response = await api.login(email, password);
       if (response.status === 200) {
         try {
-          const body: { 'ok': boolean, 'access_token': string } = await response.json();
+          const body: { ok: boolean, access_token: string } = await response.json();
           dispatch(setToken(body.access_token));
           return LoginResponse.Success;
         } catch (e) {
@@ -116,7 +97,7 @@ const AuthProvider = (props: { isMock?: boolean, children: JSX.Element[] | JSX.E
         }
       } else {
         dispatch(reset());
-        const body: { 'error': boolean, 'message': string } = await response.json();
+        const body: { error: boolean, message: string } = await response.json();
         if (body.message.includes('email')) {
           return LoginResponse.EmailNotExist;
         } else if (body.message.includes('password')) {
@@ -136,10 +117,11 @@ const AuthProvider = (props: { isMock?: boolean, children: JSX.Element[] | JSX.E
       }
     },
     getUserInfo: async () => {
+      dispatch(startLoading());
       const response = await runRefreshToken(token, (token) => api.getUserInfo(token));
-      setHasInit(true);
       if (response.status === 200) {
-        const body: { data: Member } = await response.json();
+        const body: { data: UserInfo } = await response.json();
+        dispatch(setUser(body.data));
         return body.data;
       }
       return null;
