@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useRef, useState } from 'react';
+import React, { createContext, useContext } from 'react';
 import mockAPI from '../api/mockAPI';
 import realAPI from '../api/realAPI';
 import { useAppDispatch, useAppSelector } from '../store/store';
@@ -8,7 +8,7 @@ import { Booking, BookingResponse } from '../types/BookingTypes';
 import { LoginResponse, UserInfo } from '../types/UserTypes';
 import { parseDateTimeString } from '../utils/time';
 
-type Auth = {
+type APIState = {
   getAttraction: (id: number) => Promise<Attraction>
   getAttractions: (page: number, keyword: string) => Promise<Attractions>
   getCategories: () => Promise<{ data: string[] }>
@@ -23,7 +23,7 @@ type Auth = {
   removeBooking: (bookingId: number) => Promise<boolean>
 }
 
-const initialState: Auth = {
+const initialState: APIState = {
   getAttraction: () => { throw new Error('Function not implemented.'); },
   getAttractions: () => { throw new Error('Function not implemented.'); },
   getCategories: () => { throw new Error('Function not implemented.'); },
@@ -38,38 +38,36 @@ const initialState: Auth = {
   removeBooking: (): Promise<boolean> => { throw new Error('Function not implemented.'); },
 };
 
-const AuthContext = createContext<Auth>(initialState);
+const APIContext = createContext<APIState>(initialState);
 
-const AuthProvider = (props: { isMock?: boolean, children: JSX.Element[] | JSX.Element }) => {
+const APIProvider = (props: { isMock?: boolean, children: JSX.Element[] | JSX.Element }) => {
   const dispatch = useAppDispatch();
   const token = useAppSelector(state => state.user.userToken);
   const api = props.isMock ? mockAPI : realAPI;
 
-  const runRefreshToken = async (token: string | null, callback: (token: string) => Promise<Response>) => {
+  const refreshAndCall = async (callback: (token: string) => Promise<Response>) => {
+    const response = await api.refresh();
+    if (response.status === 200) {
+      const body: { ok: boolean, access_token: string } = await response.json();
+      dispatch(setToken(body.access_token));
+      return await callback(body.access_token);
+    }
+    return response;
+  };
+
+  const callAPIWithRefresh = async (token: string | null, callAPI: (token: string) => Promise<Response>) => {
     if (token) {
-      const response = await callback(token);
+      const response = await callAPI(token);
       if (response.status === 401) {
-        const response = await api.refresh();
-        if (response.status === 200) {
-          const body: { ok: boolean, access_token: string } = await response.json();
-          dispatch(setToken(body.access_token));
-          return await callback(body.access_token);
-        }
-        return response;
+        return refreshAndCall(callAPI);
       }
       return response;
     } else {
-      const response = await api.refresh();
-      if (response.status === 200) {
-        const body: { ok: boolean, access_token: string } = await response.json();
-        dispatch(setToken(body.access_token));
-        return await callback(body.access_token);
-      }
-      return response;
+      return refreshAndCall(callAPI);
     }
   };
 
-  const auth: Auth = {
+  const apiState: APIState = {
     getAttraction: api.getAttraction,
     getAttractions: api.getAttractions,
     getCategories: api.getCategories,
@@ -77,7 +75,7 @@ const AuthProvider = (props: { isMock?: boolean, children: JSX.Element[] | JSX.E
     register: api.register,
 
     addBooking: async (booking) => {
-      const response = await runRefreshToken(token, (token) => api.addBooking(token, booking));
+      const response = await callAPIWithRefresh(token, (token) => api.addBooking(token, booking));
       if (response.status === 201) {
         return true;
       }
@@ -111,23 +109,24 @@ const AuthProvider = (props: { isMock?: boolean, children: JSX.Element[] | JSX.E
     },
     logout: async () => {
       const response = await api.logout();
-      const body: { 'ok': boolean } = await response.json();
+      const body: { ok: boolean } = await response.json();
       if (body.ok) {
         dispatch(reset());
       }
     },
     getUserInfo: async () => {
       dispatch(startLoading());
-      const response = await runRefreshToken(token, (token) => api.getUserInfo(token));
+      const response = await callAPIWithRefresh(token, api.getUserInfo);
       if (response.status === 200) {
         const body: { data: UserInfo } = await response.json();
         dispatch(setUser(body.data));
         return body.data;
       }
+      dispatch(reset());
       return null;
     },
     getBookings: async () => {
-      const response = await runRefreshToken(token, (token) => api.getBookings(token));
+      const response = await callAPIWithRefresh(token, api.getBookings);
       if (response.status === 200) {
         const body: { 
           data: {
@@ -154,18 +153,18 @@ const AuthProvider = (props: { isMock?: boolean, children: JSX.Element[] | JSX.E
       return [];
     },
     removeBooking: async (bookingId) => {
-      const response = await runRefreshToken(token, (token) => api.removeBooking(token, bookingId));
+      const response = await callAPIWithRefresh(token, (token) => api.removeBooking(token, bookingId));
       if (response.status === 200) {
         return true;
       }
       return false;
     },
   };
-  return <AuthContext.Provider value={auth} {...props} />;
+  return <APIContext.Provider value={apiState} {...props} />;
 };
 
-const useAuthContext = (): Auth => {
-  return useContext(AuthContext);
+const useAPIContext = (): APIState => {
+  return useContext(APIContext);
 };
 
-export { type Auth, AuthContext, AuthProvider, LoginResponse, useAuthContext };
+export { type APIState, APIContext, APIProvider, LoginResponse, useAPIContext };

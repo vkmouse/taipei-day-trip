@@ -2,7 +2,7 @@ import { Global } from '@emotion/react';
 import React from 'react';
 import { Provider } from 'react-redux';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { AuthProvider } from './context/APIContext';
+import { APIProvider } from './context/APIContext';
 import { LoginRegisterProvider } from './context/LoginRegisterContext';
 import AttractionPage from './pages/AttractionPage';
 import BookingPage from './pages/BookingPage';
@@ -13,8 +13,8 @@ import { GlobalStyles } from './utils/CommonStyles';
 function App() {
   return (
     <Provider store={store}>
-      <AuthProvider>
-      {/* <AuthProvider isMock> */}
+      <APIProvider>
+      {/* <APIProvider isMock> */}
         <LoginRegisterProvider>
           <Global styles={GlobalStyles} />
           <Router>
@@ -29,7 +29,7 @@ function App() {
             </Routes>
           </Router>
         </LoginRegisterProvider>
-      </AuthProvider>
+      </APIProvider>
     </Provider>
   );
 }

@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import React, { useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { useAuthContext } from '../context/APIContext';
+import { useAPIContext } from '../context/APIContext';
 import { useLoginRegisterContext } from '../context/LoginRegisterContext';
 import { useAppSelector } from '../store/store';
 import { H2, Primary, BodyMedium, Secondery, Secondery20 } from '../utils/CommonStyles';
@@ -62,7 +62,7 @@ const Navigation = () => {
   const isLoggedIn = useAppSelector(state => state.user.isLoggedIn);
   const userInfo = useAppSelector(state => state.user.userInfo);
   const loading = useAppSelector(state => state.user.loading);
-  const { getUserInfo, logout } = useAuthContext();
+  const { getUserInfo, logout } = useAPIContext();
   const { show, hide } = useLoginRegisterContext();
 
   useEffect(() => {
@@ -81,7 +81,7 @@ const Navigation = () => {
     <Container>
       <Navbar>
         <NavBrand to='/' onClick={handleBrandClicked}>台北一日遊</NavBrand>
-        {loading ? '' : 
+        {loading ? <></> : 
           <NavItems>
             <NavItem onClick={ isLoggedIn ? () => navigate('/booking') : show }>
               預定行程

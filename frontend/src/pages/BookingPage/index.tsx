@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import InputField from '../../components/InputField';
 import Navigation from '../../components/Navigation';
 import { Header, Main, Footer } from '../../components/Semantic';
-import { useAuthContext } from '../../context/APIContext';
+import { useAPIContext } from '../../context/APIContext';
 import { useAppSelector } from '../../store/store';
 import { BookingResponse } from '../../types/BookingTypes';
 import { validateName, validateEmail, validatePhone, validateNumberOnly, validateCardExpiration } from '../../utils/validate';
@@ -142,7 +142,7 @@ const reducer = (state: State, action: Action): State => {
 const BookingPage = () => {
   const isLoggedIn = useAppSelector(state => state.user.isLoggedIn);
   const userInfo = useAppSelector(state => state.user.userInfo);
-  const { getUserInfo, getBookings, removeBooking } = useAuthContext();
+  const { getUserInfo, getBookings, removeBooking } = useAPIContext();
   const navigate = useNavigate();
   const [state, dispatch] = useReducer(reducer, initialState);
   const { 

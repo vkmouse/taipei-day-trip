@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import React, { useState, useEffect } from 'react';
-import { useAuthContext } from '../context/APIContext';
+import { useAPIContext } from '../context/APIContext';
 import { BodyBold, Primary, CategoryMedium, Secondery20 } from '../utils/CommonStyles';
 
 const SearchContainer = styled.div`
@@ -78,7 +78,7 @@ const SearchCategoryList = (props: {
 }) => {
   const [categories, setCategories] = useState<string[]>([]);
   const { visible, onCategoryItemClick } = props;
-  const api = useAuthContext();
+  const api = useAPIContext();
   
   const getCategories = async () => {
     const body = await api.getCategories();

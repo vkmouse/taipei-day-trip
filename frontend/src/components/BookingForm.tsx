@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import React, { useState, useRef } from 'react';
-import { useAuthContext } from '../context/APIContext';
+import { useAPIContext } from '../context/APIContext';
 import { useLoginRegisterContext } from '../context/LoginRegisterContext';
 import { Attraction } from '../types/AttractionTypes';
 import { Booking } from '../types/BookingTypes';
@@ -91,7 +91,7 @@ const BookingForm = (props: { attraction?: Attraction, isLoggedIn: boolean }) =>
   const [date, setDate] = useState(getNextDate(1));
   const [bookingStatus, setBookingStatus] = useState('');
   const timeRef = useRef('morning');
-  const { addBooking } = useAuthContext();
+  const { addBooking } = useAPIContext();
   const { show } = useLoginRegisterContext();
   
   const handleRadioChanged = (val: string) => {
