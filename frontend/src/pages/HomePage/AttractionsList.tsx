@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import { Link } from 'react-router-dom';
 import { Attraction } from '../../types/AttractionTypes';
 import { AbsoluteBottom, AbsoluteFull, BodyBold, RatioContainer, CenterCropped, BodyMedium, Secondery50 } from '../../utils/CommonStyles';
@@ -88,12 +88,16 @@ const AttractionDescription = styled.div`
   color: ${Secondery50};
 `;
 
-const AttractionsCard = (props: {attraction: Attraction}) => {
-  const { attraction } = props;
+const AttractionsCard = (props: { 
+  attraction: Attraction,
+  style?: CSSProperties,
+  onLoad?: () => void 
+}) => {
+  const { attraction, style, onLoad } = props;
   return (
-    <AttractionCardContainer to={`/attraction/${attraction.id}`}>
+    <AttractionCardContainer to={`/attraction/${attraction.id}`} style={style}>
       <AttractionImageContainer>
-        <AttractionImage src={attraction.images[0]}></AttractionImage>
+        <AttractionImage src={attraction.images[0]} onLoad={onLoad} />
         <AttractionTitleContainer>
           <AttractionTitleContent>
             <AttractionTitleOverlay />
@@ -109,13 +113,28 @@ const AttractionsCard = (props: {attraction: Attraction}) => {
   );
 };
 
-const AttractionsList = (props: {attractions: Attraction[]}) => {
-  const { attractions } = props;
+const AttractionsList = (props: { 
+  attractions: Attraction[],
+  loadingAttractions: Attraction[],
+  onLoad: () => void,
+}) => {
+  const length = props.attractions.length;
+  const attractions = props.attractions.map(
+    (p, i) => <AttractionsCard attraction={p} key={i} />
+  );
+  const loadingAttractions = props.loadingAttractions.map(
+    (p, i) => (
+      <AttractionsCard
+        attraction={p}
+        key={length + i}
+        style={{ display: 'none' }}
+        onLoad={props.onLoad}
+      />
+    )
+  );
   return (
     <AttractionsListContainer>
-      {attractions.map((p, i) => 
-        <AttractionsCard attraction={p} key={i} />
-      )}
+      {attractions.concat(loadingAttractions)}
     </AttractionsListContainer>
   );
 };

@@ -8,10 +8,6 @@ export const AttractionsNotFound = styled.img`
   content: url('attraction_not_found.png');
 `;
 
-export const Loading = styled.img`
-  content: url('loading.gif');
-`;
-
 export const Container = styled.div`
   display: flex;
   justify-content: center;
