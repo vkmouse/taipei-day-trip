@@ -1,28 +1,70 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, useReducer } from 'react';
 import AttractionsList from './AttractionsList';
 import Navigation from '../../components/Navigation';
 import SearchBar from '../../components/SearchBar';
 import { Header, Main, Footer } from '../../components/Semantic';
 import { useAPIContext } from '../../context/APIContext';
-import { Attraction } from '../../types/AttractionTypes';
+import { Attraction, Attractions } from '../../types/AttractionTypes';
 import { BannerContainer, BannerContent, BannerContentContainer, BannerSlogan, BannerTitle, BannerDescription, SearchBarContainer, Container, Loading, AttractionsNotFound } from './styles';
 
-const HomePage = () => {
-  const observer = useRef<IntersectionObserver>();
-  const [isLoading, setIsLoading] = useState(false);
-  const api = useAPIContext();
-  const [searchInputText, setSearchInputText] = useState('');
-  const keyword = useRef('');
-  const nextPage = useRef<number | null>(0);
-  const [attractions, setAttractions] = useState<Attraction[]>([]);
+type State = {
+  attractions: Attraction[]
+  keyword: string
+  nextPage: number | null
+  searchText: string
+}
 
-  const getPage = async (newNextPage: number | null, keyword: string) => {
-    const hasNext = newNextPage !== null;
+enum Type {
+  ADD_ATTRACTIONS,
+  SET_SEARCH_TEXT,
+  UPDATE_KEYWORD,
+}
+
+type Action = { type: Type, payload?: any };
+const addAttractions = (props: Attractions): Action => { return { type: Type.ADD_ATTRACTIONS, payload: props }; };
+const setSearchText = (value: string): Action => { return { type: Type.SET_SEARCH_TEXT, payload: value }; };
+const updateKeyword = (): Action => { return { type: Type.UPDATE_KEYWORD }; };
+
+const initialState: State = {
+  attractions: [],
+  keyword: '',
+  nextPage: 0,
+  searchText: '',
+};
+
+const reducer = (state: State, action: Action): State => {
+  switch (action.type) {
+    case Type.ADD_ATTRACTIONS: {
+      const body = action.payload as Attractions;
+      const attractions = state.attractions.concat(body.data);
+      const nextPage = body.nextPage;
+      return { ...state, attractions, nextPage };
+    }
+    case Type.SET_SEARCH_TEXT: {
+      const searchText = action.payload as string;
+      return { ...state, searchText };
+    }
+    case Type.UPDATE_KEYWORD: {
+      return { ...state, keyword: state.searchText, attractions: [], nextPage: 0 };
+    }
+    default: {
+      return state;
+    }
+  }
+};
+
+const HomePage = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const api = useAPIContext();
+  const observer = useRef<IntersectionObserver>();
+
+  const getPage = async (nextPage: number | null, keyword: string) => {
+    const hasNext = nextPage !== null;
     if (hasNext) {
       setIsLoading(true);
-      const body = await api.getAttractions(newNextPage, keyword);
-      setAttractions(attractions => attractions.concat(body.data));
-      nextPage.current = body.nextPage;
+      const body = await api.getAttractions(nextPage, keyword);
+      dispatch(addAttractions(body));
       setIsLoading(false);
     }
   };
@@ -43,8 +85,8 @@ const HomePage = () => {
   useEffect(() => {
     // Updating observer when 'nextPage' or 'keyword' changed.
     observer.current?.disconnect();
-    createOberserver(nextPage.current, keyword.current);
-  }, [nextPage.current, keyword.current]);
+    createOberserver(state.nextPage, state.keyword);
+  }, [state.nextPage, state.keyword]);
 
   useEffect(() => {
     if (isLoading) {
@@ -69,13 +111,9 @@ const HomePage = () => {
               </BannerSlogan>
               <SearchBarContainer>
                 <SearchBar
-                  searchInputText={searchInputText}
-                  onSearchButtonClick={() => {
-                    setAttractions([]);
-                    nextPage.current = 0;
-                    keyword.current = searchInputText;
-                  }}
-                  onSearchInputTextChanged={text => setSearchInputText(text)}
+                  searchInputText={state.searchText}
+                  onSearchButtonClick={() => dispatch(updateKeyword())}
+                  onSearchInputTextChanged={text => dispatch(setSearchText(text))}
                 />
               </SearchBarContainer>
             </BannerContentContainer>
@@ -83,10 +121,10 @@ const HomePage = () => {
         </BannerContainer>
       </Header>
       <Main>
-        <AttractionsList attractions={attractions} />
+        <AttractionsList attractions={state.attractions} />
         <Container>
           {isLoading ? <Loading /> : <></>}
-          {attractions.length === 0 && nextPage === null ? <AttractionsNotFound /> : <></>}
+          {state.attractions.length === 0 && state.nextPage === null ? <AttractionsNotFound /> : <></>}
         </Container>
       </Main>
       <Footer />
