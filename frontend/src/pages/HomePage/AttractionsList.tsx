@@ -2,8 +2,8 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Attraction } from '../types/AttractionTypes';
-import { AbsoluteBottom, AbsoluteFull, BodyBold, RatioContainer, CenterCropped, BodyMedium, Secondery50 } from '../utils/CommonStyles';
+import { Attraction } from '../../types/AttractionTypes';
+import { AbsoluteBottom, AbsoluteFull, BodyBold, RatioContainer, CenterCropped, BodyMedium, Secondery50 } from '../../utils/CommonStyles';
 
 const Grid = css`
   display: grid;
@@ -88,26 +88,33 @@ const AttractionDescription = styled.div`
   color: ${Secondery50};
 `;
 
+const AttractionsCard = (props: {attraction: Attraction}) => {
+  const { attraction } = props;
+  return (
+    <AttractionCardContainer to={`/attraction/${attraction.id}`}>
+      <AttractionImageContainer>
+        <AttractionImage src={attraction.images[0]}></AttractionImage>
+        <AttractionTitleContainer>
+          <AttractionTitleContent>
+            <AttractionTitleOverlay />
+            <Title>{attraction.name}</Title>
+          </AttractionTitleContent>
+        </AttractionTitleContainer>
+      </AttractionImageContainer>
+      <AttractionDescriptionContainer>
+        <AttractionDescription>{attraction.mrt}</AttractionDescription>
+        <AttractionDescription>{attraction.category}</AttractionDescription>
+      </AttractionDescriptionContainer>
+    </AttractionCardContainer>
+  );
+};
+
 const AttractionsList = (props: {attractions: Attraction[]}) => {
   const { attractions } = props;
   return (
     <AttractionsListContainer>
       {attractions.map((p, i) => 
-        <AttractionCardContainer to={`/attraction/${p.id}`} key={i}>
-          <AttractionImageContainer>
-            <AttractionImage src={p.images[0]}></AttractionImage>
-            <AttractionTitleContainer>
-              <AttractionTitleContent>
-                <AttractionTitleOverlay />
-                <Title>{p.name}</Title>
-              </AttractionTitleContent>
-            </AttractionTitleContainer>
-          </AttractionImageContainer>
-          <AttractionDescriptionContainer>
-            <AttractionDescription>{p.mrt}</AttractionDescription>
-            <AttractionDescription>{p.category}</AttractionDescription>
-          </AttractionDescriptionContainer>
-        </AttractionCardContainer>
+        <AttractionsCard attraction={p} key={i} />
       )}
     </AttractionsListContainer>
   );

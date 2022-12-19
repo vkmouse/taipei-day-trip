@@ -1,81 +1,11 @@
-import styled from '@emotion/styled';
 import React, { useRef, useState, useEffect } from 'react';
-import AttractionsList from '../components/AttractionsList';
-import Navigation from '../components/Navigation';
-import SearchBar from '../components/SearchBar';
-import { Header, Main, Footer } from '../components/Semantic';
-import { useAPIContext } from '../context/APIContext';
-import { Attraction } from '../types/AttractionTypes';
-import { H1, Secondery10, BodyBold } from '../utils/CommonStyles';
-
-const AttractionsNotFound = styled.img`
-  width: 100%;
-  height: 100%;
-  max-width: 600px;
-  content: url('attraction_not_found.png');
-`;
-
-const Loading = styled.img`
-  content: url('loading.gif');
-`;
-
-const Container = styled.div`
-  display: flex;
-  justify-content: center;
-  flex-basis: 100%;
-`;
-
-const BannerContainer = styled.div`
-  display: flex;  
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 320px;
-  background: url('welcome.png');
-  background-size: cover;
-`;
-
-const BannerContent = styled.div`
-  width: 1180px;
-  height: 149px;
-  margin: 0 10px 0 10px;
-  padding: 10px;
-`;
-
-const BannerContentContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
-`;
-
-const BannerSlogan = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 78px;
-`;
-
-const BannerTitle = styled.div`
-  ${H1};
-  display: flex;
-  align-items: center;
-  color: ${Secondery10};
-`;
-
-const BannerDescription = styled.span`
-  ${BodyBold};
-  display: flex;
-  align-items: end;
-  flex-grow: 1;
-  color: ${Secondery10};
-`;
-
-const SearchBarContainer = styled.div`
-  display: flex;
-  flex-grow: 1;  
-  align-items: end;
-`;
+import AttractionsList from './AttractionsList';
+import Navigation from '../../components/Navigation';
+import SearchBar from '../../components/SearchBar';
+import { Header, Main, Footer } from '../../components/Semantic';
+import { useAPIContext } from '../../context/APIContext';
+import { Attraction } from '../../types/AttractionTypes';
+import { BannerContainer, BannerContent, BannerContentContainer, BannerSlogan, BannerTitle, BannerDescription, SearchBarContainer, Container, Loading, AttractionsNotFound } from './styles';
 
 const HomePage = () => {
   const observer = useRef<IntersectionObserver>();
