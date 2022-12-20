@@ -107,3 +107,13 @@ export const FlexEnd = styled.div`
   display: flex;
   justify-content: flex-end;
 `;
+
+export const TapPayInput = styled.div`
+  margin: 10px 0;
+  padding: 10px 15px;
+  width: 200px;
+  height: 18px;
+  ${BodyMedium}
+  border: 1px solid #CCCCCC;
+  border-radius: 5px;
+`;

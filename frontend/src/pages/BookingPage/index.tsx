@@ -1,14 +1,15 @@
-import React, { useEffect, useReducer, useState } from 'react';
+import React, { useEffect, useReducer, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import InputField from '../../components/InputField';
 import Navigation from '../../components/Navigation';
 import { Header, Main, Footer } from '../../components/Semantic';
 import { useAPIContext } from '../../context/APIContext';
+import useTPDirect from '../../hooks/useTPDirect';
 import { useAppSelector } from '../../store/store';
 import { BookingResponse } from '../../types/BookingTypes';
 import { validateName, validateEmail, validatePhone, validateNumberOnly, validateCardExpiration } from '../../utils/validate';
 import AttractionsInfo from './AttractionsInfo';
-import { Section, SectionContainer, Title, Row, RowText, RowTextBold, FlexEnd, Button } from './styles';
+import { Section, SectionContainer, Title, Row, RowText, RowTextBold, FlexEnd, Button, TapPayInput } from './styles';
 
 const Input = (props: {
   dangerMessage: string
@@ -33,33 +34,19 @@ type State = {
   contactPhone: string
   contactPhoneDisplay: string,
   contactPhoneValid: boolean
-  cardNumber: string
-  cardNumberDisplay: string
-  cardNumberValid: boolean
-  cardExpiration: string
-  cardExpirationDisplay: string
-  cardExpirationValid: boolean
-  cardVerificationCode: string
-  cardVerificationCodeValid: boolean
-  isValid: boolean
+  contactIsValid: boolean
 }
 
 enum Type {
   SET_CONTACT_NAME,
   SET_CONTACT_EMAIL,
   SET_CONTACT_PHONE,
-  SET_CARD_NUMBER,
-  SET_CARD_EXPIRATION,
-  SET_CARD_VERIFICATION_CODE,
 }
 
 type Action = { type: Type, payload: string };
 const setContactName = (value: string): Action => { return { type: Type.SET_CONTACT_NAME, payload: value }; };
 const setContactEmail = (value: string): Action => { return { type: Type.SET_CONTACT_EMAIL, payload: value }; };
 const setContactPhone = (value: string): Action => { return { type: Type.SET_CONTACT_PHONE, payload: value }; };
-const setCardNumber = (value: string): Action => { return { type: Type.SET_CARD_NUMBER, payload: value }; };
-const setCardExpiration = (value: string): Action => { return { type: Type.SET_CARD_EXPIRATION, payload: value }; };
-const setCardVerificationCode = (value: string): Action => { return { type: Type.SET_CARD_VERIFICATION_CODE, payload: value }; };
 
 const initialState: State = {
   contactName: '',
@@ -69,15 +56,7 @@ const initialState: State = {
   contactPhone: '',
   contactPhoneDisplay: '',
   contactPhoneValid: false,
-  cardNumber: '',
-  cardNumberDisplay: '',
-  cardNumberValid: false,
-  cardExpiration: '',
-  cardExpirationDisplay: '',
-  cardExpirationValid: false,
-  cardVerificationCode: '',
-  cardVerificationCodeValid: false,
-  isValid: false,
+  contactIsValid: false,
 };
 
 const reducer = (state: State, action: Action): State => {
@@ -85,10 +64,7 @@ const reducer = (state: State, action: Action): State => {
     return (
       state.contactNameValid &&
       state.contactEmailValid &&
-      state.contactPhoneValid &&
-      state.cardNumberValid &&
-      state.cardExpirationValid &&
-      state.cardVerificationCodeValid
+      state.contactPhoneValid
     );
   };
   switch (action.type) {
@@ -96,13 +72,13 @@ const reducer = (state: State, action: Action): State => {
       const contactName = action.payload;
       const contactNameValid = validateName(contactName);
       const isValid = checkValid({ ...state, contactNameValid });
-      return { ...state, contactName, contactNameValid, isValid };
+      return { ...state, contactName, contactNameValid, contactIsValid: isValid };
     }
     case Type.SET_CONTACT_EMAIL: {
       const contactEmail = action.payload;
       const contactEmailValid = validateEmail(contactEmail);
       const isValid = checkValid({ ...state, contactEmailValid });
-      return { ...state, contactEmail, contactEmailValid, isValid };
+      return { ...state, contactEmail, contactEmailValid, contactIsValid: isValid };
     }
     case Type.SET_CONTACT_PHONE: {
       const contactPhone = action.payload.replace(/\D/g, '').substring(0, 10);
@@ -112,27 +88,7 @@ const reducer = (state: State, action: Action): State => {
         .replace(/-$/, '');
       const contactPhoneValid = validatePhone(contactPhone);
       const isValid = checkValid({ ...state, contactPhoneValid });
-      return { ...state, contactPhone, contactPhoneDisplay, contactPhoneValid, isValid };
-    }
-    case Type.SET_CARD_NUMBER: {
-      const cardNumber = action.payload.replace(/\D/g, '').substring(0, 16);
-      const cardNumberDisplay = cardNumber.replace(/(\d{4})/g, '$1 ').trim();
-      const cardNumberValid = validateNumberOnly(cardNumber, 16);
-      const isValid = checkValid({ ...state, cardNumberValid });
-      return { ...state, cardNumber, cardNumberDisplay, cardNumberValid, isValid };
-    }
-    case Type.SET_CARD_EXPIRATION: {
-      const cardExpiration = action.payload.replace(/\D/g, '').substring(0, 4);
-      const cardExpirationDisplay = cardExpiration.replace(/^(0[1-9]|1[0-2])(\d{2})$/, '$1/$2');
-      const cardExpirationValid = validateCardExpiration(cardExpiration);
-      const isValid = checkValid({ ...state, cardExpirationValid });
-      return { ...state, cardExpiration, cardExpirationDisplay, cardExpirationValid, isValid };
-    }
-    case Type.SET_CARD_VERIFICATION_CODE: {
-      const cardVerificationCode = action.payload.replace(/\D/g, '').substring(0, 3);
-      const cardVerificationCodeValid = validateNumberOnly(cardVerificationCode, 3);
-      const isValid = checkValid({ ...state, cardVerificationCodeValid });
-      return { ...state, cardVerificationCode, cardVerificationCodeValid, isValid };
+      return { ...state, contactPhone, contactPhoneDisplay, contactPhoneValid, contactIsValid: isValid };
     }
     default:
       return state;
@@ -148,13 +104,36 @@ const BookingPage = () => {
   const { 
     contactName, contactNameValid, 
     contactEmail, contactEmailValid, 
-    contactPhoneDisplay, contactPhoneValid,
-    cardNumberDisplay, cardNumberValid,
-    cardExpirationDisplay, cardExpirationValid,
-    cardVerificationCode, cardVerificationCodeValid,
-    isValid
+    contactPhone, contactPhoneDisplay, contactPhoneValid,
+    contactIsValid
   } = state;
   const [bookingResponses, setBookingResponses] = useState<BookingResponse[]>([]);
+  const hasSetup = useRef(false);
+  const { loadingSuccess, cardIsValid, setup } = useTPDirect();
+  const isValid = contactIsValid && cardIsValid;
+  const totalPrice = bookingResponses.map(m => m.price).reduce((total, price) => total + price, 0);
+
+  const handleSubmit = () => {
+    window.TPDirect.card.getPrime(result => {
+      if (result.status !== 0) {
+        alert('get prime error ');
+      } else {
+        const prime = result.card.prime;
+        const price = totalPrice;
+        const trip = bookingResponses;
+        const test = {
+          prime,
+          order: { price, trip },
+          contact: {
+            name: contactName,
+            email: contactEmail,
+            phone: contactPhone,
+          }
+        };
+        console.log(test);
+      }
+    });
+  };
 
   useEffect(() => {
     if (!isLoggedIn || !userInfo) {
@@ -162,10 +141,14 @@ const BookingPage = () => {
         if (!member) {
           navigate('/');
         } else {
+          dispatch(setContactName(userInfo ? userInfo.name : ''));
+          dispatch(setContactEmail(userInfo ? userInfo.email : ''));
           getBookings().then(bookings => setBookingResponses(bookings));
         }
       });
     } else {
+      dispatch(setContactName(userInfo ? userInfo.name : ''));
+      dispatch(setContactEmail(userInfo ? userInfo.email : ''));
       getBookings().then(bookings => setBookingResponses(bookings));
     }
   }, []);
@@ -177,6 +160,13 @@ const BookingPage = () => {
   useEffect(() => {
     document.title = '台北一日遊 - 預定行程';
   }, []);
+
+  useEffect(() => {
+    if (!hasSetup.current && loadingSuccess && userInfo && bookingResponses.length > 0) {
+      hasSetup.current = true;
+      setup('tp-card-number', 'tp-expiration-date', 'tp-ccv');
+    }
+  }, [userInfo, bookingResponses, loadingSuccess]);
 
   return (
     <>
@@ -238,45 +228,29 @@ const BookingPage = () => {
             <Title>信用卡付款資訊</Title>
             <Row>
               <RowText>卡片號碼：</RowText>
-              <Input
-                dangerMessage={cardNumberValid || cardNumberDisplay.length === 0 ? '' : '⚠ 請輸入正確的信用卡號碼'}
-                placeholder='**** **** **** ****'
-                value={cardNumberDisplay}
-                onChange={e => dispatch(setCardNumber(e.target.value)) }
-              />
+              <TapPayInput id='tp-card-number'/>
             </Row>
             <Row>
               <RowText>過期時間：</RowText>
-              <Input
-                dangerMessage={cardExpirationValid || cardExpirationDisplay.length === 0 ? '' : '⚠ 請輸入正確的過期時間'}
-                placeholder='MM/YY'
-                value={cardExpirationDisplay}
-                onChange={e => dispatch(setCardExpiration(e.target.value))}
-              />
+              <TapPayInput id='tp-expiration-date'/>
             </Row>
             <Row>
               <RowText>驗證密碼：</RowText>
-              <Input
-                dangerMessage={cardVerificationCodeValid || cardVerificationCode.length === 0 ? '' : '⚠ 請輸入正確的驗證密碼'}
-                placeholder='CVV'
-                value={cardVerificationCode}
-                onChange={e => dispatch(setCardVerificationCode(e.target.value))}
-              />
+              <TapPayInput id='tp-ccv'/>
             </Row>
           </SectionContainer>
           </Section>
           <Section>
             <SectionContainer>
               <FlexEnd>
-                <RowTextBold>總價：新台幣 
-                  {bookingResponses.map(m => m.price).reduce((total, price) => total + price, 0)} 
-                  元
+                <RowTextBold>總價：新台幣 {totalPrice} 元
                 </RowTextBold>
               </FlexEnd>
               <FlexEnd>
                 <Button 
                   style={{cursor: isValid ? 'pointer' : 'not-allowed'}} 
                   disabled={!isValid}
+                  onClick={handleSubmit}
                 >
                   確認訂購並付款
                 </Button>
