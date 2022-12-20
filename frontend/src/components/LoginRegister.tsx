@@ -167,15 +167,18 @@ type LoginRegisterState = {
   passwordValid: boolean
 }
 
-type LoginRegisterAction = 
-  | { type: 'SET_EMAIL', payload: string }
-  | { type: 'SET_NAME', payload: string }
-  | { type: 'SET_PASSWORD', payload: string }
-  | { type: 'CLEAR' };
-const setEmail = (email: string): LoginRegisterAction => { return { type: 'SET_EMAIL', payload: email }; };
-const setName = (name: string): LoginRegisterAction => { return { type: 'SET_NAME', payload: name }; };
-const setPassword = (password: string): LoginRegisterAction => { return { type: 'SET_PASSWORD', payload: password }; };
-const clear = (): LoginRegisterAction => { return { type: 'CLEAR' }; };
+enum LoginRegisterType {
+  SET_EMAIL,
+  SET_NAME,
+  SET_PASSWORD,
+  CLEAR,
+}
+
+type LoginRegisterAction = { type: LoginRegisterType, payload: string }
+const setEmail = (email: string): LoginRegisterAction => { return { type: LoginRegisterType.SET_EMAIL, payload: email }; };
+const setName = (name: string): LoginRegisterAction => { return { type: LoginRegisterType.SET_NAME, payload: name }; };
+const setPassword = (password: string): LoginRegisterAction => { return { type: LoginRegisterType.SET_PASSWORD, payload: password }; };
+const clear = (): LoginRegisterAction => { return { type: LoginRegisterType.CLEAR, payload: '' }; };
 
 const initialState: LoginRegisterState = {
   email: '',
@@ -188,25 +191,25 @@ const initialState: LoginRegisterState = {
 
 const loginRegisterReducer = (state: LoginRegisterState, action: LoginRegisterAction): LoginRegisterState => {
   switch (action.type) {
-    case 'SET_EMAIL':
+    case LoginRegisterType.SET_EMAIL:
       return { 
         ...state,
         email: action.payload,
         emailValid: validateEmail(action.payload),
       };
-    case 'SET_NAME':
+    case LoginRegisterType.SET_NAME:
       return { 
         ...state,
         name: action.payload,
         nameValid: validateName(action.payload),
       };
-    case 'SET_PASSWORD':
+    case LoginRegisterType.SET_PASSWORD:
       return { 
         ...state,
         password: action.payload,
         passwordValid: validatePassword(action.payload),
       };
-    case 'CLEAR':
+    case LoginRegisterType.CLEAR:
       return {
         email: '',
         emailValid: false,

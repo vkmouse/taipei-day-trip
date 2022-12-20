@@ -1,12 +1,13 @@
 import styled from '@emotion/styled';
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Attraction } from '../api/api';
 import BookingForm from '../components/BookingForm';
 import Carousel from '../components/Carousel';
 import Navigation from '../components/Navigation';
 import { Header, Main, Footer } from '../components/Semantic';
 import { useAPIContext } from '../context/APIContext';
+import { useAppSelector } from '../store/store';
+import { Attraction } from '../types/AttractionTypes';
 import { BodyMedium, Secondery, BodyBold } from '../utils/CommonStyles';
 
 const Section = styled.section`
@@ -51,8 +52,8 @@ const AttractionPage = () => {
   const id = parseInt(params.attractionId);
   const [attraction, setAttraction] = useState<Attraction>();
   const api = useAPIContext();
-  const navigate = useNavigate();
   const hasInit = useRef(false);
+  const isLoggedIn = useAppSelector(state => state.user.isLoggedIn);
   
   const getAttraction = async (id: number) => {
     if (hasInit.current) {
@@ -75,7 +76,7 @@ const AttractionPage = () => {
       <Header>
         <Section>
           <Carousel attraction={attraction} />
-          <BookingForm attraction={attraction} />
+          <BookingForm attraction={attraction} isLoggedIn={isLoggedIn} />
         </Section>
       </Header>
       <Main>

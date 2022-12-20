@@ -1,8 +1,9 @@
 import styled from '@emotion/styled';
 import React, { useState, useRef } from 'react';
-import { Attraction, Booking } from '../api/api';
-import { useAuthContext } from '../context/AuthContext';
+import { useAPIContext } from '../context/APIContext';
 import { useLoginRegisterContext } from '../context/LoginRegisterContext';
+import { Attraction } from '../types/AttractionTypes';
+import { Booking } from '../types/BookingTypes';
 import { H3, Secondery70, BodyMedium, BodyBold, Secondery20, Primary } from '../utils/CommonStyles';
 import { convertTimeToDate, getNextDate, parseDateString } from '../utils/time';
 import Calendar from './Calendar';
@@ -74,7 +75,7 @@ const Button = styled.button`
   cursor: pointer;
 `;
 
-const BookingForm = (props: { attraction?: Attraction }) => {
+const BookingForm = (props: { attraction?: Attraction, isLoggedIn: boolean }) => {
   if (props.attraction === undefined) {
     return (
       <Container>
@@ -90,7 +91,7 @@ const BookingForm = (props: { attraction?: Attraction }) => {
   const [date, setDate] = useState(getNextDate(1));
   const [bookingStatus, setBookingStatus] = useState('');
   const timeRef = useRef('morning');
-  const auth = useAuthContext();
+  const { addBooking } = useAPIContext();
   const { show } = useLoginRegisterContext();
   
   const handleRadioChanged = (val: string) => {
@@ -119,7 +120,7 @@ const BookingForm = (props: { attraction?: Attraction }) => {
       endtime: endtime,
       price: price
     };
-    const success = await auth.addBooking(true, booking);
+    const success = await addBooking(booking);
     if (success) {
       setBookingStatus('✔ 預約成功，前往預定行程查看');
     } else {
@@ -155,7 +156,7 @@ const BookingForm = (props: { attraction?: Attraction }) => {
           新台幣 {price} 元
         </Row>
         <FlexRow>
-          <Button onClick={ auth.isLogin ? startBooking : show }>開始預約行程</Button>
+          <Button onClick={ props.isLoggedIn ? startBooking : show }>開始預約行程</Button>
           {bookingStatus}
         </FlexRow>
       </Form>

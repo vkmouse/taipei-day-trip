@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useAuthContext, LoginResponse } from '../context/AuthContext';
+import { useAPIContext, LoginResponse } from '../context/APIContext';
 
 type Status = 
   | 'Pending'
@@ -9,13 +9,13 @@ type Status =
   | 'PasswordFailed';
 
 const useLogin = () => {
-  const auth = useAuthContext();
+  const api = useAPIContext();
   const [message, setMessage] = useState('');
   const [status, setStatus] = useState<Status>('Success');
 
   const login = async (email: string, password: string) => {
     setStatus('Pending');
-    const response = await auth.login(email, password);
+    const response = await api.login(email, password);
     switch (response) {
       case LoginResponse.Success: 
         setMessage('✔ 登入成功');
