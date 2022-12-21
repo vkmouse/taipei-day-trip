@@ -24,8 +24,6 @@ def order_test_case(db: Database):
     create_basic_data(db)
     create_member_data(db)
     create_booking_data(db)
-    assert db.orders.add(1, 9999, [], 0, 'name', 'email', 'phone') == None
-    assert db.orders.add(1, 9999, [4, 5, 6], 0, 'name', 'email', 'phone') == None
     id1 = db.orders.add(1, 9999, [1, 2, 3], 0, 'name', 'email', 'phone')
     id2 = db.orders.add(2, 9999, [4, 5, 6], 0, 'name', 'email', 'phone')
     assert id1 == 1 and id2 == 2

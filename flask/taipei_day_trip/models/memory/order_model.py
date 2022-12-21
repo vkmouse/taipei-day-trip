@@ -19,17 +19,12 @@ class MemoryOrderModel(OrderModel):
             contact_name: str,
             contact_email: str,
             contact_phone: str) -> int | None:
-        length = len(booking_ids)
-        if length == 0:
-            return None
-        bookings = self.__bookings.get_by_ids_and_member_id(booking_ids, member_id)
-        if len(bookings) != length:
-            return None
-
         id = self.__next_id
+        bookings = self.__bookings.get_by_ids_and_member_id(booking_ids, member_id)
+        created_at = datetime.now()
         self.__db.append(
             Order(id, member_id, price, bookings, payment_status,
-                  contact_name, contact_email, contact_phone, datetime.now()))
+                  contact_name, contact_email, contact_phone, created_at))
         return id
 
     def get_by_id(self, id: int, member_id: int) -> Order | None:
