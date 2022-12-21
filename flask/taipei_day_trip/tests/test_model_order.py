@@ -1,5 +1,8 @@
+import pytest
+
 from datetime import datetime
 from taipei_day_trip.models import MemoryDatabase
+from taipei_day_trip.models import MySQLDatabase
 from taipei_day_trip.models import Database
 from taipei_day_trip.tests import util
 
@@ -44,4 +47,9 @@ def order_test_case(db: Database):
 
 def test_memory_based_model():
     db = MemoryDatabase()
+    order_test_case(db)
+
+@pytest.mark.skipif(not MySQLDatabase(debug=True).is_available(), reason="database is not avaibable")
+def test_mysql_based_model():
+    db = MySQLDatabase(debug=True)
     order_test_case(db)

@@ -9,7 +9,7 @@ class OrderModel:
             payment_status: int,
             contact_name: str,
             contact_email: str,
-            contact_phone: str) -> int | None:
+            contact_phone: str) -> int:
         return NotImplemented
     def get_by_id(self, id: int, member_id: int) -> Order | None:
         return NotImplemented

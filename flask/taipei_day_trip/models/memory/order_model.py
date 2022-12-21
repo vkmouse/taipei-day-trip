@@ -18,7 +18,7 @@ class MemoryOrderModel(OrderModel):
             payment_status: int,
             contact_name: str,
             contact_email: str,
-            contact_phone: str) -> int | None:
+            contact_phone: str) -> int:
         id = self.__next_id
         bookings = self.__bookings.get_by_ids_and_member_id(booking_ids, member_id)
         created_at = datetime.now()
