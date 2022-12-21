@@ -65,3 +65,24 @@ class MRT:
     def __init__(self, id: int, name: str):
         self.id = id
         self.name = name
+
+class Order:
+    def __init__(self,
+                 id: int,
+                 member_id: int,
+                 price: int,
+                 bookings: List[Booking],
+                 payment_status: int,
+                 contact_name: str,
+                 contact_email: str,
+                 contact_phone: str,
+                 created_at: datetime):
+        self.id = id
+        self.member_id = member_id
+        self.price = price
+        self.bookings = bookings
+        self.payment_status = payment_status
+        self.contact_name = contact_name
+        self.contact_email = contact_email
+        self.contact_phone = contact_phone
+        self.created_at = created_at

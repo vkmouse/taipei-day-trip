@@ -5,7 +5,7 @@ from taipei_day_trip.models.memory.member_model import MemoryMemberModel
 from taipei_day_trip.models.types import Booking
 from taipei_day_trip.models.types import List
 
-class MemoryBookingModelModel(BookingModel):
+class MemoryBookingModel(BookingModel):
     def __init__(self, members: MemoryMemberModel, attractions: MemoryAttractionModel):
         self.__db: List[Booking] = []
         self.__id: int = 0
@@ -28,6 +28,9 @@ class MemoryBookingModelModel(BookingModel):
         element = Booking(self.__next_id, member_id, attraction, starttime, endtime, price)
         self.__db.append(element)
         return True
+
+    def get_by_ids_and_member_id(self, ids: List[int], member_id: int) -> List[Booking]:
+        return list(filter(lambda i: (i.id in ids) and i.member_id == member_id, self.__db))
 
     def get_by_member_id(self, member_id: int) -> List[Booking]:
         return list(filter(lambda i: (i.member_id == member_id), self.__db))
