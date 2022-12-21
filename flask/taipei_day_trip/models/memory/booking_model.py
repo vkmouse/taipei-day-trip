@@ -25,21 +25,23 @@ class MemoryBookingModel(BookingModel):
             return False
 
         attraction = self.__attractions.get_by_id(attraction_id)
-        element = Booking(self.__next_id, member_id, attraction, starttime, endtime, price)
+        element = Booking(self.__next_id, member_id, attraction, starttime, endtime, price, False)
         self.__db.append(element)
         return True
 
     def get_by_member(self, member_id: int) -> List[Booking]:
         return list(filter(lambda i: (i.member_id == member_id), self.__db))
 
-    def get_by_member_and_id(self, ids: List[int], member_id: int) -> List[Booking]:
-        return list(filter(lambda i: (i.id in ids) and i.member_id == member_id, self.__db))
+    def get_by_member_and_id(self, member_id: int, ids: List[int]) -> List[Booking]:
+        return list(filter(lambda i: i.id in ids and i.member_id == member_id, self.__db))
 
     def remove_by_id(self, member_id: int, id: int):
         self.__db = list(filter(lambda i: not(i.id == id and i.member_id == member_id), self.__db))
 
-    def remove_by_member(self, member_id: int):
-        self.__db = list(filter(lambda i: i.member_id != member_id, self.__db))
+    def update_payment(self, member_id: int, ids: List[int]):
+        for x in self.__db:
+            if x.id in ids and x.member_id == member_id:
+                x.has_paid = True
 
     @property
     def __next_id(self):

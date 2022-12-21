@@ -7,9 +7,9 @@ class BookingModel:
         return NotImplemented
     def get_by_member(self, member_id: int) -> List[Booking]:
         return NotImplemented
-    def get_by_member_and_id(self, ids: List[int], member_id: int) -> List[Booking]:
+    def get_by_member_and_id(self, member_id: int, ids: List[int]) -> List[Booking]:
         return NotImplemented
     def remove_by_id(self, member_id: int, id: int):
         return NotImplemented
-    def remove_by_member(self, member_id: int):
-        return NotImplemented       
+    def update_payment(self, member_id: int, ids: List[int]):
+        return NotImplemented

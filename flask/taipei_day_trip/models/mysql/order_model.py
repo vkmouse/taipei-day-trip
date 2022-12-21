@@ -53,6 +53,7 @@ class MySQLOrderModel(MySQLModel, OrderModel):
             '        booking_tb.starttime, '
             '        booking_tb.endtime, '
             '        booking_tb.price AS booking_price, '
+            '        booking_tb.has_paid, '
             '        booking_tb.attraction_id, '
             '        booking_tb.attraction_name, '
             '        booking_tb.attraction_address, '
@@ -65,6 +66,7 @@ class MySQLOrderModel(MySQLModel, OrderModel):
             '            {booking}.starttime, '
             '            {booking}.endtime, '
             '            {booking}.price, '
+            '            {booking}.has_paid, '
             '            {booking}.attraction_id, '
             '            attraction_tb.name AS attraction_name, '
             '            attraction_tb.address AS attraction_address, '
@@ -114,6 +116,7 @@ class MySQLOrderModel(MySQLModel, OrderModel):
                 starttime=row['starttime'],
                 endtime=row['endtime'],
                 price=row['booking_price'],
+                has_paid=row['has_paid'],
                 attraction=Attraction(
                     id=row['attraction_id'],
                     name=row['attraction_name'],

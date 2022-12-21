@@ -41,13 +41,21 @@ class Attraction:
         }
 
 class Booking:
-    def __init__(self, id: int, member_id: int, attraction: Attraction, starttime: datetime, endtime: datetime, price: int):
+    def __init__(self,
+                 id: int,
+                 member_id: int,
+                 attraction: Attraction,
+                 starttime: datetime,
+                 endtime: datetime,
+                 price: int,
+                 has_paid: bool):
         self.id = id
         self.member_id = member_id
         self.attraction = attraction
         self.starttime = starttime
         self.endtime = endtime
         self.price = price
+        self.has_paid = has_paid
 
 class Category:
     def __init__(self, id: int, name: str):

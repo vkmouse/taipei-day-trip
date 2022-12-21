@@ -44,13 +44,6 @@ class BookingController:
         except Exception as e:
             return self.view.render_unexpected(e)
 
-    def remove_by_member_id(self, member_id: int):
-        try:
-            self.__db.bookings.remove_by_member(member_id)
-            return self.view.render_success()
-        except Exception as e:
-            return self.view.render_unexpected(e)
-
 class BookingValidator(BaseValidator):
     def validate_date(self, date: str | None) -> bool:
         return parse_datestr(date) != None
