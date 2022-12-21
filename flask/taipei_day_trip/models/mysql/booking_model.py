@@ -35,7 +35,7 @@ class MySQLBookingModel(MySQLModel, BookingModel):
         return cursor.rowcount == 1
         
     @MySQLModel.with_connection
-    def get_by_member_id(self, member_id: int, cnx, cursor) -> List[Booking]:
+    def get_by_member(self, member_id: int, cnx, cursor) -> List[Booking]:
         cursor = cnx.cursor(dictionary=True)
         query = (
             'SELECT'
@@ -86,7 +86,62 @@ class MySQLBookingModel(MySQLModel, BookingModel):
             endtime=row['endtime'],
             price=row['price'],
         ), rows))
-
+    
+    @MySQLModel.with_connection
+    def get_by_member_and_id(self, ids: List[int], member_id: int, cnx, cursor) -> List[Booking]:
+        cursor = cnx.cursor(dictionary=True)
+        query = (
+            'SELECT'
+            '    {booking}.id,'
+            '    {booking}.member_id, '
+            '    {booking}.starttime, '
+            '    {booking}.endtime, '
+            '    {booking}.price, '
+            '    tb.id AS attraction_id, '
+            '    tb.name AS attraction_name, '
+            '    tb.address AS attraction_address, '
+            '    tb.images AS attraction_images '
+            'FROM {booking} '
+            'INNER JOIN ('
+            '    SELECT '
+            '        {attraction}.id AS id, '
+            '        {attraction}.name AS name, '
+            '        {attraction}.address AS address, '
+            '        GROUP_CONCAT(DISTINCT {attraction_image}.url) AS images '
+            '    FROM {attraction_image} '
+            '    INNER JOIN {attraction} '
+            '        ON {attraction_image}.attraction_id={attraction}.id '
+            '    GROUP BY {attraction}.id'
+            ') tb'
+            '    ON {booking}.attraction_id=tb.id '
+            'WHERE member_id = %s AND {booking}.id IN ({num_params})'
+        ).format(
+            booking=self.tablename,
+            attraction=self.attraction_tablename,
+            attraction_image=self.attraction_image_tablename,
+            num_params=', '.join(['%s'] * len(ids))
+        )
+        cursor.execute(query, [member_id] + ids)
+        rows = cursor.fetchall()
+        return list(map(lambda row: Booking(
+            id=row['id'],
+            member_id=row['member_id'],
+            attraction=Attraction(
+                id=row['attraction_id'],
+                name=row['attraction_name'],
+                address=row['attraction_address'],
+                images=row['attraction_images'].split(','),
+                description='',
+                lat=0,
+                lng=0,
+                transport='',
+                category='',
+                mrt=''),
+            starttime=row['starttime'],
+            endtime=row['endtime'],
+            price=row['price'],
+        ), rows))
+    
     @MySQLModel.with_connection
     def remove_by_id(self, member_id: int, id: int, cnx, cursor):
         query = 'DELETE FROM {} WHERE id = %s AND member_id = %s'.format(self.tablename)
@@ -94,7 +149,7 @@ class MySQLBookingModel(MySQLModel, BookingModel):
         cnx.commit()
 
     @MySQLModel.with_connection
-    def remove_by_member_id(self, member_id: int, cnx, cursor):
+    def remove_by_member(self, member_id: int, cnx, cursor):
         query = 'DELETE FROM {} WHERE member_id = %s'.format(self.tablename)
         cursor.execute(query, (member_id,))
         cnx.commit()

@@ -20,7 +20,7 @@ class MemoryOrderModel(OrderModel):
             contact_email: str,
             contact_phone: str) -> int:
         id = self.__next_id
-        bookings = self.__bookings.get_by_ids_and_member_id(booking_ids, member_id)
+        bookings = self.__bookings.get_by_member_and_id(booking_ids, member_id)
         created_at = datetime.now()
         self.__db.append(
             Order(id, member_id, price, bookings, payment_status,
