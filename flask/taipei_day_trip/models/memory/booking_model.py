@@ -29,11 +29,11 @@ class MemoryBookingModel(BookingModel):
         self.__db.append(element)
         return True
 
-    def get_by_member(self, member_id: int) -> List[Booking]:
-        return list(filter(lambda i: (i.member_id == member_id), self.__db))
+    def get_unpaid_by_member(self, member_id: int) -> List[Booking]:
+        return list(filter(lambda i: i.member_id == member_id and not i.has_paid, self.__db))
 
-    def get_by_member_and_id(self, member_id: int, ids: List[int]) -> List[Booking]:
-        return list(filter(lambda i: i.id in ids and i.member_id == member_id, self.__db))
+    def get_unpaid_by_member_and_id(self, member_id: int, ids: List[int]) -> List[Booking]:
+        return list(filter(lambda i: i.id in ids and i.member_id == member_id and not i.has_paid, self.__db))
 
     def remove_by_id(self, member_id: int, id: int):
         self.__db = list(filter(lambda i: not(i.id == id and i.member_id == member_id), self.__db))

@@ -19,7 +19,7 @@ class MemoryOrderModel(OrderModel):
             contact_email: str,
             contact_phone: str) -> int:
         id = self.__next_id
-        bookings = self.__bookings.get_by_member_and_id(member_id, booking_ids)
+        bookings = self.__bookings.get_unpaid_by_member_and_id(member_id, booking_ids)
         created_at = datetime.now()
         self.__db.append(
             Order(id, member_id, price, bookings, payment_status,

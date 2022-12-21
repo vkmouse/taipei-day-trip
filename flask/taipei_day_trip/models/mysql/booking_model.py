@@ -35,7 +35,7 @@ class MySQLBookingModel(MySQLModel, BookingModel):
         return cursor.rowcount == 1
         
     @MySQLModel.with_connection
-    def get_by_member(self, member_id: int, cnx, cursor) -> List[Booking]:
+    def get_unpaid_by_member(self, member_id: int, cnx, cursor) -> List[Booking]:
         cursor = cnx.cursor(dictionary=True)
         query = (
             'SELECT'
@@ -62,7 +62,7 @@ class MySQLBookingModel(MySQLModel, BookingModel):
             '    GROUP BY {attraction}.id'
             ') tb'
             '    ON {booking}.attraction_id=tb.id '
-            'WHERE member_id = %s'
+            'WHERE member_id = %s AND has_paid = FALSE'
         ).format(
             booking=self.tablename,
             attraction=self.attraction_tablename,
@@ -90,7 +90,7 @@ class MySQLBookingModel(MySQLModel, BookingModel):
         ), rows))
     
     @MySQLModel.with_connection
-    def get_by_member_and_id(self, member_id: int, ids: List[int], cnx, cursor) -> List[Booking]:
+    def get_unpaid_by_member_and_id(self, member_id: int, ids: List[int], cnx, cursor) -> List[Booking]:
         cursor = cnx.cursor(dictionary=True)
         query = (
             'SELECT'
@@ -117,7 +117,7 @@ class MySQLBookingModel(MySQLModel, BookingModel):
             '    GROUP BY {attraction}.id'
             ') tb'
             '    ON {booking}.attraction_id=tb.id '
-            'WHERE member_id = %s AND {booking}.id IN ({num_params})'
+            'WHERE member_id = %s AND {booking}.id IN ({num_params}) AND has_paid = FALSE'
         ).format(
             booking=self.tablename,
             attraction=self.attraction_tablename,

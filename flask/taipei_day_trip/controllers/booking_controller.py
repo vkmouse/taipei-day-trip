@@ -12,7 +12,7 @@ class BookingController:
 
     def get_by_member_id(self, member_id: int):
         try:
-            result = self.__db.bookings.get_by_member(member_id)
+            result = self.__db.bookings.get_unpaid_by_member(member_id)
             return self.view.render_get_by_member_id(result)
         except:
             return self.view.render_unexpected()
