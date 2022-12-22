@@ -2,12 +2,51 @@ from taipei_day_trip.controllers.base import BaseValidator
 from taipei_day_trip.controllers.base import BaseView
 from taipei_day_trip.models import Database
 from taipei_day_trip.models import List
+from taipei_day_trip.utils import tappay
+from taipei_day_trip.utils import tappay_merchant_id
+from taipei_day_trip.utils import tappay_partner_key
+from taipei_day_trip.utils import tappay_pay_by_prime_url
 
 class OrderController:
     def __init__(self, db: Database):
         self.__db = db
         self.validator = OrderValidator(self.__db)
         self.view = OrderView()
+
+    def create_order(self,
+                     member_id: int,
+                     prime: str,
+                     booking_ids: List[int],
+                     price: int,
+                     contact_name: str | None,
+                     contact_email: str | None,
+                     contact_phone: str | None) -> bool:
+        if not self.validate_payment_input(
+            member_id,
+            booking_ids,
+            price,
+            contact_name,
+            contact_email,
+            contact_phone
+        ):
+            return self.view.render_invalid_parameter()
+        (payment_status, message) = self.process_payment(
+            prime,
+            price,
+            contact_name,
+            contact_email,
+            contact_phone,
+        )
+        return self.update_payment_status(
+            payment_status,
+            message,
+            member_id,
+            booking_ids,
+            price,
+            contact_name,
+            contact_email,
+            contact_phone,
+        )
 
     def validate_payment_input(self,
                                member_id: int,
@@ -20,12 +59,29 @@ class OrderController:
             return False
         return self.validator.validate_booking_info(member_id, booking_ids)
 
-    def process_payment(self, prime: str, price: int) -> int:
-        return 0
+    def process_payment(
+        self,
+        prime: str,
+        price: int,
+        contact_name: str,
+        contact_email: str,
+        contact_phone: str
+    ) -> tuple[int, str]:
+        return tappay.pay_by_prime(
+            url=tappay_pay_by_prime_url,
+            partner_key=tappay_partner_key,
+            merchant_id=tappay_merchant_id,
+            prime=prime,
+            price=price,
+            contact_name=contact_name,
+            contact_email=contact_email,
+            contact_phone=contact_phone,
+        )
 
     def update_payment_status(
-        self, 
+        self,
         payment_status: int,
+        message: str,
         member_id: int,
         booking_ids: List[int],
         price: int,
@@ -36,7 +92,7 @@ class OrderController:
         order_id = self.__db.orders.add(member_id, price, booking_ids, payment_status, contact_name, contact_email, contact_phone)
         if payment_status == 0:
             self.__db.bookings.update_payment(member_id, booking_ids)
-        return self.view.render_create_order_success(order_id, payment_status)
+        return self.view.render_create_order_success(order_id, payment_status, message)
 
 class OrderValidator(BaseValidator):
     def __init__(self, db: Database):
@@ -59,10 +115,7 @@ class OrderValidator(BaseValidator):
         return True
 
 class OrderView(BaseView):
-    def render_create_order_success(self, order_id: int, payment_status: int):
-        message = '付款失敗'
-        if (payment_status == 0):
-            message = '付款成功'
+    def render_create_order_success(self, order_id: int, payment_status: int, message: str):
         return {
             'data': {
                 'number': order_id,

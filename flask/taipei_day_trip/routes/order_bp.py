@@ -26,16 +26,18 @@ def order_bp(db: Database, cache: Cache):
             contact_phone = contact['phone']
         except:
             return controller.view.render_invalid_parameter()
-        is_valid = controller.validate_payment_input(member_id,
-                                                     booking_ids,
-                                                     price,
-                                                     contact_name,
-                                                     contact_email,
-                                                     contact_phone)
-        if not is_valid:
-            return controller.view.render_invalid_parameter()
-        payment_status = controller.process_payment()
-        return controller.update_payment_status(payment_status)
+        try:
+            return controller.create_order(
+                member_id,
+                prime,
+                booking_ids,
+                price,
+                contact_name,
+                contact_email,
+                contact_phone,
+            )
+        except Exception as e:
+            return controller.view.render_unexpected(e)
 
     @bp.route('/api/order/<int:id>')
     def order():
