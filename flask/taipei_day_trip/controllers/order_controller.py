@@ -2,6 +2,7 @@ from taipei_day_trip.controllers.base import BaseValidator
 from taipei_day_trip.controllers.base import BaseView
 from taipei_day_trip.models import Database
 from taipei_day_trip.models import List
+from taipei_day_trip.models import Order
 from taipei_day_trip.utils import tappay
 from taipei_day_trip.utils import tappay_merchant_id
 from taipei_day_trip.utils import tappay_partner_key
@@ -47,6 +48,16 @@ class OrderController:
             contact_email,
             contact_phone,
         )
+
+    def get_order(self, member_id: int, order_id: int):
+        try:
+            order = self.__db.orders.get_by_id(order_id, member_id)
+            if order:
+                return self.view.render_get_order_success(order)
+            else:
+                return self.view.render_get_order_failed()
+        except Exception as e:
+            return self.view.render_unexpected(e)
 
     def validate_payment_input(self,
                                member_id: int,
@@ -116,15 +127,45 @@ class OrderValidator(BaseValidator):
 
 class OrderView(BaseView):
     def render_create_order_success(self, order_id: int, payment_status: int, message: str):
+        if payment_status == 0:
+            code = 201
+        else:
+            code = 200
         return {
             'data': {
-                'number': order_id,
+                'orderId': order_id,
                 'payment': {
                     'status': payment_status,
                     'message': message
                 }
             }
-        }
+        }, code
+
+    def render_get_order_success(self, order: Order):
+        return {
+            'data': {
+                'orderId': order.id,
+                'status': order.payment_status,
+                'trip': list(map(lambda x: {
+                    'attraction': {
+                        'id': x.attraction.id,
+                        'name': x.attraction.name,
+                        'address': x.attraction.address,
+                        'image': x.attraction.images[0],
+                    },
+                    'starttime': x.starttime.strftime("%Y-%m-%d %H:%M:%S"),
+                    'endtime': x.endtime.strftime("%Y-%m-%d %H:%M:%S"),
+                }, order.bookings)),
+                'contact': {
+                    'name': order.contact_name,
+                    'email': order.contact_email,
+                    'phone': order.contact_phone
+                }
+            }
+        }, 200
+
+    def render_get_order_failed(self):
+        return { 'data': None }, 200
 
     def render_invaild_order_info(self):
         return { 'error': True, 'message': 'Invalid order infomation' }, 400

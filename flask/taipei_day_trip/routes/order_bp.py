@@ -13,7 +13,7 @@ def order_bp(db: Database, cache: Cache):
 
     @bp.route('/api/orders', methods=['POST'])
     @jwt.access_token_required
-    def orders(member_id):
+    def orders(member_id: int):
         try:
             body = request.get_json()
             order = body['order']
@@ -39,11 +39,11 @@ def order_bp(db: Database, cache: Cache):
         except Exception as e:
             return controller.view.render_unexpected(e)
 
-    @bp.route('/api/order/<int:id>')
-    def order():
-        if request.content_type != 'application/json':
-            return controller.view.render_invalid_parameter()
-        body = request.get_json()
-        return controller.view.render_success()
+    @bp.route('/api/order/<int:order_id>')
+    def order(order_id: int):
+        @jwt.access_token_required
+        def order_wrapper(member_id: int):
+            return controller.get_order(member_id, order_id)
+        return order_wrapper() 
 
     return bp

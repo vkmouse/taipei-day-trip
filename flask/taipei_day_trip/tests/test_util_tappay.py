@@ -59,7 +59,7 @@ def get_prime_bank_error():
     # 10023 - Bank Error
     return get_prime_ex('4242428826394242')
 
-@pytest.mark.skipif(False, reason="close the test case to tappay")
+@pytest.mark.skipif(True, reason="close the test case to tappay")
 def test_get_prime():
     assert get_prime_visa_success() != ''
     assert get_prime_card_error() != ''
@@ -70,7 +70,7 @@ def test_get_prime():
     assert get_prime_order_number_duplicate() != ''
     assert get_prime_bank_error() != ''
 
-@pytest.mark.skipif(False, reason="close the test case to tappay")
+@pytest.mark.skipif(True, reason="close the test case to tappay")
 def test_pay_by_prime():
     assert pay_by_prime_ex(get_prime_visa_success())[0] == 0
     assert pay_by_prime_ex(get_prime_card_error())[0] == 10003

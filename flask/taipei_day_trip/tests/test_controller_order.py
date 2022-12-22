@@ -38,5 +38,13 @@ def test_validate_payment_input():
 def test_update_payment_status():
     controller = create_controller()
     assert controller.update_payment_status(
-        0, 1, [1, 2, 3], 9999, 'name', 'a@a.a', '0912345678'
-    ) == controller.view.render_create_order_success(1, 0)
+        0, 'success', 1, [1, 2, 3], 9999, 'name', 'a@a.a', '0912345678'
+    ) == controller.view.render_create_order_success(1, 0, 'success')
+
+def test_get_order():
+    controller = create_controller()
+    controller.update_payment_status(
+        0, 'success', 1, [1, 2, 3], 9999, 'name', 'a@a.a', '0912345678'
+    )
+    assert controller.get_order(1, 1)[0]['data'] != None
+    assert controller.get_order(1, 2)[0]['data'] == None
