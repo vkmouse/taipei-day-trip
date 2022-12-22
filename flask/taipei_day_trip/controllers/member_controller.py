@@ -1,6 +1,5 @@
-import re
-from taipei_day_trip.controllers.base import BaseValidator, BaseView
-
+from taipei_day_trip.controllers.base import BaseValidator
+from taipei_day_trip.controllers.base import BaseView
 from taipei_day_trip.middleware import JWT
 from taipei_day_trip.models import Cache
 from taipei_day_trip.models import Database
@@ -12,7 +11,7 @@ class MemberController:
     def __init__(self, db: Database, cache: Cache):
         self.__db = db
         self.jwt = JWT(cache)
-        self.validator = MemberValidator()
+        self.validator = BaseValidator()
         self.view = MemberView()
 
     def register(self, name: str | None, email: str | None, password: str | None):
@@ -60,25 +59,6 @@ class MemberController:
     def refresh(self, id: int):
         access_token = self.jwt.make_access_token(id)
         return self.view.render_login_success(access_token)
-
-class MemberValidator(BaseValidator):
-    def validate_name(self, name: str | None):
-        if name == None:
-            return False
-        match = re.search('.{1,20}', name)
-        return match != None and match.group() == name
-
-    def validate_email(self, email: str | None) -> bool:
-        if email == None:
-            return False
-        match = re.search(r'\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z]+$', email)
-        return match != None and match.group() == email
-
-    def validate_password(self, password: str | None):
-        if password == None:
-            return False
-        match = re.search(r'[.*a-zA-Z\d]{4,100}', password)
-        return match != None and match.group() == password
 
 class MemberView(BaseView):
     def render_login_success(self, token: str):

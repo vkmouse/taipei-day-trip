@@ -34,6 +34,6 @@ def booking_bp(db: Database, cache: Cache):
         if request.content_type == 'application/json':
             body = request.get_json()
             return controller.remove_by_id(member_id, body['bookingId'])
-        return controller.remove_by_member_id(member_id)
+        return controller.view.render_invalid_parameter()
 
     return bp

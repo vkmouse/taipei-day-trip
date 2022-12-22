@@ -109,30 +109,24 @@ const BookingPage = () => {
   } = state;
   const [bookingResponses, setBookingResponses] = useState<BookingResponse[]>([]);
   const hasSetup = useRef(false);
-  const { loadingSuccess, cardIsValid, setup } = useTPDirect();
+  const api = useAPIContext();
+  const { loadingSuccess, cardIsValid, setup, getPrime } = useTPDirect();
   const isValid = contactIsValid && cardIsValid;
   const totalPrice = bookingResponses.map(m => m.price).reduce((total, price) => total + price, 0);
 
-  const handleSubmit = () => {
-    window.TPDirect.card.getPrime(result => {
-      if (result.status !== 0) {
-        alert('get prime error ');
-      } else {
-        const prime = result.card.prime;
-        const price = totalPrice;
-        const trip = bookingResponses;
-        const test = {
-          prime,
-          order: { price, trip },
-          contact: {
-            name: contactName,
-            email: contactEmail,
-            phone: contactPhone,
-          }
-        };
-        console.log(test);
-      }
-    });
+  const handleSubmit = async () => {
+    const prime = await getPrime();
+    if (prime) {
+      const response = await api.processPayment(
+        prime,
+        totalPrice,
+        bookingResponses.map(x => x.bookingId),
+        contactName,
+        contactEmail,
+        contactPhone
+      );
+      console.log(response);
+    }
   };
 
   useEffect(() => {
