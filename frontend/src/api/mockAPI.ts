@@ -84,6 +84,10 @@ const mockAPI: API = {
     });
   },
 
+  processPayment: (): Promise<Response> => {
+    throw 'Not Implement';
+  },
+
   refresh: (): Promise<Response> => {
     let response = createResponse(200);
     return new Promise((resolve, reject) => {

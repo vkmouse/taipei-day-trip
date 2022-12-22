@@ -20,6 +20,14 @@ type APIState = {
   logout: () => Promise<void>
   getBookings: () => Promise<BookingResponse[]>
   getUserInfo: () => Promise<UserInfo | null>
+  processPayment: (
+    prime: string,
+    price: number,
+    bookingIds: number[],
+    contactName: string,
+    contactEmail: string,
+    contactPhone: string
+  ) => Promise<PaymentResponse | null>
   removeBooking: (bookingId: number) => Promise<boolean>
 }
 
@@ -35,6 +43,7 @@ const initialState: APIState = {
   logout: (): Promise<void> => { throw new Error('Function not implemented.'); },
   getBookings: (): Promise<BookingResponse[]> => { throw new Error('Function not implemented.'); },
   getUserInfo: (): Promise<UserInfo> => { throw new Error('Function not implemented.'); },
+  processPayment: (): Promise<null> => { throw new Error('Function not implemented.'); },
   removeBooking: (): Promise<boolean> => { throw new Error('Function not implemented.'); },
 };
 
@@ -151,6 +160,20 @@ const APIProvider = (props: { isMock?: boolean, children: JSX.Element[] | JSX.El
         });
       }
       return [];
+    },
+    processPayment: async (
+      prime, price, bookingIds, contactName, contactEmail, contactPhone
+    ) => {
+      const response = await callAPIWithRefresh(token, token => {
+        return api.processPayment(
+          token, prime, price, bookingIds, contactName, contactEmail, contactPhone
+        );
+      });
+      if (response.status === 200) {
+        const body: { data: PaymentResponse } = await response.json();
+        return body.data;
+      }
+      return null;
     },
     removeBooking: async (bookingId) => {
       const response = await callAPIWithRefresh(token, (token) => api.removeBooking(token, bookingId));

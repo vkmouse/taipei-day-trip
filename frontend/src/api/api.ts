@@ -10,6 +10,15 @@ export type API = {
   getUserInfo: (token: string) => Promise<Response>
   login: (email: string, password: string) => Promise<Response>
   logout: () => Promise<Response>
+  processPayment: (
+    token: string,
+    prime: string,
+    price: number,
+    bookingIds: number[],
+    contactName: string,
+    contactEmail: string,
+    contactPhone: string
+  ) => Promise<Response>
   refresh: () => Promise<Response>
   register: (name: string, email: string, password: string) => Promise<Response>
   removeBooking: (token: string, bookingId: number) => Promise<Response>

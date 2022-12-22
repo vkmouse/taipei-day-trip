@@ -83,6 +83,36 @@ const realAPI: API = {
     return response;
   },
 
+  processPayment: async (
+    token: string,
+    prime: string,
+    price: number,
+    bookingIds: number[],
+    contactName: string,
+    contactEmail: string,
+    contactPhone: string
+  ): Promise<Response> => {
+    return await fetch('api/orders', { 
+      method: 'POST',
+      body: JSON.stringify({
+        prime: prime,
+        order: {
+          price,
+          bookingIds,
+          contact: {
+            name: contactName,
+            email: contactEmail,
+            phone: contactPhone,
+          }
+        },
+      }),
+      headers: new Headers({
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      })
+    });
+  },
+
   refresh: async (): Promise<Response> => {
     const response = await fetch('/api/user/refresh', { method: 'POST' });
     return response;

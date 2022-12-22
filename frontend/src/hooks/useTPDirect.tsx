@@ -42,6 +42,17 @@ const useTPDirect = () => {
   const [cardNumberValid, setCardNumberValid] = useState(false);
   const [cardExpirationValid, setCardExpirationValid] = useState(false);
   const [cardVerificationCodeValid, setCardVerificationCodeValid] = useState(false);
+  const getPrime = () => {
+    return new Promise<string | null>((resolve, reject) => {
+      window.TPDirect.card.getPrime(result => {
+        if (result.status !== 0) {
+          resolve(null);
+        }
+        resolve(result.card.prime);
+      });
+    });
+  };
+
   const setup = (cardNumberId: string, expirationDateId: string, ccvId: string) => {
     const cardNumberElement = document.getElementById(cardNumberId);
     const expirationDateElement = document.getElementById(expirationDateId);
@@ -118,7 +129,7 @@ const useTPDirect = () => {
   return { 
     loadingSuccess: loadingSuccess || hasInit,
     cardIsValid: cardNumberValid && cardExpirationValid && cardVerificationCodeValid,
-    setup
+    setup, getPrime
   };
 };
 
