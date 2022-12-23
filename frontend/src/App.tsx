@@ -7,6 +7,7 @@ import { LoginRegisterProvider } from './context/LoginRegisterContext';
 import AttractionPage from './pages/AttractionPage';
 import BookingPage from './pages/BookingPage';
 import HomePage from './pages/HomePage';
+import ThankYouPage from './pages/ThankYouPage';
 import store from './store/store';
 import { GlobalStyles } from './utils/CommonStyles';
 
@@ -25,6 +26,7 @@ function App() {
                   <Route path=':attractionId'  element={<AttractionPage />} />
                 </Route>
                 <Route path='booking' element={<BookingPage />} />
+                <Route path='thankyou' element={<ThankYouPage />} />
               </Route>
             </Routes>
           </Router>

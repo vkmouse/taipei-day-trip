@@ -1,7 +1,7 @@
 import React from 'react';
-import { BookingResponse } from '../../types/BookingTypes';
-import { convertTimeToDate, getShortTimeString } from '../../utils/time';
-import { AttractionsAction, AttractionsActionIcon, AttractionsDetail, AttractionsImage, AttractionsInfoContainer, Row, RowTextBold, PrimaryRowText, RowText } from './styles';
+import { BookingResponse } from '../types/BookingTypes';
+import { convertTimeToDate, getShortTimeString } from '../utils/time';
+import { AttractionsAction, AttractionsActionIcon, AttractionsDetail, AttractionsImage, AttractionsInfoContainer, Row, RowTextBold, PrimaryRowText, RowText } from '../pages/BookingPage/styles';
 
 const AttractionsInfo = (props: { 
   bookingResponses: BookingResponse[],

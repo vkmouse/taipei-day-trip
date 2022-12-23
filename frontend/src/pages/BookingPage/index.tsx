@@ -8,7 +8,7 @@ import useTPDirect from '../../hooks/useTPDirect';
 import { useAppSelector } from '../../store/store';
 import { BookingResponse } from '../../types/BookingTypes';
 import { validateName, validateEmail, validatePhone, validateNumberOnly, validateCardExpiration } from '../../utils/validate';
-import AttractionsInfo from './AttractionsInfo';
+import AttractionsInfo from '../../components/AttractionsInfo';
 import { Section, SectionContainer, Title, Row, RowText, RowTextBold, FlexEnd, Button, TapPayInput } from './styles';
 
 const Input = (props: {
