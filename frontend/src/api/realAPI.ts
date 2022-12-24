@@ -54,6 +54,16 @@ const realAPI: API = {
     return body;
   },
 
+  getOrder: async (token: string, orderId: number): Promise<Response> => {
+    const response = await fetch(`/api/order/${orderId}`, {
+      method: 'GET',
+      headers: new Headers({
+        'Authorization': `Bearer ${token}`
+      })
+    });
+    return response;
+  },
+
   getUserInfo: async (token: string) : Promise<Response> => {
     const response = await fetch('/api/user/auth', {
       method: 'GET',

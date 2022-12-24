@@ -36,18 +36,20 @@ const AttractionsInfo = (props: {
                 {getShortTimeString(booking.starttime)} 到 {getShortTimeString(booking.endtime)} 
               </RowText>
             </Row>
+            {!booking.price ? <></> :
             <Row>
               <RowTextBold>費用：</RowTextBold>
               <RowText>新台幣 {booking.price} 元</RowText>
-            </Row>
+            </Row>}
             <Row>
               <RowTextBold>地點：</RowTextBold>
               <RowText>臺北市 大安區忠孝東路4段</RowText>
             </Row>
           </AttractionsDetail>
+          {!onDeleteClick ? <></> :
           <AttractionsAction>
             <AttractionsActionIcon src='trash.png' onClick={() => onDeleteClick?.(booking.bookingId)}/>
-          </AttractionsAction>
+          </AttractionsAction>}
         </AttractionsInfoContainer>
       )}
     </>

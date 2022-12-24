@@ -7,6 +7,7 @@ export type API = {
   getAttractions: (page: number, keyword: string) => Promise<Attractions>
   getBookings: (token: string) => Promise<Response>
   getCategories: () => Promise<{ data: string[] }>
+  getOrder: (token: string, orderId: number) => Promise<Response>
   getUserInfo: (token: string) => Promise<Response>
   login: (email: string, password: string) => Promise<Response>
   logout: () => Promise<Response>

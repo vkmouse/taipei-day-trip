@@ -10,6 +10,7 @@ import { BookingResponse } from '../../types/BookingTypes';
 import { validateName, validateEmail, validatePhone, validateNumberOnly, validateCardExpiration } from '../../utils/validate';
 import AttractionsInfo from '../../components/AttractionsInfo';
 import { Section, SectionContainer, Title, Row, RowText, RowTextBold, FlexEnd, Button, TapPayInput } from './styles';
+import { usePurchasedOrderContext } from '../../context/PurchasedOrderContext';
 
 const Input = (props: {
   dangerMessage: string
@@ -108,9 +109,11 @@ const BookingPage = () => {
     contactIsValid
   } = state;
   const [bookingResponses, setBookingResponses] = useState<BookingResponse[]>([]);
+  const [paymentMessage, setPaymentMessage] = useState('');
   const hasSetup = useRef(false);
   const api = useAPIContext();
   const { loadingSuccess, cardIsValid, setup, getPrime } = useTPDirect();
+  const { setId } = usePurchasedOrderContext();
   const isValid = contactIsValid && cardIsValid;
   const totalPrice = bookingResponses.map(m => m.price).reduce((total, price) => total + price, 0);
 
@@ -125,7 +128,12 @@ const BookingPage = () => {
         contactEmail,
         contactPhone
       );
-      console.log(response);
+      if (response && response.payment.status === 0) {
+        setId(response.orderId);
+        navigate('/thankyou');
+      } else {
+        setPaymentMessage('付款失敗，請確認信用卡資訊');
+      }
     }
   };
 
@@ -248,6 +256,9 @@ const BookingPage = () => {
                 >
                   確認訂購並付款
                 </Button>
+              </FlexEnd>
+              <FlexEnd>
+                <RowText style={{ color: 'red' }}>{paymentMessage}</RowText>
               </FlexEnd>
             </SectionContainer>
           </Section>

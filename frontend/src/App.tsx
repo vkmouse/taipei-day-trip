@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { APIProvider } from './context/APIContext';
 import { LoginRegisterProvider } from './context/LoginRegisterContext';
+import { PurchasedOrderProvider } from './context/PurchasedOrderContext';
 import AttractionPage from './pages/AttractionPage';
 import BookingPage from './pages/BookingPage';
 import HomePage from './pages/HomePage';
@@ -18,18 +19,20 @@ function App() {
       {/* <APIProvider isMock> */}
         <LoginRegisterProvider>
           <Global styles={GlobalStyles} />
-          <Router>
-            <Routes>
-              <Route path='/'>
-                <Route index element={<HomePage />} />
-                <Route path='attraction'>
-                  <Route path=':attractionId'  element={<AttractionPage />} />
+          <PurchasedOrderProvider>
+            <Router>
+              <Routes>
+                <Route path='/'>
+                  <Route index element={<HomePage />} />
+                  <Route path='attraction'>
+                    <Route path=':attractionId'  element={<AttractionPage />} />
+                  </Route>
+                  <Route path='booking' element={<BookingPage />} />
+                  <Route path='thankyou' element={<ThankYouPage />} />
                 </Route>
-                <Route path='booking' element={<BookingPage />} />
-                <Route path='thankyou' element={<ThankYouPage />} />
-              </Route>
-            </Routes>
-          </Router>
+              </Routes>
+            </Router>
+          </PurchasedOrderProvider>
         </LoginRegisterProvider>
       </APIProvider>
     </Provider>

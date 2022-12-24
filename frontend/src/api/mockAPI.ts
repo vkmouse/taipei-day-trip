@@ -55,6 +55,10 @@ const mockAPI: API = {
     });
   },
 
+  getOrder: (token: string): Promise<Response> => {
+    throw 'Not Implement';
+  },
+
   getUserInfo: (token: string): Promise<Response> => {
     let response = createResponse(200);
     return new Promise((resolve, reject) => {
