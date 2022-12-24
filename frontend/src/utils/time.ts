@@ -1,9 +1,9 @@
 const formatDateTime = (value: Date) => {
   const dateString = value.toISOString();
-  const [date, time] = dateString.split('T');
-  const [year, month, day] = date.split('-');
-  const [hour, minute, second] = time.split(':');
-  return { year, month, day, hour, minute, second: second.split('.')[0] };
+  const [date, time] = dateString.split("T");
+  const [year, month, day] = date.split("-");
+  const [hour, minute, second] = time.split(":");
+  return { year, month, day, hour, minute, second: second.split(".")[0] };
 };
 
 const convertTimeToDate = (value: Date) => {
@@ -39,13 +39,13 @@ const parseDateString = (dateString: string) => {
 };
 
 const parseDateTimeString = (dateTimeString: string) => {
-  const dateParts = dateTimeString.split(' ');
+  const dateParts = dateTimeString.split(" ");
   const dateString = dateParts[0];
   const timeString = dateParts[1];
 
   const date = parseDateString(dateString);
 
-  const timeParts = timeString.split(':');
+  const timeParts = timeString.split(":");
   const hours = parseInt(timeParts[0], 10);
   const minutes = parseInt(timeParts[1], 10);
   const seconds = parseInt(timeParts[2], 10);
@@ -55,4 +55,12 @@ const parseDateTimeString = (dateTimeString: string) => {
   return date;
 };
 
-export { convertTimeToDate, convertTimeToDateTime, formatDateTime, getNextDate, getShortTimeString, parseDateString, parseDateTimeString };
+export {
+  convertTimeToDate,
+  convertTimeToDateTime,
+  formatDateTime,
+  getNextDate,
+  getShortTimeString,
+  parseDateString,
+  parseDateTimeString,
+};

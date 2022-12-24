@@ -1,9 +1,17 @@
-import { css } from '@emotion/react';
-import styled from '@emotion/styled';
-import React, { CSSProperties } from 'react';
-import { Link } from 'react-router-dom';
-import { Attraction } from '../../types/AttractionTypes';
-import { AbsoluteBottom, AbsoluteFull, BodyBold, RatioContainer, CenterCropped, BodyMedium, Secondery50 } from '../../utils/CommonStyles';
+import { css } from "@emotion/react";
+import styled from "@emotion/styled";
+import React, { CSSProperties } from "react";
+import { Link } from "react-router-dom";
+import { Attraction } from "../../types/AttractionTypes";
+import {
+  AbsoluteBottom,
+  AbsoluteFull,
+  BodyBold,
+  RatioContainer,
+  CenterCropped,
+  BodyMedium,
+  Secondery50,
+} from "../../utils/CommonStyles";
 
 const Grid = css`
   display: grid;
@@ -20,7 +28,7 @@ const Grid = css`
   }
 `;
 
-const AttractionsListContainer  = styled.div`
+const AttractionsListContainer = styled.div`
   ${Grid};
   width: 1170px;
   padding: 15px;
@@ -56,7 +64,7 @@ const Title = styled.div`
 `;
 
 const AttractionCardContainer = styled(Link)`
-  border: 1px solid #E8E8E8;
+  border: 1px solid #e8e8e8;
   border-radius: 5px;
   text-decoration: none;
 `;
@@ -88,10 +96,10 @@ const AttractionDescription = styled.div`
   color: ${Secondery50};
 `;
 
-const AttractionsCard = (props: { 
-  attraction: Attraction,
-  style?: CSSProperties,
-  onLoad?: () => void 
+const AttractionsCard = (props: {
+  attraction: Attraction;
+  style?: CSSProperties;
+  onLoad?: () => void;
 }) => {
   const { attraction, style, onLoad } = props;
   return (
@@ -113,25 +121,23 @@ const AttractionsCard = (props: {
   );
 };
 
-const AttractionsList = (props: { 
-  attractions: Attraction[],
-  loadingAttractions: Attraction[],
-  onLoad: () => void,
+const AttractionsList = (props: {
+  attractions: Attraction[];
+  loadingAttractions: Attraction[];
+  onLoad: () => void;
 }) => {
   const length = props.attractions.length;
-  const attractions = props.attractions.map(
-    (p, i) => <AttractionsCard attraction={p} key={i} />
-  );
-  const loadingAttractions = props.loadingAttractions.map(
-    (p, i) => (
-      <AttractionsCard
-        attraction={p}
-        key={length + i}
-        style={{ display: 'none' }}
-        onLoad={props.onLoad}
-      />
-    )
-  );
+  const attractions = props.attractions.map((p, i) => (
+    <AttractionsCard attraction={p} key={i} />
+  ));
+  const loadingAttractions = props.loadingAttractions.map((p, i) => (
+    <AttractionsCard
+      attraction={p}
+      key={length + i}
+      style={{ display: "none" }}
+      onLoad={props.onLoad}
+    />
+  ));
   return (
     <AttractionsListContainer>
       {attractions.concat(loadingAttractions)}

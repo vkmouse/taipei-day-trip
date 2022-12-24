@@ -1,5 +1,6 @@
 const validateEmail = (value: string): boolean => {
-  const re = /\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z]+$/g;
+  const re =
+    /\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z]+$/g;
   const match = re.exec(value);
   return match !== null && match[0] === value;
 };
@@ -34,4 +35,11 @@ const validateCardExpiration = (value: string): boolean => {
   return match !== null && match[0] === value;
 };
 
-export { validateCardExpiration, validateEmail, validateName, validateNumberOnly, validatePassword, validatePhone };
+export {
+  validateCardExpiration,
+  validateEmail,
+  validateName,
+  validateNumberOnly,
+  validatePassword,
+  validatePhone,
+};

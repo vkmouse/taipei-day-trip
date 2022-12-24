@@ -1,9 +1,9 @@
-import { keyframes, css } from '@emotion/react';
-import styled from '@emotion/styled';
-import React, { useState } from 'react';
-import { Attraction } from '../types/AttractionTypes';
-import { CenterCropped, Secondery20 } from '../utils/CommonStyles';
-import Loader from './Loader';
+import { keyframes, css } from "@emotion/react";
+import styled from "@emotion/styled";
+import React, { useState } from "react";
+import { Attraction } from "../types/AttractionTypes";
+import { CenterCropped, Secondery20 } from "../utils/CommonStyles";
+import Loader from "./Loader";
 
 const Container = styled.div`
   position: relative;
@@ -74,12 +74,12 @@ const ArrowContainer = styled.div`
 `;
 
 const LeftArrow = styled.img`
-  content: url('/left_arrow.svg');
+  content: url("/left_arrow.svg");
   user-select: none;
 `;
 
 const RightArrow = styled.img`
-  content: url('/right_arrow.svg');
+  content: url("/right_arrow.svg");
   user-select: none;
 `;
 
@@ -134,35 +134,45 @@ const Carousel = (props: { attraction?: Attraction }) => {
 
   return (
     <Container>
-      {getList().map((selected, i) => 
+      {getList().map((selected, i) => (
         <Picture
-          key={i} 
+          key={i}
           src={images[i]}
-          style={{display: selected && loadingFinish ? 'block' : 'none'}}
-          onLoad={() => setLoadedCount(loadedCount => loadedCount + 1)}
+          style={{ display: selected && loadingFinish ? "block" : "none" }}
+          onLoad={() => setLoadedCount((loadedCount) => loadedCount + 1)}
         />
-      )}
+      ))}
       {loadingFinish ? (
         <ControlPanelContainer>
           <ControlPanel>
-            <ArrowContainer onClick={() => setSelectedImage((length + selectedImage - 1) % length)}>
+            <ArrowContainer
+              onClick={() =>
+                setSelectedImage((length + selectedImage - 1) % length)
+              }
+            >
               <LeftArrow />
             </ArrowContainer>
             <DotContainer>
-              {getList().map((selected, i) => 
-                selected ? <SelectedDot key={i} /> : <Dot key={i} onClick={() => setSelectedImage(i)} />
+              {getList().map((selected, i) =>
+                selected ? (
+                  <SelectedDot key={i} />
+                ) : (
+                  <Dot key={i} onClick={() => setSelectedImage(i)} />
+                )
               )}
             </DotContainer>
-            <ArrowContainer onClick={() => setSelectedImage((selectedImage + 1) % length)}>
+            <ArrowContainer
+              onClick={() => setSelectedImage((selectedImage + 1) % length)}
+            >
               <RightArrow />
             </ArrowContainer>
           </ControlPanel>
         </ControlPanelContainer>
-      ) :
+      ) : (
         <LoaderContainer>
-          <Loader percent={percentage}/>
-        </LoaderContainer>        
-      }
+          <Loader percent={percentage} />
+        </LoaderContainer>
+      )}
     </Container>
   );
 };

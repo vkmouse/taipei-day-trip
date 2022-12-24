@@ -1,13 +1,19 @@
-import styled from '@emotion/styled';
-import React, { useEffect } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { useAPIContext } from '../context/APIContext';
-import { useLoginRegisterContext } from '../context/LoginRegisterContext';
-import { useAppSelector } from '../store/store';
-import { H2, Primary, BodyMedium, Secondery, Secondery20 } from '../utils/CommonStyles';
+import styled from "@emotion/styled";
+import React, { useEffect } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useAPIContext } from "../context/APIContext";
+import { useLoginRegisterContext } from "../context/LoginRegisterContext";
+import { useAppSelector } from "../store/store";
+import {
+  H2,
+  Primary,
+  BodyMedium,
+  Secondery,
+  Secondery20,
+} from "../utils/CommonStyles";
 
 const Container = styled.nav`
-  display: flex;  
+  display: flex;
   position: fixed;
   justify-content: center;
   z-index: 999;
@@ -59,9 +65,9 @@ const NavItem = styled.button`
 const Navigation = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const isLoggedIn = useAppSelector(state => state.user.isLoggedIn);
-  const userInfo = useAppSelector(state => state.user.userInfo);
-  const loading = useAppSelector(state => state.user.loading);
+  const isLoggedIn = useAppSelector((state) => state.user.isLoggedIn);
+  const userInfo = useAppSelector((state) => state.user.userInfo);
+  const loading = useAppSelector((state) => state.user.loading);
   const { getUserInfo, logout } = useAPIContext();
   const { show, hide } = useLoginRegisterContext();
 
@@ -72,25 +78,38 @@ const Navigation = () => {
   }, []);
 
   const handleBrandClicked = () => {
-    if (location.pathname === '/') {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (location.pathname === "/") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
 
   return (
     <Container>
       <Navbar>
-        <NavBrand to='/' onClick={handleBrandClicked}>台北一日遊</NavBrand>
-        {loading ? <></> : 
+        <NavBrand to="/" onClick={handleBrandClicked}>
+          台北一日遊
+        </NavBrand>
+        {loading ? (
+          <></>
+        ) : (
           <NavItems>
-            <NavItem onClick={ isLoggedIn ? () => navigate('/booking') : show }>
+            <NavItem onClick={isLoggedIn ? () => navigate("/booking") : show}>
               預定行程
             </NavItem>
-            <NavItem onClick={ isLoggedIn ? () => { logout(); hide(); } : show }>
-              {isLoggedIn ? '登出' : '登入/註冊'}
+            <NavItem
+              onClick={
+                isLoggedIn
+                  ? () => {
+                      logout();
+                      hide();
+                    }
+                  : show
+              }
+            >
+              {isLoggedIn ? "登出" : "登入/註冊"}
             </NavItem>
           </NavItems>
-        }
+        )}
       </Navbar>
     </Container>
   );

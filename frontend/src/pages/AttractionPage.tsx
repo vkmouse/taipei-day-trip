@@ -1,21 +1,21 @@
-import styled from '@emotion/styled';
-import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import BookingForm from '../components/BookingForm';
-import Carousel from '../components/Carousel';
-import Navigation from '../components/Navigation';
-import { Header, Main, Footer } from '../components/Semantic';
-import { useAPIContext } from '../context/APIContext';
-import { useAppSelector } from '../store/store';
-import { Attraction } from '../types/AttractionTypes';
-import { BodyMedium, Secondery, BodyBold } from '../utils/CommonStyles';
+import styled from "@emotion/styled";
+import React, { useState, useEffect, useRef } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import BookingForm from "../components/BookingForm";
+import Carousel from "../components/Carousel";
+import Navigation from "../components/Navigation";
+import { Header, Main, Footer } from "../components/Semantic";
+import { useAPIContext } from "../context/APIContext";
+import { useAppSelector } from "../store/store";
+import { Attraction } from "../types/AttractionTypes";
+import { BodyMedium, Secondery, BodyBold } from "../utils/CommonStyles";
 
 const Section = styled.section`
   display: flex;
   justify-content: center;
   width: 100%;
   padding: 39px 15px 40px 15px;
-  border-top: 1px solid #E8E8E8;
+  border-top: 1px solid #e8e8e8;
   border-width: 1px;
   @media (max-width: 800px) {
     flex-wrap: wrap;
@@ -26,7 +26,7 @@ const Section = styled.section`
 const Article = styled.article`
   width: 100%;
   max-width: 1180px;
-  border-top: 1px solid #E8E8E8;
+  border-top: 1px solid #e8e8e8;
   padding: 50px 10px 80px 10px;
 `;
 
@@ -53,8 +53,8 @@ const AttractionPage = () => {
   const [attraction, setAttraction] = useState<Attraction>();
   const api = useAPIContext();
   const hasInit = useRef(false);
-  const isLoggedIn = useAppSelector(state => state.user.isLoggedIn);
-  
+  const isLoggedIn = useAppSelector((state) => state.user.isLoggedIn);
+
   const getAttraction = async (id: number) => {
     if (hasInit.current) {
       return;

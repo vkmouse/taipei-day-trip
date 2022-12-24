@@ -5,7 +5,7 @@ export const AttractionsNotFound = styled.img`
   width: 100%;
   height: 100%;
   max-width: 600px;
-  content: url('attraction_not_found.png');
+  content: url("attraction_not_found.png");
 `;
 
 export const Container = styled.div`
@@ -15,12 +15,12 @@ export const Container = styled.div`
 `;
 
 export const BannerContainer = styled.div`
-  display: flex;  
+  display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
   height: 320px;
-  background: url('welcome.png');
+  background: url("welcome.png");
   background-size: cover;
 `;
 
@@ -62,6 +62,6 @@ export const BannerDescription = styled.span`
 
 export const SearchBarContainer = styled.div`
   display: flex;
-  flex-grow: 1;  
+  flex-grow: 1;
   align-items: end;
 `;

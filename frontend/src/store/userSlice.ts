@@ -2,11 +2,11 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { UserInfo } from "../types/UserTypes";
 
 type UserState = {
-  isLoggedIn: boolean,
-  loading: boolean
-  userInfo: UserInfo | null
-  userToken: string | null
-}
+  isLoggedIn: boolean;
+  loading: boolean;
+  userInfo: UserInfo | null;
+  userToken: string | null;
+};
 
 const initialState: UserState = {
   isLoggedIn: false,
@@ -16,7 +16,7 @@ const initialState: UserState = {
 };
 
 export const userSlice = createSlice({
-  name: 'user',
+  name: "user",
   initialState,
   reducers: {
     startLoading: (state) => {
@@ -26,7 +26,7 @@ export const userSlice = createSlice({
       state.isLoggedIn = true;
       state.loading = false;
       state.userToken = action.payload;
-    }, 
+    },
     setUser: (state, action: PayloadAction<UserInfo>) => {
       state.loading = false;
       state.userInfo = action.payload;
@@ -37,7 +37,7 @@ export const userSlice = createSlice({
       state.userInfo = null;
       state.userToken = null;
     },
-  }
+  },
 });
 
 export const { startLoading, setToken, setUser, reset } = userSlice.actions;

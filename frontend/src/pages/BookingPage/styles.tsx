@@ -1,12 +1,19 @@
 import styled from "@emotion/styled";
-import { BodyBold, Secondery70, BodyMedium, Primary, Secondery20, CenterCropped } from "../../utils/CommonStyles";
+import {
+  BodyBold,
+  Secondery70,
+  BodyMedium,
+  Primary,
+  Secondery20,
+  CenterCropped,
+} from "../../utils/CommonStyles";
 
 export const Section = styled.section`
   display: flex;
   justify-content: center;
   width: 100%;
   padding: 40px 10px 40px 10px;
-  border-top: 1px solid #E8E8E8;
+  border-top: 1px solid #e8e8e8;
   border-width: 1px;
 `;
 
@@ -99,7 +106,7 @@ export const AttractionsActionIcon = styled.img`
   cursor: pointer;
   border-radius: 5px;
   &:hover {
-    background-color: ${Secondery20}
+    background-color: ${Secondery20};
   }
 `;
 

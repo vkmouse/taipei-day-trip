@@ -7,7 +7,7 @@ export enum LoginResponse {
 }
 
 export type UserInfo = {
-  id: number
-  name: string
-  email: string
-}
+  id: number;
+  name: string;
+  email: string;
+};

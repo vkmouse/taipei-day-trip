@@ -1,20 +1,20 @@
-import { BookingResponse } from './BookingTypes';
+import { BookingResponse } from "./BookingTypes";
 
 export type PaymentResponse = {
-  orderId: number,
+  orderId: number;
   payment: {
-    status: number,
-    message: string
-  }
-}
+    status: number;
+    message: string;
+  };
+};
 
 export type OrderResponse = {
-  orderId: number,
-  status: number,
-  trip: BookingResponse[],
+  orderId: number;
+  status: number;
+  trip: BookingResponse[];
   contact: {
-    name: string,
-    email: string,
-    phone: string
-  }
-}
+    name: string;
+    email: string;
+    phone: string;
+  };
+};

@@ -1,35 +1,37 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import AttractionsInfo from '../../components/AttractionsInfo';
-import Navigation from '../../components/Navigation';
-import { Footer, Header, Main } from '../../components/Semantic';
-import { useAPIContext } from '../../context/APIContext';
-import { usePurchasedOrderContext } from '../../context/PurchasedOrderContext';
-import { useAppSelector } from '../../store/store';
-import { BookingResponse } from '../../types/BookingTypes';
-import { Section, SectionContainer, Title } from './styles';
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import AttractionsInfo from "../../components/AttractionsInfo";
+import Navigation from "../../components/Navigation";
+import { Footer, Header, Main } from "../../components/Semantic";
+import { useAPIContext } from "../../context/APIContext";
+import { usePurchasedOrderContext } from "../../context/PurchasedOrderContext";
+import { useAppSelector } from "../../store/store";
+import { BookingResponse } from "../../types/BookingTypes";
+import { Section, SectionContainer, Title } from "./styles";
 
 const ThankYouPage = () => {
-  const isLoggedIn = useAppSelector(state => state.user.isLoggedIn);
-  const userInfo = useAppSelector(state => state.user.userInfo);
+  const isLoggedIn = useAppSelector((state) => state.user.isLoggedIn);
+  const userInfo = useAppSelector((state) => state.user.userInfo);
   const { getUserInfo } = useAPIContext();
   const navigate = useNavigate();
   const api = useAPIContext();
   const { id, setId } = usePurchasedOrderContext();
-  const [bookingResponses, setBookingResponses] = useState<BookingResponse[]>([]);
+  const [bookingResponses, setBookingResponses] = useState<BookingResponse[]>(
+    []
+  );
 
   useEffect(() => {
     if (!id) {
-      navigate('/');
+      navigate("/");
     } else {
       if (!isLoggedIn || !userInfo) {
-        getUserInfo().then(member => {
+        getUserInfo().then((member) => {
           if (!member) {
-            navigate('/');
+            navigate("/");
           }
         });
       }
-      api.getOrder(id).then(response => {
+      api.getOrder(id).then((response) => {
         if (response !== null) {
           setBookingResponses(response.trip);
         }

@@ -1,6 +1,6 @@
-import styled from '@emotion/styled';
-import React, { useState } from 'react';
-import { Primary, BodyMedium } from '../utils/CommonStyles';
+import styled from "@emotion/styled";
+import React, { useState } from "react";
+import { Primary, BodyMedium } from "../utils/CommonStyles";
 
 const RadioContainer = styled.div`
   display: flex;
@@ -23,17 +23,27 @@ const Input = styled.input`
   }
 `;
 
-const Text =  styled.label`
+const Text = styled.label`
   ${BodyMedium}
   cursor: pointer;
 `;
 
-const Radio = (props: { label: string, value: string, checked?: boolean, onClick?: () => void }) => {
+const Radio = (props: {
+  label: string;
+  value: string;
+  checked?: boolean;
+  onClick?: () => void;
+}) => {
   const { label, value, checked, onClick } = props;
 
   return (
     <RadioContainer onClick={onClick}>
-      <Input type='radio' value={value} checked={checked} onChange={() => void 0}/>
+      <Input
+        type="radio"
+        value={value}
+        checked={checked}
+        onChange={() => void 0}
+      />
       <Text>{label}</Text>
     </RadioContainer>
   );
@@ -44,7 +54,10 @@ const RadioGroupContainer = styled.div`
   justify-content: center;
 `;
 
-const RadioGroup = (props: { children: JSX.Element[], onChanged: (value: string) => void }) => {
+const RadioGroup = (props: {
+  children: JSX.Element[];
+  onChanged: (value: string) => void;
+}) => {
   const [selected, setSelected] = useState(0);
   const getList = () => {
     const list = Array(props.children.length).fill(false);
@@ -57,9 +70,10 @@ const RadioGroup = (props: { children: JSX.Element[], onChanged: (value: string)
       {getList().map((checked, i) => {
         const { value, label } = props.children[i].props;
         return (
-          <Radio key={i} 
-            value={value} 
-            label={label} 
+          <Radio
+            key={i}
+            value={value}
+            label={label}
             checked={checked}
             onClick={() => {
               setSelected(i);

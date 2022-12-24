@@ -1,6 +1,6 @@
-import styled from '@emotion/styled';
-import React from 'react';
-import { BodyMedium } from '../utils/CommonStyles';
+import styled from "@emotion/styled";
+import React from "react";
+import { BodyMedium } from "../utils/CommonStyles";
 
 const InputDate = styled.input`
   position: relative;
@@ -21,7 +21,12 @@ const InputDate = styled.input`
   }
 `;
 
-const Calendar = (props: { min: string, max: string, value: string, onChange: (value: string) => void }) => {
+const Calendar = (props: {
+  min: string;
+  max: string;
+  value: string;
+  onChange: (value: string) => void;
+}) => {
   const maxDate = Date.parse(props.max);
   const minDate = Date.parse(props.min);
   const handleChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -34,10 +39,10 @@ const Calendar = (props: { min: string, max: string, value: string, onChange: (v
       props.onChange(e.target.value);
     }
   };
-  
+
   return (
     <InputDate
-      type='date'
+      type="date"
       min={props.min}
       max={props.max}
       value={props.value}
@@ -47,4 +52,3 @@ const Calendar = (props: { min: string, max: string, value: string, onChange: (v
 };
 
 export default Calendar;
-
