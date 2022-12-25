@@ -2,6 +2,7 @@ from taipei_day_trip.models.category_model import CategoryModel
 from taipei_day_trip.models.types import Category
 from taipei_day_trip.models.types import List
 
+
 class MemoryCategoryModel(CategoryModel):
     def __init__(self):
         self.__db: List[Category] = []

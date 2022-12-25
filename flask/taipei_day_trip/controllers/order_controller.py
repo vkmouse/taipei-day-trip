@@ -8,28 +8,24 @@ from taipei_day_trip.utils import tappay_merchant_id
 from taipei_day_trip.utils import tappay_partner_key
 from taipei_day_trip.utils import tappay_pay_by_prime_url
 
+
 class OrderController:
     def __init__(self, db: Database):
         self.__db = db
         self.validator = OrderValidator(self.__db)
         self.view = OrderView()
 
-    def create_order(self,
-                     member_id: int,
-                     prime: str,
-                     booking_ids: List[int],
-                     price: int,
-                     contact_name: str | None,
-                     contact_email: str | None,
-                     contact_phone: str | None) -> bool:
-        if not self.validate_payment_input(
-            member_id,
-            booking_ids,
-            price,
-            contact_name,
-            contact_email,
-            contact_phone
-        ):
+    def create_order(
+        self,
+        member_id: int,
+        prime: str,
+        booking_ids: List[int],
+        price: int,
+        contact_name: str | None,
+        contact_email: str | None,
+        contact_phone: str | None,
+    ) -> bool:
+        if not self.validate_payment_input(member_id, booking_ids, price, contact_name, contact_email, contact_phone):
             return self.view.render_invalid_parameter()
         (payment_status, message) = self.process_payment(
             prime,
@@ -59,13 +55,15 @@ class OrderController:
         except Exception as e:
             return self.view.render_unexpected(e)
 
-    def validate_payment_input(self,
-                               member_id: int,
-                               booking_ids: List[int],
-                               price: int,
-                               contact_name: str | None,
-                               contact_email: str | None,
-                               contact_phone: str | None) -> bool:
+    def validate_payment_input(
+        self,
+        member_id: int,
+        booking_ids: List[int],
+        price: int,
+        contact_name: str | None,
+        contact_email: str | None,
+        contact_phone: str | None,
+    ) -> bool:
         if not self.validator.validate_contact_info(contact_name, contact_email, contact_phone):
             return False
         return self.validator.validate_booking_info(member_id, booking_ids)
@@ -76,7 +74,7 @@ class OrderController:
         price: int,
         contact_name: str,
         contact_email: str,
-        contact_phone: str
+        contact_phone: str,
     ) -> tuple[int, str]:
         return tappay.pay_by_prime(
             url=tappay_pay_by_prime_url,
@@ -100,22 +98,35 @@ class OrderController:
         contact_email: str,
         contact_phone: str,
     ):
-        order_id = self.__db.orders.add(member_id, price, booking_ids, payment_status, contact_name, contact_email, contact_phone)
+        order_id = self.__db.orders.add(
+            member_id,
+            price,
+            booking_ids,
+            payment_status,
+            contact_name,
+            contact_email,
+            contact_phone,
+        )
         if payment_status == 0:
             self.__db.bookings.update_payment(member_id, booking_ids)
         return self.view.render_create_order_success(order_id, payment_status, message)
 
+
 class OrderValidator(BaseValidator):
     def __init__(self, db: Database):
         self.__db = db
-    
-    def validate_contact_info(self, 
-                              contact_name: str | None,
-                              contact_email: str | None,
-                              contact_phone: str | None) -> bool:
-        return (self.validate_name(contact_name) and
-                self.validate_email(contact_email) and
-                self.validate_phone(contact_phone))
+
+    def validate_contact_info(
+        self,
+        contact_name: str | None,
+        contact_email: str | None,
+        contact_phone: str | None,
+    ) -> bool:
+        return (
+            self.validate_name(contact_name)
+            and self.validate_email(contact_email)
+            and self.validate_phone(contact_phone)
+        )
 
     def validate_booking_info(self, member_id: int, booking_ids: List[int]):
         if len(booking_ids) == 0:
@@ -125,6 +136,7 @@ class OrderValidator(BaseValidator):
             return False
         return True
 
+
 class OrderView(BaseView):
     def render_create_order_success(self, order_id: int, payment_status: int, message: str):
         if payment_status == 0:
@@ -132,40 +144,42 @@ class OrderView(BaseView):
         else:
             code = 200
         return {
-            'data': {
-                'orderId': order_id,
-                'payment': {
-                    'status': payment_status,
-                    'message': message
-                }
+            "data": {
+                "orderId": order_id,
+                "payment": {"status": payment_status, "message": message},
             }
         }, code
 
     def render_get_order_success(self, order: Order):
         return {
-            'data': {
-                'orderId': order.id,
-                'status': order.payment_status,
-                'trip': list(map(lambda x: {
-                    'attraction': {
-                        'id': x.attraction.id,
-                        'name': x.attraction.name,
-                        'address': x.attraction.address,
-                        'image': x.attraction.images[0],
-                    },
-                    'starttime': x.starttime.strftime("%Y-%m-%d %H:%M:%S"),
-                    'endtime': x.endtime.strftime("%Y-%m-%d %H:%M:%S"),
-                }, order.bookings)),
-                'contact': {
-                    'name': order.contact_name,
-                    'email': order.contact_email,
-                    'phone': order.contact_phone
-                }
+            "data": {
+                "orderId": order.id,
+                "status": order.payment_status,
+                "trip": list(
+                    map(
+                        lambda x: {
+                            "attraction": {
+                                "id": x.attraction.id,
+                                "name": x.attraction.name,
+                                "address": x.attraction.address,
+                                "image": x.attraction.images[0],
+                            },
+                            "starttime": x.starttime.strftime("%Y-%m-%d %H:%M:%S"),
+                            "endtime": x.endtime.strftime("%Y-%m-%d %H:%M:%S"),
+                        },
+                        order.bookings,
+                    )
+                ),
+                "contact": {
+                    "name": order.contact_name,
+                    "email": order.contact_email,
+                    "phone": order.contact_phone,
+                },
             }
         }, 200
 
     def render_get_order_failed(self):
-        return { 'data': None }, 200
+        return {"data": None}, 200
 
     def render_invaild_order_info(self):
-        return { 'error': True, 'message': 'Invalid order infomation' }, 400
+        return {"error": True, "message": "Invalid order infomation"}, 400

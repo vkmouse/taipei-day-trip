@@ -3,18 +3,21 @@ import typing
 
 List = typing.List
 
+
 class Attraction:
-    def __init__(self, 
-                 id: int, 
-                 name: str, 
-                 description: str, 
-                 address: str, 
-                 lat: float, 
-                 lng: float, 
-                 transport: str, 
-                 images: List[str], 
-                 category: str, 
-                 mrt: str):
+    def __init__(
+        self,
+        id: int,
+        name: str,
+        description: str,
+        address: str,
+        lat: float,
+        lng: float,
+        transport: str,
+        images: List[str],
+        category: str,
+        mrt: str,
+    ):
         self.id = id
         self.name = name
         self.description = description
@@ -28,27 +31,30 @@ class Attraction:
 
     def to_json(self):
         return {
-            'id': self.id,
-            'name': self.name,
-            'category': self.category,
-            'description': self.description,
-            'address': self.address,
-            'transport': self.transport,
-            'mrt': self.mrt,
-            'lat': self.lat,
-            'lng': self.lng,
-            'images': self.images,
+            "id": self.id,
+            "name": self.name,
+            "category": self.category,
+            "description": self.description,
+            "address": self.address,
+            "transport": self.transport,
+            "mrt": self.mrt,
+            "lat": self.lat,
+            "lng": self.lng,
+            "images": self.images,
         }
 
+
 class Booking:
-    def __init__(self,
-                 id: int,
-                 member_id: int,
-                 attraction: Attraction,
-                 starttime: datetime,
-                 endtime: datetime,
-                 price: int,
-                 has_paid: bool):
+    def __init__(
+        self,
+        id: int,
+        member_id: int,
+        attraction: Attraction,
+        starttime: datetime,
+        endtime: datetime,
+        price: int,
+        has_paid: bool,
+    ):
         self.id = id
         self.member_id = member_id
         self.attraction = attraction
@@ -57,10 +63,12 @@ class Booking:
         self.price = price
         self.has_paid = has_paid
 
+
 class Category:
     def __init__(self, id: int, name: str):
         self.id = id
         self.name = name
+
 
 class Member:
     def __init__(self, id: int, name: str, email: str, password: str):
@@ -69,22 +77,26 @@ class Member:
         self.email = email
         self.password = password
 
+
 class MRT:
     def __init__(self, id: int, name: str):
         self.id = id
         self.name = name
 
+
 class Order:
-    def __init__(self,
-                 id: int,
-                 member_id: int,
-                 price: int,
-                 bookings: List[Booking],
-                 payment_status: int,
-                 contact_name: str,
-                 contact_email: str,
-                 contact_phone: str,
-                 created_at: datetime):
+    def __init__(
+        self,
+        id: int,
+        member_id: int,
+        price: int,
+        bookings: List[Booking],
+        payment_status: int,
+        contact_name: str,
+        contact_email: str,
+        contact_phone: str,
+        created_at: datetime,
+    ):
         self.id = id
         self.member_id = member_id
         self.price = price
