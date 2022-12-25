@@ -1,9 +1,9 @@
-import styled from '@emotion/styled';
-import React, { CSSProperties } from 'react';
-import { BodyBold } from '../utils/CommonStyles';
+import styled from "@emotion/styled";
+import React, { CSSProperties } from "react";
+import { BodyBold } from "../utils/CommonStyles";
 
 const Container = styled.footer`
-  display: flex;  
+  display: flex;
   align-items: end;
   flex-grow: 1;
   margin-top: 40px;
@@ -22,9 +22,7 @@ const Text = styled.div`
 
 const Footer = (props: { style?: CSSProperties }) => (
   <Container {...props}>
-    <Text>
-      COPYRIGHT © 2022 台北一日遊
-    </Text>
+    <Text>COPYRIGHT © 2022 台北一日遊</Text>
   </Container>
 );
 

@@ -12,7 +12,7 @@ class BookingController:
 
     def get_by_member_id(self, member_id: int):
         try:
-            result = self.__db.bookings.get_by_member_id(member_id)
+            result = self.__db.bookings.get_unpaid_by_member(member_id)
             return self.view.render_get_by_member_id(result)
         except:
             return self.view.render_unexpected()
@@ -40,13 +40,6 @@ class BookingController:
             if not self.validator.validate_number(id):
                 return self.view.render_invalid_parameter()
             self.__db.bookings.remove_by_id(member_id, id)
-            return self.view.render_success()
-        except Exception as e:
-            return self.view.render_unexpected(e)
-
-    def remove_by_member_id(self, member_id: int):
-        try:
-            self.__db.bookings.remove_by_member_id(member_id)
             return self.view.render_success()
         except Exception as e:
             return self.view.render_unexpected(e)

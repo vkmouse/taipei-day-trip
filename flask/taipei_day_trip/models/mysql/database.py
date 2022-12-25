@@ -5,11 +5,15 @@ from taipei_day_trip.models.booking_model import BookingModel
 from taipei_day_trip.models.category_model import CategoryModel
 from taipei_day_trip.models.member_model import MemberModel
 from taipei_day_trip.models.mrt_model import MRTModel
+from taipei_day_trip.models.order_model import OrderModel
+
 from taipei_day_trip.models.mysql.attraction_model import MySQLAttractionModel
 from taipei_day_trip.models.mysql.booking_model import MySQLBookingModel
 from taipei_day_trip.models.mysql.category_model import MySQLCategoryModel
 from taipei_day_trip.models.mysql.member_model import MySQLMemberModel
 from taipei_day_trip.models.mysql.mrt_model import MySQLMRTModel
+from taipei_day_trip.models.mysql.order_model import MySQLOrderModel
+
 from taipei_day_trip.models.database import Database
 from taipei_day_trip.utils import mysql_database
 from taipei_day_trip.utils import mysql_host
@@ -27,9 +31,11 @@ class MySQLDatabase(Database):
         self.attractions.create_table()
         self.members.create_table()
         self.bookings.create_table()
+        self.orders.create_table()
 
     def __del__(self):
         if self.__debug:
+            self.orders.drop_table_if_exists()
             self.bookings.drop_table_if_exists()
             self.members.drop_table_if_exists()
             self.attractions.drop_table_if_exists()
@@ -56,6 +62,15 @@ class MySQLDatabase(Database):
 
     def _create_mrt_model(self) -> MRTModel:
         return MySQLMRTModel(self.__cnxpool, self.__debug)
+
+    def _create_order_model(self) -> OrderModel:
+        return MySQLOrderModel(
+            self.__cnxpool, 
+            self.attractions.tablename,
+            self.attractions.attraction_images.tablename,
+            self.members.tablename, 
+            self.bookings.tablename, 
+            self.__debug)
 
     def is_available(self) -> bool:
         try:

@@ -18,5 +18,10 @@ mysql_host = os.getenv('MYSQL_HOST')
 mysql_password = os.getenv('MYSQL_PASSWORD')
 mysql_user = os.getenv('MYSQL_USER')
 
+# TapPay
+tappay_pay_by_prime_url = os.getenv('TAPPAY_PAY_BY_PRIME_URL')
+tappay_partner_key = os.getenv('TAPPAY_PARTNER_KEY')
+tappay_merchant_id = os.getenv('TAPPAY_MERCHANT_ID')
+
 # Debug
 is_debug = os.getenv('DEBUG') and os.getenv('DEBUG').upper() == 'TRUE'

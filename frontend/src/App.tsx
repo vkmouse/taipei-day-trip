@@ -1,35 +1,41 @@
-import { Global } from '@emotion/react';
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { APIProvider } from './context/APIContext';
-import { AuthProvider } from './context/AuthContext';
-import { LoginRegisterProvider } from './context/LoginRegisterContext';
-import AttractionPage from './pages/AttractionPage';
-import BookingPage from './pages/BookingPage';
-import HomePage from './pages/HomePage';
-import { GlobalStyles } from './utils/CommonStyles';
+import { Global } from "@emotion/react";
+import React from "react";
+import { Provider } from "react-redux";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { APIProvider } from "./context/APIContext";
+import { LoginRegisterProvider } from "./context/LoginRegisterContext";
+import { PurchasedOrderProvider } from "./context/PurchasedOrderContext";
+import AttractionPage from "./pages/AttractionPage";
+import BookingPage from "./pages/BookingPage";
+import HomePage from "./pages/HomePage";
+import ThankYouPage from "./pages/ThankYouPage";
+import store from "./store/store";
+import { GlobalStyles } from "./utils/CommonStyles";
 
 function App() {
   return (
-    <APIProvider>
-    {/* <APIProvider isMock> */}
-      <AuthProvider>
+    <Provider store={store}>
+      <APIProvider>
+        {/* <APIProvider isMock> */}
         <LoginRegisterProvider>
           <Global styles={GlobalStyles} />
-          <Router>
-            <Routes>
-              <Route path='/'>
-                <Route index element={<HomePage />} />
-                <Route path='attraction'>
-                  <Route path=':attractionId'  element={<AttractionPage />} />
+          <PurchasedOrderProvider>
+            <Router>
+              <Routes>
+                <Route path="/">
+                  <Route index element={<HomePage />} />
+                  <Route path="attraction">
+                    <Route path=":attractionId" element={<AttractionPage />} />
+                  </Route>
+                  <Route path="booking" element={<BookingPage />} />
+                  <Route path="thankyou" element={<ThankYouPage />} />
                 </Route>
-                <Route path='booking' element={<BookingPage />} />
-              </Route>
-            </Routes>
-          </Router>
+              </Routes>
+            </Router>
+          </PurchasedOrderProvider>
         </LoginRegisterProvider>
-      </AuthProvider>
-    </APIProvider>
+      </APIProvider>
+    </Provider>
   );
 }
 

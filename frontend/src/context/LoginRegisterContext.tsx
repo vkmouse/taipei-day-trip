@@ -1,10 +1,10 @@
-import React, { createContext, useContext, useState } from 'react';
-import LoginRegister from '../components/LoginRegister';
-import { useAuthContext } from './AuthContext';
+import React, { createContext, useContext, useState } from "react";
+import LoginRegister from "../components/LoginRegister";
+import { useAppSelector } from "../store/store";
 
 type LoginRegisterState = {
-  show: () => void,
-  hide: () => void,
+  show: () => void;
+  hide: () => void;
 };
 
 const initialState: LoginRegisterState = {
@@ -16,15 +16,15 @@ const LoginRegisterContext = createContext<LoginRegisterState>(initialState);
 
 const LoginRegisterProvider = (props: { children: JSX.Element[] }) => {
   const [display, setDisplay] = useState(false);
-  const { isLogin } = useAuthContext();
+  const isLoggedIn = useAppSelector((state) => state.user.isLoggedIn);
   const value: LoginRegisterState = {
     show: () => setDisplay(true),
-    hide: () => setDisplay(false)
+    hide: () => setDisplay(false),
   };
-  
+
   return (
     <LoginRegisterContext.Provider value={value}>
-      {!isLogin && display ? <LoginRegister hide={value.hide} /> : <></>}
+      {!isLoggedIn && display ? <LoginRegister hide={value.hide} /> : <></>}
       {props.children}
     </LoginRegisterContext.Provider>
   );

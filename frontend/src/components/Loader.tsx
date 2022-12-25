@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import React from 'react';
+import React from "react";
 import { BodyMedium, Primary } from "../utils/CommonStyles";
 
 const LoaderContainer = styled.div`
@@ -18,7 +18,7 @@ const DualRing = styled.div`
   height: 80px;
   margin-right: 12px;
   margin-bottom: 12px;
-  
+
   &:after {
     content: " ";
     display: block;
@@ -30,7 +30,7 @@ const DualRing = styled.div`
     border-color: ${Primary} transparent ${Primary} transparent;
     animation: lds-dual-ring 1.2s linear infinite;
   }
-  
+
   @keyframes lds-dual-ring {
     0% {
       transform: rotate(0deg);

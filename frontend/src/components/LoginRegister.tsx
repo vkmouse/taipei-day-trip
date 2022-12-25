@@ -1,10 +1,21 @@
-import styled from '@emotion/styled';
-import React, { useState, useReducer } from 'react';
-import useLogin from '../hooks/useLogin';
-import useRegister from '../hooks/useRegister';
-import { H3, Secondery70, Secondery20, Primary, BodyMedium, Secondery50 } from '../utils/CommonStyles';
-import { validateEmail, validateName, validatePassword } from '../utils/validate';
-import InputField from './InputField';
+import styled from "@emotion/styled";
+import React, { useState, useReducer } from "react";
+import useLogin from "../hooks/useLogin";
+import useRegister from "../hooks/useRegister";
+import {
+  H3,
+  Secondery70,
+  Secondery20,
+  Primary,
+  BodyMedium,
+  Secondery50,
+} from "../utils/CommonStyles";
+import {
+  validateEmail,
+  validateName,
+  validatePassword,
+} from "../utils/validate";
+import InputField from "./InputField";
 
 const FullPage = styled.div`
   position: fixed;
@@ -33,7 +44,7 @@ const ModalContent = styled.div`
 `;
 
 const ModalBody = styled.div`
-  z-index: 1;  
+  z-index: 1;
   margin-top: 80px;
   width: 340px;
   background: white;
@@ -43,7 +54,7 @@ const ModalBody = styled.div`
 const DecoratorBar = styled.div`
   width: 100%;
   height: 10px;
-  background: linear-gradient(270deg, #337788 0%, #66AABB 100%);
+  background: linear-gradient(270deg, #337788 0%, #66aabb 100%);
   border-radius: 5px 5px 0 0;
 `;
 
@@ -77,7 +88,7 @@ const Cancel = styled.div`
 `;
 
 const CancelIcon = styled.img`
-  content: url('/cancel.png');
+  content: url("/cancel.png");
   width: 16px;
   height: 16px;
 `;
@@ -121,7 +132,7 @@ const TextButton = styled(Text)`
 `;
 
 const HintTextStyle = styled.span`
-  font-family: 'Noto Sans TC';
+  font-family: "Noto Sans TC";
   font-style: normal;
   font-weight: 500;
   font-size: 13px;
@@ -130,89 +141,103 @@ const HintTextStyle = styled.span`
 `;
 
 type Description = {
-  title: string
-  button: string
-  text: string
-  textButton: string
-}
+  title: string;
+  button: string;
+  text: string;
+  textButton: string;
+};
 
 const loginDescription: Description = {
-  title: '登入會員帳號',
-  button: '登入帳戶',
-  text: '還沒有帳戶？',
-  textButton: '點此註冊',
+  title: "登入會員帳號",
+  button: "登入帳戶",
+  text: "還沒有帳戶？",
+  textButton: "點此註冊",
 };
 
 const registerDescription: Description = {
-  title: '註冊會員帳號',
-  button: '註冊新帳戶',
-  text: '已經有帳戶了？',
-  textButton: '點此登入',
+  title: "註冊會員帳號",
+  button: "註冊新帳戶",
+  text: "已經有帳戶了？",
+  textButton: "點此登入",
 };
 
-const HintText = (props: { status: string, message: string }) => {
-  const color = props.status === 'Success' ? 'blue' : 'red';
-  if (props.status === 'Success' || props.status === 'Failed') {
+const HintText = (props: { status: string; message: string }) => {
+  const color = props.status === "Success" ? "blue" : "red";
+  if (props.status === "Success" || props.status === "Failed") {
     return <HintTextStyle style={{ color }}>{props.message}</HintTextStyle>;
   }
   return <></>;
 };
 
 type LoginRegisterState = {
-  email: string
-  emailValid: boolean
-  name: string
-  nameValid: boolean
-  password: string
-  passwordValid: boolean
+  email: string;
+  emailValid: boolean;
+  name: string;
+  nameValid: boolean;
+  password: string;
+  passwordValid: boolean;
+};
+
+enum LoginRegisterType {
+  SET_EMAIL,
+  SET_NAME,
+  SET_PASSWORD,
+  CLEAR,
 }
 
-type LoginRegisterAction = 
-  | { type: 'SET_EMAIL', payload: string }
-  | { type: 'SET_NAME', payload: string }
-  | { type: 'SET_PASSWORD', payload: string }
-  | { type: 'CLEAR' };
-const setEmail = (email: string): LoginRegisterAction => { return { type: 'SET_EMAIL', payload: email }; };
-const setName = (name: string): LoginRegisterAction => { return { type: 'SET_NAME', payload: name }; };
-const setPassword = (password: string): LoginRegisterAction => { return { type: 'SET_PASSWORD', payload: password }; };
-const clear = (): LoginRegisterAction => { return { type: 'CLEAR' }; };
+type LoginRegisterAction = { type: LoginRegisterType; payload: string };
+const setEmail = (email: string): LoginRegisterAction => {
+  return { type: LoginRegisterType.SET_EMAIL, payload: email };
+};
+const setName = (name: string): LoginRegisterAction => {
+  return { type: LoginRegisterType.SET_NAME, payload: name };
+};
+const setPassword = (password: string): LoginRegisterAction => {
+  return { type: LoginRegisterType.SET_PASSWORD, payload: password };
+};
+const clear = (): LoginRegisterAction => {
+  return { type: LoginRegisterType.CLEAR, payload: "" };
+};
 
 const initialState: LoginRegisterState = {
-  email: '',
+  email: "",
   emailValid: false,
-  name: '',
+  name: "",
   nameValid: false,
-  password: '',
+  password: "",
   passwordValid: false,
 };
 
-const loginRegisterReducer = (state: LoginRegisterState, action: LoginRegisterAction): LoginRegisterState => {
+const loginRegisterReducer = (
+  state: LoginRegisterState,
+  action: LoginRegisterAction
+): LoginRegisterState => {
   switch (action.type) {
-    case 'SET_EMAIL':
-      return { 
+    case LoginRegisterType.SET_EMAIL:
+      return {
         ...state,
         email: action.payload,
         emailValid: validateEmail(action.payload),
       };
-    case 'SET_NAME':
-      return { 
+    case LoginRegisterType.SET_NAME:
+      return {
         ...state,
         name: action.payload,
         nameValid: validateName(action.payload),
       };
-    case 'SET_PASSWORD':
-      return { 
+    case LoginRegisterType.SET_PASSWORD:
+      return {
         ...state,
         password: action.payload,
         passwordValid: validatePassword(action.payload),
       };
-    case 'CLEAR':
+    case LoginRegisterType.CLEAR:
       return {
-        email: '',
+        email: "",
         emailValid: false,
-        name: '',
+        name: "",
         nameValid: false,
-        password: '',
+        password: "",
         passwordValid: false,
       };
     default:
@@ -224,7 +249,9 @@ const LoginRegister = (props: { hide?: () => void }) => {
   const [isLogin, setIsLogin] = useState(true);
   const [state, dispatch] = useReducer(loginRegisterReducer, initialState);
   const { email, emailValid, name, nameValid, password, passwordValid } = state;
-  const description: Description = isLogin ? loginDescription : registerDescription;
+  const description: Description = isLogin
+    ? loginDescription
+    : registerDescription;
   const loginHandler = useLogin();
   const registerHandler = useRegister();
 
@@ -235,66 +262,76 @@ const LoginRegister = (props: { hide?: () => void }) => {
     dispatch(clear());
   };
 
-  const isValid = (isLogin && emailValid && passwordValid) || 
-                  (emailValid && passwordValid && nameValid);
-  const buttonCursor = isValid ? 'pointer' : 'not-allowed';
+  const isValid =
+    (isLogin && emailValid && passwordValid) ||
+    (emailValid && passwordValid && nameValid);
+  const buttonCursor = isValid ? "pointer" : "not-allowed";
 
-  let emailMessage = '';
-  if (loginHandler.status === 'EmailFailed') {
+  let emailMessage = "";
+  if (loginHandler.status === "EmailFailed") {
     emailMessage = loginHandler.message;
-  } else if (registerHandler.status === 'EmailFailed') {
+  } else if (registerHandler.status === "EmailFailed") {
     emailMessage = registerHandler.message;
   } else if (!emailValid && email.length) {
-    emailMessage = '⚠ 請輸入正確的電子郵件';
+    emailMessage = "⚠ 請輸入正確的電子郵件";
   }
 
-  let passwordMessage = '';
-  if (loginHandler.status === 'PasswordFailed') {
+  let passwordMessage = "";
+  if (loginHandler.status === "PasswordFailed") {
     passwordMessage = loginHandler.message;
-  } else if (registerHandler.status === 'PasswordFailed') {
+  } else if (registerHandler.status === "PasswordFailed") {
     passwordMessage = registerHandler.message;
   } else if (!passwordValid && password.length) {
-    passwordMessage = '⚠ 請輸入 4 ~ 100 個字元的英文字母、數字';
+    passwordMessage = "⚠ 請輸入 4 ~ 100 個字元的英文字母、數字";
   }
 
   return (
     <FullPage>
       <Modal>
-        <ModalOverlay onClick={props.hide}/>
+        <ModalOverlay onClick={props.hide} />
         <ModalContent>
           <ModalBody>
             <DecoratorBar />
-            <Form onSubmit={e => e.preventDefault()}>
+            <Form onSubmit={(e) => e.preventDefault()}>
               <TitleContainer>
                 <Title>{description.title}</Title>
-                <Cancel onClick={props.hide}><CancelIcon /></Cancel>
+                <Cancel onClick={props.hide}>
+                  <CancelIcon />
+                </Cancel>
               </TitleContainer>
-              {isLogin ? <></> : 
+              {isLogin ? (
+                <></>
+              ) : (
                 <InputField
                   autoFocus
-                  dangerMessage={nameValid || name.length === 0 ? '' : '⚠ 請輸入 1 ~ 20 個字元'}
-                  placeholder='輸入姓名'
+                  dangerMessage={
+                    nameValid || name.length === 0
+                      ? ""
+                      : "⚠ 請輸入 1 ~ 20 個字元"
+                  }
+                  placeholder="輸入姓名"
                   value={name}
-                  onChange={e => dispatch(setName(e.target.value))}
-                /> }
-              <InputField 
+                  onChange={(e) => dispatch(setName(e.target.value))}
+                />
+              )}
+              <InputField
                 autoFocus
                 dangerMessage={emailMessage}
-                placeholder='輸入電子信箱'
+                placeholder="輸入電子信箱"
                 value={email}
-                onChange={e => dispatch(setEmail(e.target.value))}
+                onChange={(e) => dispatch(setEmail(e.target.value))}
               />
               <InputField
                 autoFocus
-                autoComplete='off'
+                autoComplete="off"
                 dangerMessage={passwordMessage}
-                placeholder='輸入密碼'
-                type='password'
+                placeholder="輸入密碼"
+                type="password"
                 value={password}
-                onChange={e => dispatch(setPassword(e.target.value))}
+                onChange={(e) => dispatch(setPassword(e.target.value))}
               />
-              <Button 
-                style={{cursor: buttonCursor}} 
+              <Button
+                style={{ cursor: buttonCursor }}
                 disabled={!isValid}
                 onClick={() => {
                   if (isLogin) {
@@ -302,7 +339,8 @@ const LoginRegister = (props: { hide?: () => void }) => {
                   } else {
                     registerHandler.register(name, email, password);
                   }
-                }}>
+                }}
+              >
                 {description.button}
               </Button>
               <TextContainer>
@@ -311,7 +349,9 @@ const LoginRegister = (props: { hide?: () => void }) => {
               </TextContainer>
               <TextContainer>
                 <Text>{description.text}</Text>
-                <TextButton onClick={switchForm}>{description.textButton}</TextButton>
+                <TextButton onClick={switchForm}>
+                  {description.textButton}
+                </TextButton>
               </TextContainer>
             </Form>
           </ModalBody>

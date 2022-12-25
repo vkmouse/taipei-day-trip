@@ -1,7 +1,12 @@
-import styled from '@emotion/styled';
-import React, { useState, useEffect } from 'react';
-import { useAPIContext } from '../context/APIContext';
-import { BodyBold, Primary, CategoryMedium, Secondery20 } from '../utils/CommonStyles';
+import styled from "@emotion/styled";
+import React, { useState, useEffect } from "react";
+import { useAPIContext } from "../context/APIContext";
+import {
+  BodyBold,
+  Primary,
+  CategoryMedium,
+  Secondery20,
+} from "../utils/CommonStyles";
 
 const SearchContainer = styled.div`
   position: relative;
@@ -29,7 +34,7 @@ const SearchInput = styled.input`
 `;
 
 const SearchButton = styled.button`
-  display: flex;  
+  display: flex;
   align-items: center;
   justify-content: center;
   width: 60px;
@@ -48,7 +53,7 @@ const CategoryList = styled.div`
   max-width: 400px;
   background-color: white;
   margin-top: 5px;
-  box-shadow: 0px 0px 20px #AABBCC;
+  box-shadow: 0px 0px 20px #aabbcc;
   border-radius: 5px;
 `;
 
@@ -69,17 +74,17 @@ const CategoryItem = styled.div`
 
 const CategoryName = styled.div`
   margin: 10px 15px;
-  user-select:none;
+  user-select: none;
 `;
 
 const SearchCategoryList = (props: {
-  visible: boolean,
-  onCategoryItemClick?: (text: string) => void
+  visible: boolean;
+  onCategoryItemClick?: (text: string) => void;
 }) => {
   const [categories, setCategories] = useState<string[]>([]);
   const { visible, onCategoryItemClick } = props;
   const api = useAPIContext();
-  
+
   const getCategories = async () => {
     const body = await api.getCategories();
     setCategories(body.data);
@@ -90,42 +95,44 @@ const SearchCategoryList = (props: {
   }, []);
 
   return (
-    <CategoryList style={{ visibility: visible ? 'visible' : 'hidden' }}  >
+    <CategoryList style={{ visibility: visible ? "visible" : "hidden" }}>
       <CategoryItems>
-        {categories.map((p, i) => 
-        <CategoryItem key={i} onMouseDown={() => onCategoryItemClick?.(p)}>
-          <CategoryName>{p}</CategoryName>
-        </CategoryItem>)}
+        {categories.map((p, i) => (
+          <CategoryItem key={i} onMouseDown={() => onCategoryItemClick?.(p)}>
+            <CategoryName>{p}</CategoryName>
+          </CategoryItem>
+        ))}
       </CategoryItems>
     </CategoryList>
   );
 };
 
-const SearchBar = (props: { 
-  searchInputText: string
-  onSearchButtonClick?: () => void 
-  onSearchInputTextChanged?: (text: string) => void
+const SearchBar = (props: {
+  searchInputText: string;
+  onSearchButtonClick?: () => void;
+  onSearchInputTextChanged?: (text: string) => void;
 }) => {
   const [categoryListVisible, setCategoryListVisible] = useState(false);
-  const { searchInputText, onSearchButtonClick, onSearchInputTextChanged } = props;
+  const { searchInputText, onSearchButtonClick, onSearchInputTextChanged } =
+    props;
 
   return (
     <SearchContainer>
       <SearchInputContainer>
-        <SearchInput 
-          placeholder='輸入景點名稱查詢'
-          onChange={e => onSearchInputTextChanged?.(e.target.value)}
+        <SearchInput
+          placeholder="輸入景點名稱查詢"
+          onChange={(e) => onSearchInputTextChanged?.(e.target.value)}
           onFocus={() => setCategoryListVisible(true)}
           onBlur={() => setCategoryListVisible(false)}
           value={searchInputText}
         />
         <SearchButton onClick={onSearchButtonClick}>
-          <img src='search_icon.svg'/>
+          <img src="search_icon.svg" />
         </SearchButton>
       </SearchInputContainer>
-      <SearchCategoryList 
+      <SearchCategoryList
         visible={categoryListVisible}
-        onCategoryItemClick={text => onSearchInputTextChanged?.(text)}
+        onCategoryItemClick={(text) => onSearchInputTextChanged?.(text)}
       />
     </SearchContainer>
   );

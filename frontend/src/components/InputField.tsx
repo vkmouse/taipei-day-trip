@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import React, { CSSProperties } from 'react';
+import React, { CSSProperties } from "react";
 import { BodyMedium, Secondery50, Primary } from "../utils/CommonStyles";
 
 const InputContainer = styled.div`
@@ -12,7 +12,7 @@ const BaseInput = styled.input`
   width: 100%;
   ${BodyMedium}
   color: ${Secondery50};
-  border: 1px solid #CCCCCC;
+  border: 1px solid #cccccc;
   border-radius: 5px;
   &:focus {
     outline: none;
@@ -30,7 +30,7 @@ const DangerInput = styled(BaseInput)`
 `;
 
 const HintTextStyle = styled.span`
-  font-family: 'Noto Sans TC';
+  font-family: "Noto Sans TC";
   font-style: normal;
   font-weight: 500;
   font-size: 13px;
@@ -38,15 +38,15 @@ const HintTextStyle = styled.span`
   color: red;
 `;
 
-const InputField = (props: { 
-  autoFocus?: boolean
-  autoComplete?: string
-  dangerMessage: string
-  placeholder: string
-  style?: CSSProperties
-  type?: React.HTMLInputTypeAttribute
-  value: string
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
+const InputField = (props: {
+  autoFocus?: boolean;
+  autoComplete?: string;
+  dangerMessage: string;
+  placeholder: string;
+  style?: CSSProperties;
+  type?: React.HTMLInputTypeAttribute;
+  value: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }) => {
   const { dangerMessage } = props;
   const Input = dangerMessage ? DangerInput : BaseInput;

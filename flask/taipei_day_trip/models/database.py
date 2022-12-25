@@ -3,6 +3,7 @@ from taipei_day_trip.models.booking_model import BookingModel
 from taipei_day_trip.models.category_model import CategoryModel
 from taipei_day_trip.models.member_model import MemberModel
 from taipei_day_trip.models.mrt_model import MRTModel
+from taipei_day_trip.models.order_model import OrderModel
 
 class Database:
     def __init__(self):
@@ -11,6 +12,7 @@ class Database:
         self.__attractions = self._create_attraction_model()
         self.__members = self._create_member_model()
         self.__bookings = self._create_booking_model()
+        self.__orders = self._create_order_model()
 
     @property
     def attractions(self) -> AttractionModel:
@@ -32,6 +34,10 @@ class Database:
     def mrts(self) -> MRTModel:
         return self.__mrts
 
+    @property
+    def orders(self) -> OrderModel:
+        return self.__orders
+
     def _create_attraction_model(self) -> AttractionModel:
         return NotImplemented
 
@@ -45,6 +51,9 @@ class Database:
         return NotImplemented
 
     def _create_mrt_model(self) -> MRTModel:
+        return NotImplemented
+
+    def _create_order_model(self) -> OrderModel:
         return NotImplemented
 
 def copy_db(src: Database, dst: Database):
