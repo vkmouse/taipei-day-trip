@@ -8,6 +8,7 @@ import { PurchasedOrderProvider } from "./context/PurchasedOrderContext";
 import AttractionPage from "./pages/AttractionPage";
 import BookingPage from "./pages/BookingPage";
 import HomePage from "./pages/HomePage";
+import NotFoundPage from "./pages/NotFoundPage";
 import ThankYouPage from "./pages/ThankYouPage";
 import store from "./store/store";
 import { GlobalStyles } from "./utils/CommonStyles";
@@ -30,6 +31,7 @@ function App() {
                   <Route path="booking" element={<BookingPage />} />
                   <Route path="thankyou" element={<ThankYouPage />} />
                 </Route>
+                <Route path="*" element={<NotFoundPage />} />
               </Routes>
             </Router>
           </PurchasedOrderProvider>
