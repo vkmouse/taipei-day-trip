@@ -53,3 +53,10 @@ def test_get_order():
     controller.update_payment_status(0, "success", 1, [1, 2, 3], 9999, "name", "a@a.a", "0912345678")
     assert controller.get_order(1, 1)[0]["data"] != None
     assert controller.get_order(1, 2)[0]["data"] == None
+
+
+def test_get_orders():
+    controller = create_controller()
+    controller.update_payment_status(0, "success", 1, [1, 2, 3], 9999, "name", "a@a.a", "0912345678")
+    controller.update_payment_status(0, "success", 1, [1, 2, 3], 9999, "name", "a@a.a", "0912345678")
+    assert len(controller.get_orders(1)[0]["data"]) == 2

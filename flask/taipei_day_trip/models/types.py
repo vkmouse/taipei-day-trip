@@ -106,3 +106,29 @@ class Order:
         self.contact_email = contact_email
         self.contact_phone = contact_phone
         self.created_at = created_at
+
+    def to_json(self):
+        return {
+            "orderId": self.id,
+            "status": self.payment_status,
+            "trip": list(
+                map(
+                    lambda x: {
+                        "attraction": {
+                            "id": x.attraction.id,
+                            "name": x.attraction.name,
+                            "address": x.attraction.address,
+                            "image": x.attraction.images[0],
+                        },
+                        "starttime": x.starttime.strftime("%Y-%m-%d %H:%M:%S"),
+                        "endtime": x.endtime.strftime("%Y-%m-%d %H:%M:%S"),
+                    },
+                    self.bookings,
+                )
+            ),
+            "contact": {
+                "name": self.contact_name,
+                "email": self.contact_email,
+                "phone": self.contact_phone,
+            },
+        }

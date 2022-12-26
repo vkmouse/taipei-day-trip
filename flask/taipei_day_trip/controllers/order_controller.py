@@ -55,6 +55,13 @@ class OrderController:
         except Exception as e:
             return self.view.render_unexpected(e)
 
+    def get_orders(self, member_id: int):
+        try:
+            orders = self.__db.orders.get_by_member(member_id)
+            return self.view.render_get_orders(orders)
+        except Exception as e:
+            return self.view.render_unexpected(e)
+
     def validate_payment_input(
         self,
         member_id: int,
@@ -151,32 +158,10 @@ class OrderView(BaseView):
         }, code
 
     def render_get_order_success(self, order: Order):
-        return {
-            "data": {
-                "orderId": order.id,
-                "status": order.payment_status,
-                "trip": list(
-                    map(
-                        lambda x: {
-                            "attraction": {
-                                "id": x.attraction.id,
-                                "name": x.attraction.name,
-                                "address": x.attraction.address,
-                                "image": x.attraction.images[0],
-                            },
-                            "starttime": x.starttime.strftime("%Y-%m-%d %H:%M:%S"),
-                            "endtime": x.endtime.strftime("%Y-%m-%d %H:%M:%S"),
-                        },
-                        order.bookings,
-                    )
-                ),
-                "contact": {
-                    "name": order.contact_name,
-                    "email": order.contact_email,
-                    "phone": order.contact_phone,
-                },
-            }
-        }, 200
+        return {"data": order.to_json()}, 200
+
+    def render_get_orders(self, orders: List[Order]):
+        return {"data": list(map(lambda order: order.to_json(), orders))}, 200
 
     def render_get_order_failed(self):
         return {"data": None}, 200

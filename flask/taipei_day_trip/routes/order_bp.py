@@ -40,6 +40,14 @@ def order_bp(db: Database, cache: Cache):
         except Exception as e:
             return controller.view.render_unexpected(e)
 
+    @bp.route("/api/orders", methods=["GET"])
+    def get_orders():
+        @jwt.access_token_required
+        def get_orders_wrapper(member_id: int):
+            return controller.get_orders(member_id)
+
+        return get_orders_wrapper()
+
     @bp.route("/api/order/<int:order_id>")
     def order(order_id: int):
         @jwt.access_token_required
