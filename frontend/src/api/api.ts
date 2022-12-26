@@ -8,6 +8,7 @@ export type API = {
   getBookings: (token: string) => Promise<Response>;
   getCategories: () => Promise<{ data: string[] }>;
   getOrder: (token: string, orderId: number) => Promise<Response>;
+  getOrders: (token: string) => Promise<Response>;
   getUserInfo: (token: string) => Promise<Response>;
   login: (email: string, password: string) => Promise<Response>;
   logout: () => Promise<Response>;

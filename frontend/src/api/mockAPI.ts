@@ -67,7 +67,11 @@ const mockAPI: API = {
     });
   },
 
-  getOrder: (token: string): Promise<Response> => {
+  getOrder: (): Promise<Response> => {
+    throw "Not Implement";
+  },
+
+  getOrders: (): Promise<Response> => {
     throw "Not Implement";
   },
 

@@ -25,6 +25,7 @@ type APIState = {
   logout: () => Promise<void>;
   getBookings: () => Promise<BookingResponse[]>;
   getOrder: (orderId: number) => Promise<OrderResponse | null>;
+  getOrders: () => Promise<OrderResponse[]>;
   getUserInfo: () => Promise<UserInfo | null>;
   processPayment: (
     prime: string,
@@ -67,6 +68,9 @@ const initialState: APIState = {
     throw new Error("Function not implemented.");
   },
   getOrder: (): Promise<OrderResponse | null> => {
+    throw new Error("Function not implemented.");
+  },
+  getOrders: (): Promise<OrderResponse[]> => {
     throw new Error("Function not implemented.");
   },
   getUserInfo: (): Promise<UserInfo> => {
@@ -209,6 +213,49 @@ const APIProvider = (props: {
         }
       }
       return null;
+    },
+    getOrders: async () => {
+      const response = await callAPIWithRefresh(token, (token) =>
+        api.getOrders(token)
+      );
+      if (response.status === 200) {
+        const body: {
+          data: {
+            orderId: number;
+            status: number;
+            trip: {
+              attraction: {
+                id: number;
+                name: string;
+                address: string;
+                image: string;
+              };
+              bookingId: number;
+              starttime: string;
+              endtime: string;
+              price: number;
+            }[];
+            contact: {
+              name: string;
+              email: string;
+              phone: string;
+            };
+          }[];
+        } = await response.json();
+        return body.data.map((m) => {
+          return {
+            ...m,
+            trip: m.trip.map((n) => {
+              return {
+                ...n,
+                starttime: parseDateTimeString(n.starttime),
+                endtime: parseDateTimeString(n.endtime),
+              };
+            }),
+          };
+        });
+      }
+      return [];
     },
     getUserInfo: async () => {
       dispatch(startLoading());
