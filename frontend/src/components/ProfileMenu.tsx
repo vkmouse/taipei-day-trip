@@ -56,7 +56,7 @@ const ProfileMenu = (props: { style?: CSSProperties }) => {
 
   return (
     <ProfileMenuContainer style={style}>
-      <ProfileRow>
+      <ProfileRow onClick={() => navigate("/user")}>
         <ProfileIcon />
         <ProfileTextBold>劉師睿</ProfileTextBold>
       </ProfileRow>
