@@ -48,7 +48,39 @@ class MySQLOrderModel(MySQLModel, OrderModel):
     @MySQLModel.with_connection
     def get_by_id(self, id: int, member_id: int, cnx, cursor) -> Order | None:
         cursor = cnx.cursor(dictionary=True)
-        query = (
+        query = self.get_orders_statement("WHERE id=%s AND member_id=%s")
+        data = (member_id, id, member_id)
+        cursor.execute(query, data)
+        rows = cursor.fetchall()
+        orders = self.convert_rows_to_orders(rows)
+        if len(orders) == 0:
+            return None
+        return orders[0]
+
+    @MySQLModel.with_connection
+    def get_by_member(self, member_id: int, cnx, cursor) -> List[Order]:
+        cursor = cnx.cursor(dictionary=True)
+        query = self.get_orders_statement("WHERE member_id=%s")
+        data = (member_id, member_id)
+        cursor.execute(query, data)
+        rows = cursor.fetchall()
+        return self.convert_rows_to_orders(rows)
+
+    @property
+    def tablename(self) -> str:
+        return ""
+
+    @property
+    def create_table_statement(self) -> str:
+        return ""
+
+    def drop_table_if_exists(self):
+        self.order_detail.drop_table_if_exists()
+        self.order_info.drop_table_if_exists()
+        super().drop_table_if_exists()
+
+    def get_orders_statement(self, condition):
+        return (
             "SELECT * "
             "FROM {order_info} "
             "INNER JOIN ( "
@@ -93,69 +125,59 @@ class MySQLOrderModel(MySQLModel, OrderModel):
             "        ON {order_detail}.booking_id=booking_tb.id "
             ") order_detail_tb "
             "    ON id=order_detail_tb.order_id "
-            "WHERE id=%s AND member_id=%s;"
+            "{condition};"
         ).format(
             attraction=self.attraction_tablename,
             attraction_image=self.attraction_image_tablename,
+            condition=condition,
             booking=self.booking_tablename,
             order_detail=self.order_detail.tablename,
             order_info=self.order_info.tablename,
         )
-        data = (member_id, id, member_id)
-        cursor.execute(query, data)
-        rows = cursor.fetchall()
-        if len(rows) == 0:
-            return None
-        order = Order(
-            id=rows[0]["id"],
-            member_id=rows[0]["member_id"],
-            price=rows[0]["price"],
-            payment_status=rows[0]["payment_status"],
-            contact_name=rows[0]["contact_name"],
-            contact_email=rows[0]["contact_email"],
-            contact_phone=rows[0]["contact_phone"],
-            created_at=rows[0]["created_at"],
-            bookings=list(
-                map(
-                    lambda row: Booking(
-                        id=row["booking_id"],
-                        member_id=row["member_id"],
-                        starttime=row["starttime"],
-                        endtime=row["endtime"],
-                        price=row["booking_price"],
-                        has_paid=row["has_paid"],
-                        attraction=Attraction(
-                            id=row["attraction_id"],
-                            name=row["attraction_name"],
-                            address=row["attraction_address"],
-                            images=[row["attraction_image"]],
-                            description="",
-                            lat=0,
-                            lng=0,
-                            transport="",
-                            category="",
-                            mrt="",
-                        ),
+
+    def convert_rows_to_orders(self, rows):
+        orders = []
+        for row in rows:
+            id = row["id"]
+            exists = len(list(filter(lambda x: x.id == id, orders))) > 0
+            if not exists:
+                order = Order(
+                    id=id,
+                    member_id=row["member_id"],
+                    price=row["price"],
+                    payment_status=row["payment_status"],
+                    contact_name=row["contact_name"],
+                    contact_email=row["contact_email"],
+                    contact_phone=row["contact_phone"],
+                    created_at=row["created_at"],
+                    bookings=list(
+                        map(
+                            lambda r: Booking(
+                                id=r["booking_id"],
+                                member_id=r["member_id"],
+                                starttime=r["starttime"],
+                                endtime=r["endtime"],
+                                price=r["booking_price"],
+                                has_paid=r["has_paid"],
+                                attraction=Attraction(
+                                    id=r["attraction_id"],
+                                    name=r["attraction_name"],
+                                    address=r["attraction_address"],
+                                    images=[r["attraction_image"]],
+                                    description="",
+                                    lat=0,
+                                    lng=0,
+                                    transport="",
+                                    category="",
+                                    mrt="",
+                                ),
+                            ),
+                            list(filter(lambda row: row["id"] == id, rows)),
+                        )
                     ),
-                    rows,
                 )
-            ),
-        )
-
-        return order
-
-    @property
-    def tablename(self) -> str:
-        return ""
-
-    @property
-    def create_table_statement(self) -> str:
-        return ""
-
-    def drop_table_if_exists(self):
-        self.order_detail.drop_table_if_exists()
-        self.order_info.drop_table_if_exists()
-        super().drop_table_if_exists()
+                orders.append(order)
+        return orders
 
 
 class MySQLOrderInfoModel(MySQLModel):

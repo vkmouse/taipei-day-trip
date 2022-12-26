@@ -45,6 +45,9 @@ class MemoryOrderModel(OrderModel):
             return None
         return output[0]
 
+    def get_by_member(self, member_id: int) -> List[Order]:
+        return list(filter(lambda i: i.member_id == member_id, self.__db))
+
     @property
     def __next_id(self):
         self.__id += 1

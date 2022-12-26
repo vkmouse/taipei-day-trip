@@ -17,3 +17,6 @@ class OrderModel:
 
     def get_by_id(self, id: int, member_id: int) -> Order | None:
         return NotImplemented
+
+    def get_by_member(self, member_id: int) -> List[Order]:
+        return NotImplemented

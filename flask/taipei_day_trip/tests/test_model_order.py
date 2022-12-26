@@ -38,6 +38,8 @@ def order_test_case(db: Database):
     assert db.orders.get_by_id(id1, 2) == None
     assert db.orders.get_by_id(id2, 1) == None
 
+    assert len(db.orders.get_by_member(id1)) == 1
+
     order1 = db.orders.get_by_id(id1, 1)
     assert len(order1.bookings) == 3
     assert order1.bookings[0].starttime == datetime(2000, 1, 1, 10)
