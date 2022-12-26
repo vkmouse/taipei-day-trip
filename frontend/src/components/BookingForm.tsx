@@ -82,6 +82,10 @@ const Button = styled.button`
   cursor: pointer;
 `;
 
+const Link = styled.a`
+  color: ${Secondery70};
+`;
+
 const BookingForm = (props: {
   attraction?: Attraction;
   isLoggedIn: boolean;
@@ -99,7 +103,7 @@ const BookingForm = (props: {
   const { id, name, category, mrt } = props.attraction;
   const [price, setPrice] = useState(2000);
   const [date, setDate] = useState(getNextDate(1));
-  const [bookingStatus, setBookingStatus] = useState("");
+  const [bookingStatus, setBookingStatus] = useState<JSX.Element | null>(null);
   const timeRef = useRef("morning");
   const { addBooking } = useAPIContext();
   const { show } = useLoginRegisterContext();
@@ -114,7 +118,7 @@ const BookingForm = (props: {
   };
 
   const startBooking = async () => {
-    setBookingStatus("預約中 ...");
+    setBookingStatus(<>預約中 ...</>);
     const starttime = new Date(date);
     const endtime = new Date(date);
     if (timeRef.current === "morning") {
@@ -132,9 +136,13 @@ const BookingForm = (props: {
     };
     const success = await addBooking(booking);
     if (success) {
-      setBookingStatus("✔ 預約成功，前往預定行程查看");
+      setBookingStatus(
+        <>
+          <Link href="/booking">✔ 預約成功，前往預定行程查看</Link>
+        </>
+      );
     } else {
-      setBookingStatus("✘ 已預約該時段，預約失敗");
+      setBookingStatus(<>✘ 已預約該時段，預約失敗</>);
     }
   };
 
