@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
-import React, { useEffect } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { useAPIContext } from "../context/APIContext";
 import { useLoginRegisterContext } from "../context/LoginRegisterContext";
 import { useAppSelector } from "../store/store";
@@ -11,6 +11,7 @@ import {
   Secondery,
   Secondery20,
 } from "../utils/CommonStyles";
+import ProfileMenu from "./ProfileMenu";
 
 const Container = styled.nav`
   display: flex;
@@ -41,6 +42,15 @@ const NavBrand = styled(Link)`
   text-decoration: none;
 `;
 
+const NavToggler = styled.div`
+  background-image: url(https://scontent.ftpe8-4.fna.fbcdn.net/v/t1.6435-1/46346680_1919536431427677_1454114397000564736_n.jpg?stp=cp0_dst-jpg_p40x40&_nc_cat=110&ccb=1-7&_nc_sid=7206a8&_nc_ohc=xC0-IOizR8cAX_CNK93&_nc_ht=scontent.ftpe8-4.fna&oh=00_AfCIgrGxBSeHaJ7zSMPBPuLQVxogEm1gLe_sU5V0Whis1w&oe=63D11A42);
+  position: relative;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+`;
+
 const NavItems = styled.div`
   display: flex;
 `;
@@ -64,12 +74,12 @@ const NavItem = styled.button`
 
 const Navigation = () => {
   const location = useLocation();
-  const navigate = useNavigate();
   const isLoggedIn = useAppSelector((state) => state.user.isLoggedIn);
   const userInfo = useAppSelector((state) => state.user.userInfo);
   const loading = useAppSelector((state) => state.user.loading);
-  const { getUserInfo, logout } = useAPIContext();
-  const { show, hide } = useLoginRegisterContext();
+  const { getUserInfo } = useAPIContext();
+  const { show } = useLoginRegisterContext();
+  const [isMenuVisible, setIsMenuVisible] = useState(false);
 
   useEffect(() => {
     if (!isLoggedIn || !userInfo) {
@@ -89,32 +99,25 @@ const Navigation = () => {
         <NavBrand to="/" onClick={handleBrandClicked}>
           台北一日遊
         </NavBrand>
-        {loading ? (
-          <></>
-        ) : (
-          <NavItems>
-            {isLoggedIn ? (
-              <>
-                <NavItem onClick={() => navigate("/booking")}>預定行程</NavItem>
-                <NavItem onClick={() => navigate("/history")}>歷史訂單</NavItem>
-              </>
-            ) : (
-              <></>
-            )}
-            <NavItem
-              onClick={
-                isLoggedIn
-                  ? () => {
-                      logout();
-                      hide();
-                    }
-                  : show
-              }
+        <NavItems>
+          {isLoggedIn ? (
+            <NavToggler
+              onClick={() => {
+                if (!loading && isLoggedIn) {
+                  setIsMenuVisible((isMenuVisible) => !isMenuVisible);
+                } else {
+                  setIsMenuVisible(false);
+                }
+              }}
             >
-              {isLoggedIn ? "登出" : "登入/註冊"}
-            </NavItem>
-          </NavItems>
-        )}
+              <ProfileMenu
+                style={{ display: isMenuVisible ? "block" : "none" }}
+              />
+            </NavToggler>
+          ) : (
+            <NavItem onClick={show}>{"登入/註冊"}</NavItem>
+          )}
+        </NavItems>
       </Navbar>
     </Container>
   );
