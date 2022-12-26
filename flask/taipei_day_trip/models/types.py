@@ -110,6 +110,7 @@ class Order:
     def to_json(self):
         return {
             "orderId": self.id,
+            "price": self.price,
             "status": self.payment_status,
             "trip": list(
                 map(
