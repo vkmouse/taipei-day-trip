@@ -45,3 +45,8 @@ export const ClickableRow = styled.div`
 export const AttractionsInfoFooter = styled.div`
   padding-bottom: 20px;
 `;
+
+export const JustifyBetween = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;

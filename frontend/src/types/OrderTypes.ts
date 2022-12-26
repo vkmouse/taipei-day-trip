@@ -10,6 +10,7 @@ export type PaymentResponse = {
 
 export type OrderResponse = {
   orderId: number;
+  price: number;
   status: number;
   trip: BookingResponse[];
   contact: {

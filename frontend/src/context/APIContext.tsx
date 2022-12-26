@@ -179,6 +179,7 @@ const APIProvider = (props: {
         const body: {
           data: {
             orderId: number;
+            price: number;
             status: number;
             trip: {
               attraction: {
@@ -222,6 +223,7 @@ const APIProvider = (props: {
         const body: {
           data: {
             orderId: number;
+            price: number;
             status: number;
             trip: {
               attraction: {
