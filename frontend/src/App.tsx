@@ -7,6 +7,7 @@ import { LoginRegisterProvider } from "./context/LoginRegisterContext";
 import { PurchasedOrderProvider } from "./context/PurchasedOrderContext";
 import AttractionPage from "./pages/AttractionPage";
 import BookingPage from "./pages/BookingPage";
+import HistoryPage from "./pages/HistoryPage";
 import HomePage from "./pages/HomePage";
 import NotFoundPage from "./pages/NotFoundPage";
 import ThankYouPage from "./pages/ThankYouPage";
@@ -29,6 +30,7 @@ function App() {
                     <Route path=":attractionId" element={<AttractionPage />} />
                   </Route>
                   <Route path="booking" element={<BookingPage />} />
+                  <Route path="history" element={<HistoryPage />} />
                   <Route path="thankyou" element={<ThankYouPage />} />
                 </Route>
                 <Route path="*" element={<NotFoundPage />} />

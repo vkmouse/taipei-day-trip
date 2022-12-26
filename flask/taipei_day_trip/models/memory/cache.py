@@ -3,6 +3,7 @@ from datetime import timezone
 from datetime import timedelta
 from taipei_day_trip.models.cache import Cache
 
+
 class MemoryCache(Cache):
     def __init__(self):
         self.__db = {}

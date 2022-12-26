@@ -93,9 +93,14 @@ const Navigation = () => {
           <></>
         ) : (
           <NavItems>
-            <NavItem onClick={isLoggedIn ? () => navigate("/booking") : show}>
-              預定行程
-            </NavItem>
+            {isLoggedIn ? (
+              <>
+                <NavItem onClick={() => navigate("/booking")}>預定行程</NavItem>
+                <NavItem onClick={() => navigate("/history")}>歷史訂單</NavItem>
+              </>
+            ) : (
+              <></>
+            )}
             <NavItem
               onClick={
                 isLoggedIn

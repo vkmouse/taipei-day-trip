@@ -33,6 +33,7 @@ const AttractionPage = () => {
   };
 
   useEffect(() => {
+    window.scrollTo({ top: 0 });
     getAttraction(id);
   }, []);
 

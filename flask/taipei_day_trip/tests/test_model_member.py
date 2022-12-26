@@ -4,6 +4,7 @@ from taipei_day_trip.models import MemoryDatabase
 from taipei_day_trip.models import MySQLDatabase
 from taipei_day_trip.models import Database
 
+
 def member_test_case(db: Database):
     assert db.members.add("name1", "1@1", "pass1") == True
     assert db.members.add("name1", "1@1", "pass1") == False
@@ -15,9 +16,11 @@ def member_test_case(db: Database):
     assert member.email == "1@1"
     assert member.password == "pass1"
 
+
 def test_memory_based_model():
     db = MemoryDatabase()
     member_test_case(db)
+
 
 @pytest.mark.skipif(not MySQLDatabase(debug=True).is_available(), reason="database is not avaibable")
 def test_mysql_based_model():

@@ -2,6 +2,7 @@ from taipei_day_trip.models.member_model import MemberModel
 from taipei_day_trip.models.types import Member
 from taipei_day_trip.models.types import List
 
+
 class MemoryMemberModel(MemberModel):
     def __init__(self):
         self.__db: List[Member] = []

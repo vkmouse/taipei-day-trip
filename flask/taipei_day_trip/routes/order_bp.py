@@ -6,24 +6,25 @@ from taipei_day_trip.middleware import JWT
 from taipei_day_trip.models import Cache
 from taipei_day_trip.models import Database
 
+
 def order_bp(db: Database, cache: Cache):
     controller = OrderController(db)
-    bp = Blueprint('order', __name__)
+    bp = Blueprint("order", __name__)
     jwt = JWT(cache)
 
-    @bp.route('/api/orders', methods=['POST'])
+    @bp.route("/api/orders", methods=["POST"])
     @jwt.access_token_required
     def orders(member_id: int):
         try:
             body = request.get_json()
-            order = body['order']
-            contact = order['contact']
-            prime = body['prime']
-            price = order['price']
-            booking_ids = order['bookingIds']
-            contact_name = contact['name']
-            contact_email = contact['email']
-            contact_phone = contact['phone']
+            order = body["order"]
+            contact = order["contact"]
+            prime = body["prime"]
+            price = order["price"]
+            booking_ids = order["bookingIds"]
+            contact_name = contact["name"]
+            contact_email = contact["email"]
+            contact_phone = contact["phone"]
         except:
             return controller.view.render_invalid_parameter()
         try:
@@ -39,11 +40,20 @@ def order_bp(db: Database, cache: Cache):
         except Exception as e:
             return controller.view.render_unexpected(e)
 
-    @bp.route('/api/order/<int:order_id>')
+    @bp.route("/api/orders", methods=["GET"])
+    def get_orders():
+        @jwt.access_token_required
+        def get_orders_wrapper(member_id: int):
+            return controller.get_orders(member_id)
+
+        return get_orders_wrapper()
+
+    @bp.route("/api/order/<int:order_id>")
     def order(order_id: int):
         @jwt.access_token_required
         def order_wrapper(member_id: int):
             return controller.get_order(member_id, order_id)
-        return order_wrapper() 
+
+        return order_wrapper()
 
     return bp

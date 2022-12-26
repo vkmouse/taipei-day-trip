@@ -2,6 +2,7 @@ from taipei_day_trip.controllers.base import BaseValidator, BaseView
 from taipei_day_trip.models import Attraction
 from taipei_day_trip.models import Database
 
+
 class AttractionController:
     def __init__(self, db: Database, num_data_per_page: int):
         self.__db = db
@@ -38,15 +39,16 @@ class AttractionController:
             next_page = page + 1
         else:
             next_page = None
-        data = list(map(lambda x: x.to_json(), output[0:self.__num_data_per_page]))
+        data = list(map(lambda x: x.to_json(), output[0 : self.__num_data_per_page]))
         return self.view.render_search_from_model_success(next_page, data)
+
 
 class AttractionView(BaseView):
     def render_search_from_model_success(self, next_page, data):
-        return { 'nextPage': next_page, 'data': data }, 200
+        return {"nextPage": next_page, "data": data}, 200
 
     def render_attraction_success(self, attraction: Attraction):
-        return { 'data': attraction.to_json() }, 200
+        return {"data": attraction.to_json()}, 200
 
     def render_attraction_id_not_exists(self, id):
-        return { 'error': True, 'message': f'No attraction id {id}' }, 400
+        return {"error": True, "message": f"No attraction id {id}"}, 400

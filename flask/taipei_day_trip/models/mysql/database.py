@@ -20,6 +20,7 @@ from taipei_day_trip.utils import mysql_host
 from taipei_day_trip.utils import mysql_password
 from taipei_day_trip.utils import mysql_user
 
+
 class MySQLDatabase(Database):
     def __init__(self, debug=False):
         self.__debug = debug
@@ -48,15 +49,15 @@ class MySQLDatabase(Database):
     def _create_booking_model(self) -> BookingModel:
         return MySQLBookingModel(
             cnxpool=self.__cnxpool,
-            member_tablename=self.members.tablename, 
-            attraction_tablename=self.attractions.tablename, 
-            attraction_image_tablename=self.attractions.attraction_images.tablename, 
-            debug=self.__debug
+            member_tablename=self.members.tablename,
+            attraction_tablename=self.attractions.tablename,
+            attraction_image_tablename=self.attractions.attraction_images.tablename,
+            debug=self.__debug,
         )
-        
+
     def _create_category_model(self) -> CategoryModel:
         return MySQLCategoryModel(self.__cnxpool, self.__debug)
-        
+
     def _create_member_model(self) -> MemberModel:
         return MySQLMemberModel(self.__cnxpool, self.__debug)
 
@@ -65,12 +66,13 @@ class MySQLDatabase(Database):
 
     def _create_order_model(self) -> OrderModel:
         return MySQLOrderModel(
-            self.__cnxpool, 
+            self.__cnxpool,
             self.attractions.tablename,
             self.attractions.attraction_images.tablename,
-            self.members.tablename, 
-            self.bookings.tablename, 
-            self.__debug)
+            self.members.tablename,
+            self.bookings.tablename,
+            self.__debug,
+        )
 
     def is_available(self) -> bool:
         try:
@@ -85,30 +87,29 @@ class MySQLDatabase(Database):
         config = MySQLConfig.config_without_database()
         with mysql.connector.connect(**config) as cnx:
             with cnx.cursor() as cursor:
-                cursor.execute(f'CREATE DATABASE IF NOT EXISTS {database}')
-                cursor.execute(f'SET GLOBAL group_concat_max_len = 10000;')
+                cursor.execute(f"CREATE DATABASE IF NOT EXISTS {database}")
+                cursor.execute(f"SET GLOBAL group_concat_max_len = 10000;")
 
     def create_connectpool(self) -> mysql.connector.pooling.MySQLConnectionPool:
         return mysql.connector.pooling.MySQLConnectionPool(
-            pool_name='taipei_day_trip', 
-            pool_size=4, 
-            **MySQLConfig.config()
+            pool_name="taipei_day_trip", pool_size=4, **MySQLConfig.config()
         )
+
 
 class MySQLConfig:
     @staticmethod
     def config():
         return {
-            'host': mysql_host,
-            'user': mysql_user,
-            'password': mysql_password,
-            'database': mysql_database
+            "host": mysql_host,
+            "user": mysql_user,
+            "password": mysql_password,
+            "database": mysql_database,
         }
 
     @staticmethod
     def config_without_database():
         return {
-            'host': mysql_host,
-            'user': mysql_user,
-            'password': mysql_password,
+            "host": mysql_host,
+            "user": mysql_user,
+            "password": mysql_password,
         }
