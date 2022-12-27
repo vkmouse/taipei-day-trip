@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAPIContext } from "../context/APIContext";
-import { useLoginRegisterContext } from "../context/LoginRegisterContext";
+import { useDialogContext } from "../context/DiagramContext";
 import { useAppSelector } from "../store/store";
 import {
   H2,
@@ -87,7 +87,7 @@ const Navigation = () => {
   };
 
   const location = useLocation();
-  const { show } = useLoginRegisterContext();
+  const { showLoginRegister } = useDialogContext();
   const [isMenuVisible, setIsMenuVisible] = useState(false);
 
   useEffect(() => {
@@ -112,7 +112,7 @@ const Navigation = () => {
             台北一日遊
           </NavBrand>
           <NavItems>
-            <NavItem onClick={show}>{"登入/註冊"}</NavItem>
+            <NavItem onClick={showLoginRegister}>{"登入/註冊"}</NavItem>
           </NavItems>
         </Navbar>
       </Container>

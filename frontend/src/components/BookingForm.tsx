@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import React, { useState, useRef } from "react";
 import { useAPIContext } from "../context/APIContext";
-import { useLoginRegisterContext } from "../context/LoginRegisterContext";
+import { useDialogContext } from "../context/DiagramContext";
 import { Attraction } from "../types/AttractionTypes";
 import { Booking } from "../types/BookingTypes";
 import {
@@ -106,7 +106,7 @@ const BookingForm = (props: {
   const [bookingStatus, setBookingStatus] = useState<JSX.Element | null>(null);
   const timeRef = useRef("morning");
   const { addBooking } = useAPIContext();
-  const { show } = useLoginRegisterContext();
+  const { showLoginRegister } = useDialogContext();
 
   const handleRadioChanged = (val: string) => {
     timeRef.current = val;
@@ -176,7 +176,7 @@ const BookingForm = (props: {
           新台幣 {price} 元
         </Row>
         <FlexRow>
-          <Button onClick={props.isLoggedIn ? startBooking : show}>
+          <Button onClick={props.isLoggedIn ? startBooking : showLoginRegister}>
             開始預約行程
           </Button>
           {bookingStatus}

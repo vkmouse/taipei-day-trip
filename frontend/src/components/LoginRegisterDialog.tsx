@@ -8,7 +8,6 @@ import {
   Secondery20,
   Primary,
   BodyMedium,
-  Secondery50,
 } from "../utils/CommonStyles";
 import {
   validateEmail,
@@ -245,7 +244,7 @@ const loginRegisterReducer = (
   }
 };
 
-const LoginRegister = (props: { hide?: () => void }) => {
+const LoginRegisterDialog = (props: { hide?: () => void }) => {
   const [isLogin, setIsLogin] = useState(true);
   const [state, dispatch] = useReducer(loginRegisterReducer, initialState);
   const { email, emailValid, name, nameValid, password, passwordValid } = state;
@@ -308,7 +307,6 @@ const LoginRegister = (props: { hide?: () => void }) => {
                   onChange={(e) => dispatch(setEmail(e.target.value))}
                 />
                 <InputField
-                  autoFocus
                   autoComplete="off"
                   dangerMessage={passwordMessage}
                   placeholder="輸入密碼"
@@ -355,7 +353,6 @@ const LoginRegister = (props: { hide?: () => void }) => {
                 </Cancel>
               </TitleContainer>
               <InputField
-                autoFocus
                 dangerMessage={
                   nameValid || name.length === 0 ? "" : "⚠ 請輸入 1 ~ 20 個字元"
                 }
@@ -364,14 +361,12 @@ const LoginRegister = (props: { hide?: () => void }) => {
                 onChange={(e) => dispatch(setName(e.target.value))}
               />
               <InputField
-                autoFocus
                 dangerMessage={emailMessage}
                 placeholder="輸入電子信箱"
                 value={email}
                 onChange={(e) => dispatch(setEmail(e.target.value))}
               />
               <InputField
-                autoFocus
                 autoComplete="off"
                 dangerMessage={passwordMessage}
                 placeholder="輸入密碼"
@@ -403,4 +398,4 @@ const LoginRegister = (props: { hide?: () => void }) => {
   );
 };
 
-export default LoginRegister;
+export default LoginRegisterDialog;
