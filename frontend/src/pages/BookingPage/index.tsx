@@ -11,23 +11,8 @@ import {
   validateName,
   validateEmail,
   validatePhone,
-  validateNumberOnly,
-  validateCardExpiration,
 } from "../../utils/validate";
-import AttractionsInfo from "../../components/AttractionsInfo";
-import {
-  Section,
-  SectionContainer,
-  Title,
-  Row,
-  RowText,
-  RowTextBold,
-  FlexEnd,
-  Button,
-  TapPayInput,
-} from "./styles";
 import { usePurchasedOrderContext } from "../../context/PurchasedOrderContext";
-import { BodyMediumSecondary70 } from "../../utils/CommonStyles";
 import PaymentSession from "./PaymentSession";
 import ConfirmOrderSession from "./ConfirmOrderSession";
 import ContactInfoSession from "./ContactInfoSession";
@@ -129,6 +114,7 @@ const reducer = (state: State, action: Action): State => {
 const BookingPage = () => {
   const [loading, setLoading] = useState(true);
   const [bookings, setBookings] = useState<BookingResponse[]>([]);
+  const { getBookings } = useAPIContext();
   const loadBookings = async () => {
     const bookings = await getBookings();
     setBookings(bookings);
@@ -136,8 +122,7 @@ const BookingPage = () => {
   };
 
   const userInfo = useAppSelector((state) => state.user.userInfo);
-  const { getUserInfo, getBookings, processPayment, removeBooking } =
-    useAPIContext();
+  const { getUserInfo } = useAPIContext();
   const navigate = useNavigate();
   const loadUserInfo = () => {
     if (!userInfo) {
@@ -188,6 +173,7 @@ const BookingPage = () => {
     contactIsValid,
   } = contactState;
   const [paymentMessage, setPaymentMessage] = useState("");
+  const { processPayment, removeBooking } = useAPIContext();
   const { setId } = usePurchasedOrderContext();
   const isValid = contactIsValid && cardIsValid;
   const totalPrice = bookings
