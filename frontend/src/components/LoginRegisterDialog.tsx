@@ -139,27 +139,6 @@ const HintTextStyle = styled.span`
   color: red;
 `;
 
-type Description = {
-  title: string;
-  button: string;
-  text: string;
-  textButton: string;
-};
-
-const loginDescription: Description = {
-  title: "登入會員帳號",
-  button: "登入帳戶",
-  text: "還沒有帳戶？",
-  textButton: "點此註冊",
-};
-
-const registerDescription: Description = {
-  title: "註冊會員帳號",
-  button: "註冊新帳戶",
-  text: "已經有帳戶了？",
-  textButton: "點此登入",
-};
-
 const HintText = (props: { status: string; message: string }) => {
   const color = props.status === "Success" ? "blue" : "red";
   if (props.status === "Success" || props.status === "Failed") {
@@ -168,7 +147,7 @@ const HintText = (props: { status: string; message: string }) => {
   return <></>;
 };
 
-type LoginRegisterState = {
+type State = {
   email: string;
   emailValid: boolean;
   name: string;
@@ -177,28 +156,24 @@ type LoginRegisterState = {
   passwordValid: boolean;
 };
 
-enum LoginRegisterType {
+enum Type {
   SET_EMAIL,
   SET_NAME,
   SET_PASSWORD,
-  CLEAR,
 }
 
-type LoginRegisterAction = { type: LoginRegisterType; payload: string };
-const setEmail = (email: string): LoginRegisterAction => {
-  return { type: LoginRegisterType.SET_EMAIL, payload: email };
+type Action = { type: Type; payload: string };
+const setEmail = (email: string): Action => {
+  return { type: Type.SET_EMAIL, payload: email };
 };
-const setName = (name: string): LoginRegisterAction => {
-  return { type: LoginRegisterType.SET_NAME, payload: name };
+const setName = (name: string): Action => {
+  return { type: Type.SET_NAME, payload: name };
 };
-const setPassword = (password: string): LoginRegisterAction => {
-  return { type: LoginRegisterType.SET_PASSWORD, payload: password };
-};
-const clear = (): LoginRegisterAction => {
-  return { type: LoginRegisterType.CLEAR, payload: "" };
+const setPassword = (password: string): Action => {
+  return { type: Type.SET_PASSWORD, payload: password };
 };
 
-const initialState: LoginRegisterState = {
+const initialState: State = {
   email: "",
   emailValid: false,
   name: "",
@@ -207,37 +182,25 @@ const initialState: LoginRegisterState = {
   passwordValid: false,
 };
 
-const loginRegisterReducer = (
-  state: LoginRegisterState,
-  action: LoginRegisterAction
-): LoginRegisterState => {
+const Reducer = (state: State, action: Action): State => {
   switch (action.type) {
-    case LoginRegisterType.SET_EMAIL:
+    case Type.SET_EMAIL:
       return {
         ...state,
         email: action.payload,
         emailValid: validateEmail(action.payload),
       };
-    case LoginRegisterType.SET_NAME:
+    case Type.SET_NAME:
       return {
         ...state,
         name: action.payload,
         nameValid: validateName(action.payload),
       };
-    case LoginRegisterType.SET_PASSWORD:
+    case Type.SET_PASSWORD:
       return {
         ...state,
         password: action.payload,
         passwordValid: validatePassword(action.payload),
-      };
-    case LoginRegisterType.CLEAR:
-      return {
-        email: "",
-        emailValid: false,
-        name: "",
-        nameValid: false,
-        password: "",
-        passwordValid: false,
       };
     default:
       return state;
@@ -245,128 +208,63 @@ const loginRegisterReducer = (
 };
 
 const LoginRegisterDialog = (props: { hide?: () => void }) => {
-  const [isLogin, setIsLogin] = useState(true);
-  const [state, dispatch] = useReducer(loginRegisterReducer, initialState);
-  const { email, emailValid, name, nameValid, password, passwordValid } = state;
-  const description: Description = isLogin
-    ? loginDescription
-    : registerDescription;
-  const loginHandler = useLogin();
-  const registerHandler = useRegister();
+  const [isLoginDialog, setIsLoginDialog] = useState(true);
 
   const switchForm = () => {
-    loginHandler.clear();
-    registerHandler.clear();
-    setIsLogin(() => !isLogin);
-    dispatch(clear());
+    setIsLoginDialog((isLoginDialog) => !isLoginDialog);
   };
 
-  const isValid =
-    (isLogin && emailValid && passwordValid) ||
-    (emailValid && passwordValid && nameValid);
-  const buttonCursor = isValid ? "pointer" : "not-allowed";
+  if (isLoginDialog) {
+    return <LoginDialog hide={props.hide} switchForm={switchForm} />;
+  } else {
+    return <RegisterDialog hide={props.hide} switchForm={switchForm} />;
+  }
+};
+
+const LoginDialog = (props: { hide?: () => void; switchForm: () => void }) => {
+  const { hide, switchForm } = props;
+  const [state, dispatch] = useReducer(Reducer, initialState);
+  const { email, emailValid, password, passwordValid } = state;
+  const handler = useLogin();
+  const isValid = emailValid && passwordValid;
 
   let emailMessage = "";
-  if (loginHandler.status === "EmailFailed") {
-    emailMessage = loginHandler.message;
-  } else if (registerHandler.status === "EmailFailed") {
-    emailMessage = registerHandler.message;
+  if (handler.status === "EmailFailed") {
+    emailMessage = handler.message;
   } else if (!emailValid && email.length) {
     emailMessage = "⚠ 請輸入正確的電子郵件";
   }
 
   let passwordMessage = "";
-  if (loginHandler.status === "PasswordFailed") {
-    passwordMessage = loginHandler.message;
-  } else if (registerHandler.status === "PasswordFailed") {
-    passwordMessage = registerHandler.message;
+  if (handler.status === "PasswordFailed") {
+    passwordMessage = handler.message;
   } else if (!passwordValid && password.length) {
     passwordMessage = "⚠ 請輸入 4 ~ 100 個字元的英文字母、數字";
-  }
-
-  if (isLogin) {
-    return (
-      <FullPage>
-        <Modal>
-          <ModalOverlay onClick={props.hide} />
-          <ModalContent>
-            <ModalBody>
-              <DecoratorBar />
-              <Form onSubmit={(e) => e.preventDefault()}>
-                <TitleContainer>
-                  <Title>{description.title}</Title>
-                  <Cancel onClick={props.hide}>
-                    <CancelIcon />
-                  </Cancel>
-                </TitleContainer>
-                <InputField
-                  autoFocus
-                  dangerMessage={emailMessage}
-                  placeholder="輸入電子信箱"
-                  value={email}
-                  onChange={(e) => dispatch(setEmail(e.target.value))}
-                />
-                <InputField
-                  autoComplete="off"
-                  dangerMessage={passwordMessage}
-                  placeholder="輸入密碼"
-                  type="password"
-                  value={password}
-                  onChange={(e) => dispatch(setPassword(e.target.value))}
-                />
-                <Button
-                  style={{ cursor: buttonCursor }}
-                  disabled={!isValid}
-                  onClick={() => loginHandler.login(email, password)}
-                >
-                  {description.button}
-                </Button>
-                <TextContainer>
-                  <HintText {...loginHandler} />
-                </TextContainer>
-                <TextContainer>
-                  <Text>{description.text}</Text>
-                  <TextButton onClick={switchForm}>
-                    {description.textButton}
-                  </TextButton>
-                </TextContainer>
-              </Form>
-            </ModalBody>
-          </ModalContent>
-        </Modal>
-      </FullPage>
-    );
   }
 
   return (
     <FullPage>
       <Modal>
-        <ModalOverlay onClick={props.hide} />
+        <ModalOverlay onClick={hide} />
         <ModalContent>
           <ModalBody>
             <DecoratorBar />
             <Form onSubmit={(e) => e.preventDefault()}>
               <TitleContainer>
-                <Title>{description.title}</Title>
-                <Cancel onClick={props.hide}>
+                <Title>登入會員帳號</Title>
+                <Cancel onClick={hide}>
                   <CancelIcon />
                 </Cancel>
               </TitleContainer>
               <InputField
-                dangerMessage={
-                  nameValid || name.length === 0 ? "" : "⚠ 請輸入 1 ~ 20 個字元"
-                }
-                placeholder="輸入姓名"
-                value={name}
-                onChange={(e) => dispatch(setName(e.target.value))}
-              />
-              <InputField
+                autoFocus
                 dangerMessage={emailMessage}
                 placeholder="輸入電子信箱"
                 value={email}
                 onChange={(e) => dispatch(setEmail(e.target.value))}
               />
               <InputField
+                autoFocus
                 autoComplete="off"
                 dangerMessage={passwordMessage}
                 placeholder="輸入密碼"
@@ -375,20 +273,103 @@ const LoginRegisterDialog = (props: { hide?: () => void }) => {
                 onChange={(e) => dispatch(setPassword(e.target.value))}
               />
               <Button
-                style={{ cursor: buttonCursor }}
+                style={{ cursor: isValid ? "pointer" : "not-allowed" }}
                 disabled={!isValid}
-                onClick={() => registerHandler.register(name, email, password)}
+                onClick={() => handler.login(email, password)}
               >
-                {description.button}
+                登入帳戶
               </Button>
               <TextContainer>
-                <HintText {...registerHandler} />
+                <HintText {...handler} />
               </TextContainer>
               <TextContainer>
-                <Text>{description.text}</Text>
-                <TextButton onClick={switchForm}>
-                  {description.textButton}
-                </TextButton>
+                <Text>還沒有帳戶？</Text>
+                <TextButton onClick={switchForm}>點此註冊</TextButton>
+              </TextContainer>
+            </Form>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+    </FullPage>
+  );
+};
+
+const RegisterDialog = (props: {
+  hide?: () => void;
+  switchForm: () => void;
+}) => {
+  const { hide, switchForm } = props;
+  const [state, dispatch] = useReducer(Reducer, initialState);
+  const { email, emailValid, name, nameValid, password, passwordValid } = state;
+  const handler = useRegister();
+  const isValid = emailValid && passwordValid && nameValid;
+
+  let emailMessage = "";
+  if (handler.status === "EmailFailed") {
+    emailMessage = handler.message;
+  } else if (!emailValid && email.length) {
+    emailMessage = "⚠ 請輸入正確的電子郵件";
+  }
+
+  let passwordMessage = "";
+  if (handler.status === "PasswordFailed") {
+    passwordMessage = handler.message;
+  } else if (!passwordValid && password.length) {
+    passwordMessage = "⚠ 請輸入 4 ~ 100 個字元的英文字母、數字";
+  }
+
+  return (
+    <FullPage>
+      <Modal>
+        <ModalOverlay onClick={hide} />
+        <ModalContent>
+          <ModalBody>
+            <DecoratorBar />
+            <Form onSubmit={(e) => e.preventDefault()}>
+              <TitleContainer>
+                <Title>註冊會員帳號</Title>
+                <Cancel onClick={hide}>
+                  <CancelIcon />
+                </Cancel>
+              </TitleContainer>
+              <InputField
+                autoFocus
+                dangerMessage={
+                  nameValid || name.length === 0 ? "" : "⚠ 請輸入 1 ~ 20 個字元"
+                }
+                placeholder="輸入姓名"
+                value={name}
+                onChange={(e) => dispatch(setName(e.target.value))}
+              />
+              <InputField
+                autoFocus
+                dangerMessage={emailMessage}
+                placeholder="輸入電子信箱"
+                value={email}
+                onChange={(e) => dispatch(setEmail(e.target.value))}
+              />
+              <InputField
+                autoFocus
+                autoComplete="off"
+                dangerMessage={passwordMessage}
+                placeholder="輸入密碼"
+                type="password"
+                value={password}
+                onChange={(e) => dispatch(setPassword(e.target.value))}
+              />
+              <Button
+                style={{ cursor: isValid ? "pointer" : "not-allowed" }}
+                disabled={!isValid}
+                onClick={() => handler.register(name, email, password)}
+              >
+                註冊新帳戶
+              </Button>
+              <TextContainer>
+                <HintText {...handler} />
+              </TextContainer>
+              <TextContainer>
+                <Text>已經有帳戶了？</Text>
+                <TextButton onClick={switchForm}>點此登入</TextButton>
               </TextContainer>
             </Form>
           </ModalBody>
