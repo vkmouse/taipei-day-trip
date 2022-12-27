@@ -2,6 +2,8 @@ import styled from "@emotion/styled";
 import React, { CSSProperties } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAPIContext } from "../context/APIContext";
+import { useDialogContext } from "../context/DiagramContext";
+import { useAppSelector } from "../store/store";
 import {
   BodyBold,
   Primary,
@@ -34,8 +36,7 @@ const ProfileRow = styled.div`
   }
 `;
 
-const ProfileIcon = styled.div`
-  background-image: url(https://scontent.ftpe8-4.fna.fbcdn.net/v/t1.6435-1/46346680_1919536431427677_1454114397000564736_n.jpg?stp=cp0_dst-jpg_p40x40&_nc_cat=110&ccb=1-7&_nc_sid=7206a8&_nc_ohc=xC0-IOizR8cAX_CNK93&_nc_ht=scontent.ftpe8-4.fna&oh=00_AfCIgrGxBSeHaJ7zSMPBPuLQVxogEm1gLe_sU5V0Whis1w&oe=63D11A42);
+const ProfileIcon = styled.img`
   width: 40px;
   height: 40px;
   border-radius: 50%;
@@ -51,14 +52,16 @@ const ProfileTextBold = styled(ProfileText)`
 
 const ProfileMenu = (props: { style?: CSSProperties }) => {
   const { style } = props;
+  const userInfo = useAppSelector((state) => state.user.userInfo);
   const navigate = useNavigate();
   const { logout } = useAPIContext();
+  const { showUserProgile } = useDialogContext();
 
   return (
     <ProfileMenuContainer style={style}>
-      <ProfileRow onClick={() => navigate("/user")}>
-        <ProfileIcon />
-        <ProfileTextBold>劉師睿</ProfileTextBold>
+      <ProfileRow onClick={showUserProgile}>
+        <ProfileIcon src={userInfo?.avatarUrl + "?size=80"} />
+        <ProfileTextBold>{userInfo?.name}</ProfileTextBold>
       </ProfileRow>
       <hr />
       <ProfileRow onClick={() => navigate("/booking")}>

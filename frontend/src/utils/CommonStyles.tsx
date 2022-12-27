@@ -91,6 +91,11 @@ export const H3 = css`
   line-height: 32px;
 `;
 
+export const BodyBoldSecondary70 = styled.div`
+  ${BodyBold}
+  color: ${Secondery70};
+`;
+
 export const BodyMediumSecondary70 = styled.div`
   ${BodyMedium}
   color: ${Secondery70};

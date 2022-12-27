@@ -43,12 +43,18 @@ const NavBrand = styled(Link)`
 `;
 
 const NavToggler = styled.div`
-  background-image: url(https://scontent.ftpe8-4.fna.fbcdn.net/v/t1.6435-1/46346680_1919536431427677_1454114397000564736_n.jpg?stp=cp0_dst-jpg_p40x40&_nc_cat=110&ccb=1-7&_nc_sid=7206a8&_nc_ohc=xC0-IOizR8cAX_CNK93&_nc_ht=scontent.ftpe8-4.fna&oh=00_AfCIgrGxBSeHaJ7zSMPBPuLQVxogEm1gLe_sU5V0Whis1w&oe=63D11A42);
   position: relative;
   width: 40px;
   height: 40px;
   border-radius: 50%;
   cursor: pointer;
+`;
+
+const NavToggleIcon = styled.img`
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
 `;
 
 const NavItems = styled.div`
@@ -131,6 +137,7 @@ const Navigation = () => {
               setIsMenuVisible((isMenuVisible) => !isMenuVisible);
             }}
           >
+            <NavToggleIcon src={userInfo.avatarUrl + "?size=80"} />
             <ProfileMenu
               style={{ display: isMenuVisible ? "block" : "none" }}
             />
