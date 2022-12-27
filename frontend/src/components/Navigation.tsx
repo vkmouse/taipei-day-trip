@@ -73,18 +73,25 @@ const NavItem = styled.button`
 `;
 
 const Navigation = () => {
-  const location = useLocation();
-  const isLoggedIn = useAppSelector((state) => state.user.isLoggedIn);
+  const [loading, setLoading] = useState(true);
   const userInfo = useAppSelector((state) => state.user.userInfo);
-  const loading = useAppSelector((state) => state.user.loading);
   const { getUserInfo } = useAPIContext();
+  const loadUserInfo = () => {
+    if (!userInfo) {
+      getUserInfo().then(() => {
+        setLoading(false);
+      });
+    } else {
+      setLoading(false);
+    }
+  };
+
+  const location = useLocation();
   const { show } = useLoginRegisterContext();
   const [isMenuVisible, setIsMenuVisible] = useState(false);
 
   useEffect(() => {
-    if (!isLoggedIn || !userInfo) {
-      getUserInfo();
-    }
+    loadUserInfo();
   }, []);
 
   const handleBrandClicked = () => {
@@ -93,6 +100,25 @@ const Navigation = () => {
     }
   };
 
+  if (loading) {
+    return <></>;
+  }
+
+  if (!userInfo) {
+    return (
+      <Container>
+        <Navbar>
+          <NavBrand to="/" onClick={handleBrandClicked}>
+            台北一日遊
+          </NavBrand>
+          <NavItems>
+            <NavItem onClick={show}>{"登入/註冊"}</NavItem>
+          </NavItems>
+        </Navbar>
+      </Container>
+    );
+  }
+
   return (
     <Container>
       <Navbar>
@@ -100,23 +126,15 @@ const Navigation = () => {
           台北一日遊
         </NavBrand>
         <NavItems>
-          {isLoggedIn ? (
-            <NavToggler
-              onClick={() => {
-                if (!loading && isLoggedIn) {
-                  setIsMenuVisible((isMenuVisible) => !isMenuVisible);
-                } else {
-                  setIsMenuVisible(false);
-                }
-              }}
-            >
-              <ProfileMenu
-                style={{ display: isMenuVisible ? "block" : "none" }}
-              />
-            </NavToggler>
-          ) : (
-            <NavItem onClick={show}>{"登入/註冊"}</NavItem>
-          )}
+          <NavToggler
+            onClick={() => {
+              setIsMenuVisible((isMenuVisible) => !isMenuVisible);
+            }}
+          >
+            <ProfileMenu
+              style={{ display: isMenuVisible ? "block" : "none" }}
+            />
+          </NavToggler>
         </NavItems>
       </Navbar>
     </Container>

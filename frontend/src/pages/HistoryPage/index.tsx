@@ -7,18 +7,8 @@ import { Footer, Header, Main } from "../../components/Semantic";
 import { useAPIContext } from "../../context/APIContext";
 import { useAppSelector } from "../../store/store";
 import { OrderResponse } from "../../types/OrderTypes";
-import { BodyMediumSecondary70 } from "../../utils/CommonStyles";
 import NoOrdersSession from "./NoOrdersSession";
 import OrdersSession from "./OrdersSession";
-import {
-  Section,
-  SectionContainer,
-  Title,
-  Text,
-  ClickableRow,
-  AttractionsInfoFooter,
-  JustifyBetween,
-} from "./styles";
 
 const HistoryPage = () => {
   const [loading, setLoading] = useState(true);
