@@ -14,22 +14,14 @@ import {
 } from "../pages/BookingPage/styles";
 
 const AttractionsInfo = (props: {
-  bookingResponses: BookingResponse[];
+  bookings: BookingResponse[];
   onDeleteClick?: (bookingId: number) => void;
 }) => {
-  const { bookingResponses, onDeleteClick } = props;
-
-  if (bookingResponses.length === 0) {
-    return (
-      <AttractionsInfoContainer>
-        <RowText>目前沒有任何待預訂的行程</RowText>
-      </AttractionsInfoContainer>
-    );
-  }
+  const { bookings, onDeleteClick } = props;
 
   return (
     <>
-      {bookingResponses.map((booking, i) => (
+      {bookings.map((booking, i) => (
         <AttractionsInfoContainer key={i}>
           <AttractionsImage src={booking.attraction.image} />
           <AttractionsDetail>

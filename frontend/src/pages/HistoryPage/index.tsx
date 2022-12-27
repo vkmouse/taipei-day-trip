@@ -7,6 +7,7 @@ import { Footer, Header, Main } from "../../components/Semantic";
 import { useAPIContext } from "../../context/APIContext";
 import { useAppSelector } from "../../store/store";
 import { OrderResponse } from "../../types/OrderTypes";
+import { BodyMediumSecondary70 } from "../../utils/CommonStyles";
 import {
   Section,
   SectionContainer,
@@ -49,6 +50,26 @@ const HistoryPage = () => {
     }
   }, []);
 
+  if (!loading && orderResponses.length === 0) {
+    return (
+      <>
+        <Navigation />
+        <Header />
+        <Main>
+          <Section>
+            <SectionContainer>
+              <Title>歷史訂單如下：</Title>
+              <div style={{ display: "flex", paddingTop: "20px" }}>
+                <BodyMediumSecondary70>目前沒有任何訂單</BodyMediumSecondary70>
+              </div>
+            </SectionContainer>
+          </Section>
+        </Main>
+        <Footer style={{ flexDirection: "column" }} />
+      </>
+    );
+  }
+
   return (
     <>
       <Navigation />
@@ -60,49 +81,50 @@ const HistoryPage = () => {
           <Section>
             <SectionContainer>
               <Title>歷史訂單如下：</Title>
-              <>
-                {orderResponses.map((m, i) => {
-                  return (
-                    <>
+              {orderResponses.length === 0 ? (
+                <Text>目前沒有任何訂單</Text>
+              ) : (
+                <>
+                  {orderResponses.map((m, i) => {
+                    return (
                       <>
-                        <ClickableRow>
+                        <>
+                          <ClickableRow>
+                            {expandOrder === m.orderId ? (
+                              <Text onClick={() => setExpandOrder(-1)}>
+                                <JustifyBetween>
+                                  <div>▼ 訂單編號: {m.orderId}</div>
+                                  <div>{`新台幣 ${m.price} 元`}</div>
+                                </JustifyBetween>
+                              </Text>
+                            ) : (
+                              <Text onClick={() => setExpandOrder(m.orderId)}>
+                                <JustifyBetween>
+                                  <div>▶ 訂單編號: {m.orderId}</div>
+                                  <div>{`新台幣 ${m.price} 元`}</div>
+                                </JustifyBetween>
+                              </Text>
+                            )}
+                          </ClickableRow>
                           {expandOrder === m.orderId ? (
-                            <Text onClick={() => setExpandOrder(-1)}>
-                              <JustifyBetween>
-                                <div>▼ 訂單編號: {m.orderId}</div>
-                                <div>{`新台幣 ${m.price} 元`}</div>
-                              </JustifyBetween>
-                            </Text>
+                            <>
+                              <AttractionsInfo key={i} bookings={m.trip} />
+                              <AttractionsInfoFooter />
+                            </>
                           ) : (
-                            <Text onClick={() => setExpandOrder(m.orderId)}>
-                              <JustifyBetween>
-                                <div>▶ 訂單編號: {m.orderId}</div>
-                                <div>{`新台幣 ${m.price} 元`}</div>
-                              </JustifyBetween>
-                            </Text>
+                            <></>
                           )}
-                        </ClickableRow>
-                        {expandOrder === m.orderId ? (
-                          <>
-                            <AttractionsInfo
-                              key={i}
-                              bookingResponses={m.trip}
-                            />
-                            <AttractionsInfoFooter />
-                          </>
-                        ) : (
-                          <></>
-                        )}
+                        </>
                       </>
-                    </>
-                  );
-                })}
-              </>
+                    );
+                  })}
+                </>
+              )}
             </SectionContainer>
           </Section>
         )}
       </Main>
-      <Footer />
+      <Footer style={{ flexDirection: "column" }} />
     </>
   );
 };

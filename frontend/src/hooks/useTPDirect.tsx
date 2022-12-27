@@ -42,7 +42,7 @@ declare global {
 let hasInit = false;
 
 const useTPDirect = () => {
-  const [loadingSuccess, setLoadingSuccess] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [cardNumberValid, setCardNumberValid] = useState(false);
   const [cardExpirationValid, setCardExpirationValid] = useState(false);
   const [cardVerificationCodeValid, setCardVerificationCodeValid] =
@@ -116,7 +116,7 @@ const useTPDirect = () => {
     if (!hasInit) {
       const script = document.createElement("script");
       script.onload = () => {
-        setLoadingSuccess(true);
+        setLoading(false);
         hasInit = true;
       };
       script.src = "https://js.tappaysdk.com/sdk/tpdirect/v5.14.0";
@@ -140,7 +140,7 @@ const useTPDirect = () => {
   }, []);
 
   return {
-    loadingSuccess: loadingSuccess || hasInit,
+    loading: !hasInit && loading,
     cardIsValid:
       cardNumberValid && cardExpirationValid && cardVerificationCodeValid,
     setup,
