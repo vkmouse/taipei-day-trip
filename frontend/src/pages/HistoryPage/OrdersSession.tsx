@@ -33,7 +33,12 @@ const OrdersSession = (props: {
                     }
                   >
                     <JustifyBetween>
-                      <div>▼ 訂單編號: {m.orderId}</div>
+                      {expandOrder === m.orderId ? (
+                        <div>▼ 訂單編號: {m.orderId}</div>
+                      ) : (
+                        <div>▶ 訂單編號: {m.orderId}</div>
+                      )}
+
                       <div>{`新台幣 ${m.price} 元`}</div>
                     </JustifyBetween>
                   </Text>
