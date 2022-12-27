@@ -11,7 +11,6 @@ import HistoryPage from "./pages/HistoryPage";
 import HomePage from "./pages/HomePage";
 import NotFoundPage from "./pages/NotFoundPage";
 import ThankYouPage from "./pages/ThankYouPage";
-import UserPage from "./pages/UserPage";
 import store from "./store/store";
 import { GlobalStyles } from "./utils/CommonStyles";
 
@@ -30,7 +29,6 @@ function App() {
                   <Route path="attraction">
                     <Route path=":attractionId" element={<AttractionPage />} />
                   </Route>
-                  <Route path="user" element={<UserPage />} />
                   <Route path="booking" element={<BookingPage />} />
                   <Route path="history" element={<HistoryPage />} />
                   <Route path="thankyou" element={<ThankYouPage />} />

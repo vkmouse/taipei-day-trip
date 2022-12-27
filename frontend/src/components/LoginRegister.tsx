@@ -285,6 +285,61 @@ const LoginRegister = (props: { hide?: () => void }) => {
     passwordMessage = "⚠ 請輸入 4 ~ 100 個字元的英文字母、數字";
   }
 
+  if (isLogin) {
+    return (
+      <FullPage>
+        <Modal>
+          <ModalOverlay onClick={props.hide} />
+          <ModalContent>
+            <ModalBody>
+              <DecoratorBar />
+              <Form onSubmit={(e) => e.preventDefault()}>
+                <TitleContainer>
+                  <Title>{description.title}</Title>
+                  <Cancel onClick={props.hide}>
+                    <CancelIcon />
+                  </Cancel>
+                </TitleContainer>
+                <InputField
+                  autoFocus
+                  dangerMessage={emailMessage}
+                  placeholder="輸入電子信箱"
+                  value={email}
+                  onChange={(e) => dispatch(setEmail(e.target.value))}
+                />
+                <InputField
+                  autoFocus
+                  autoComplete="off"
+                  dangerMessage={passwordMessage}
+                  placeholder="輸入密碼"
+                  type="password"
+                  value={password}
+                  onChange={(e) => dispatch(setPassword(e.target.value))}
+                />
+                <Button
+                  style={{ cursor: buttonCursor }}
+                  disabled={!isValid}
+                  onClick={() => loginHandler.login(email, password)}
+                >
+                  {description.button}
+                </Button>
+                <TextContainer>
+                  <HintText {...loginHandler} />
+                </TextContainer>
+                <TextContainer>
+                  <Text>{description.text}</Text>
+                  <TextButton onClick={switchForm}>
+                    {description.textButton}
+                  </TextButton>
+                </TextContainer>
+              </Form>
+            </ModalBody>
+          </ModalContent>
+        </Modal>
+      </FullPage>
+    );
+  }
+
   return (
     <FullPage>
       <Modal>
@@ -299,21 +354,15 @@ const LoginRegister = (props: { hide?: () => void }) => {
                   <CancelIcon />
                 </Cancel>
               </TitleContainer>
-              {isLogin ? (
-                <></>
-              ) : (
-                <InputField
-                  autoFocus
-                  dangerMessage={
-                    nameValid || name.length === 0
-                      ? ""
-                      : "⚠ 請輸入 1 ~ 20 個字元"
-                  }
-                  placeholder="輸入姓名"
-                  value={name}
-                  onChange={(e) => dispatch(setName(e.target.value))}
-                />
-              )}
+              <InputField
+                autoFocus
+                dangerMessage={
+                  nameValid || name.length === 0 ? "" : "⚠ 請輸入 1 ~ 20 個字元"
+                }
+                placeholder="輸入姓名"
+                value={name}
+                onChange={(e) => dispatch(setName(e.target.value))}
+              />
               <InputField
                 autoFocus
                 dangerMessage={emailMessage}
@@ -333,19 +382,12 @@ const LoginRegister = (props: { hide?: () => void }) => {
               <Button
                 style={{ cursor: buttonCursor }}
                 disabled={!isValid}
-                onClick={() => {
-                  if (isLogin) {
-                    loginHandler.login(email, password);
-                  } else {
-                    registerHandler.register(name, email, password);
-                  }
-                }}
+                onClick={() => registerHandler.register(name, email, password)}
               >
                 {description.button}
               </Button>
               <TextContainer>
-                {isLogin ? <HintText {...loginHandler} /> : <></>}
-                {!isLogin ? <HintText {...registerHandler} /> : <></>}
+                <HintText {...registerHandler} />
               </TextContainer>
               <TextContainer>
                 <Text>{description.text}</Text>
