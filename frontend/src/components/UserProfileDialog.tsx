@@ -1,7 +1,9 @@
-import styled from "@emotion/styled";
+import { css } from "@emotion/react";
+import styled from "@emotion/styled/macro";
 import React from "react";
 import { useAppSelector } from "../store/store";
 import {
+  BodyBold,
   BodyBoldSecondary70,
   BodyMediumSecondary70,
   Primary,
@@ -12,13 +14,74 @@ const UserIconContainer = styled.div`
   padding: 30px 0 0 0;
   display: flex;
   justify-content: center;
+  user-select: none;
+`;
+
+const UserIconWrapper = styled.div`
+  position: relative;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+`;
+
+const UserIconSize = css`
+  position: absolute;
+  width: 120px;
+  height: 120px;
+`;
+
+const UserIconPosition = css`
+  left: 10px;
+  top: 10px;
+`;
+
+const UserIconVisibility = css`
+  visibility: hidden;
+  ${UserIconWrapper}:hover & {
+    visibility: visible;
+  }
 `;
 
 const UserIcon = styled.img`
-  width: 120px;
-  height: 120px;
+  ${UserIconSize}
   border-radius: 50%;
   border: 10px solid ${Primary};
+`;
+
+const UserIconBackground = styled.div`
+  ${UserIconSize}
+  ${UserIconPosition}
+  ${UserIconVisibility}
+  border-radius: 50%;
+  background-color: black;
+  opacity: 0.5;
+`;
+
+const UserIconText = styled.div`
+  ${UserIconSize}
+  ${UserIconPosition}
+  ${UserIconVisibility}
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  ${BodyBold}
+  color: white;
+  user-select: none;
+`;
+
+const UserIconUploader = styled.input`
+  ${UserIconSize}
+  ${UserIconPosition}
+  ${UserIconVisibility}
+  border-radius: 50%;
+  padding: 0;
+  border-width: 0;
+  cursor: pointer;
+  opacity: 0;
+  &:focus {
+    outline-width: 0;
+  }
 `;
 
 const UserInfoContainer = styled.div`
@@ -31,7 +94,12 @@ const UserProfileDialog = (props: { hide?: () => void }) => {
   return (
     <Dialog title={"會員資料"} hide={hide}>
       <UserIconContainer>
-        <UserIcon src={userInfo?.avatarUrl + "?size=160"} />
+        <UserIconWrapper>
+          <UserIcon src={userInfo?.avatarUrl + "?size=160"} />
+          <UserIconBackground />
+          <UserIconText>更改頭像</UserIconText>
+          <UserIconUploader type="file" accept=".jpg,.jpeg,.png" />
+        </UserIconWrapper>
       </UserIconContainer>
       <UserInfoContainer>
         <BodyBoldSecondary70>姓名</BodyBoldSecondary70>
