@@ -3,7 +3,7 @@ import React from "react";
 import { Provider } from "react-redux";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { APIProvider } from "./context/APIContext";
-import { DialogProvider } from "./context/DiagramContext";
+import { DialogProvider } from "./context/DialogContext";
 import { PurchasedOrderProvider } from "./context/PurchasedOrderContext";
 import AttractionPage from "./pages/AttractionPage";
 import BookingPage from "./pages/BookingPage";

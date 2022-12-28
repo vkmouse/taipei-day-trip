@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import React, { useState, useRef } from "react";
 import { useAPIContext } from "../context/APIContext";
-import { useDialogContext } from "../context/DiagramContext";
+import { useDialogContext } from "../context/DialogContext";
 import { Attraction } from "../types/AttractionTypes";
 import { Booking } from "../types/BookingTypes";
 import {

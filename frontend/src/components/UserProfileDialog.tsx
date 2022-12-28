@@ -88,8 +88,11 @@ const UserInfoContainer = styled.div`
   padding-top: 15px;
 `;
 
-const UserProfileDialog = (props: { hide?: () => void }) => {
-  const { hide } = props;
+const UserProfileDialog = (props: {
+  showEditor?: (file: File) => void;
+  hide?: () => void;
+}) => {
+  const { showEditor, hide } = props;
   const userInfo = useAppSelector((state) => state.user.userInfo);
   return (
     <Dialog title={"會員資料"} hide={hide}>
@@ -98,7 +101,16 @@ const UserProfileDialog = (props: { hide?: () => void }) => {
           <UserIcon src={userInfo?.avatarUrl + "?size=160"} />
           <UserIconBackground />
           <UserIconText>更改頭像</UserIconText>
-          <UserIconUploader type="file" accept=".jpg,.jpeg,.png" />
+          <UserIconUploader
+            type="file"
+            accept=".jpg,.jpeg,.png"
+            onChange={(e) => {
+              if (e.target.files) {
+                hide?.();
+                showEditor?.(e.target.files[0]);
+              }
+            }}
+          />
         </UserIconWrapper>
       </UserIconContainer>
       <UserInfoContainer>

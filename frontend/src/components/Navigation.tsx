@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAPIContext } from "../context/APIContext";
-import { useDialogContext } from "../context/DiagramContext";
+import { useDialogContext } from "../context/DialogContext";
 import { useAppSelector } from "../store/store";
 import {
   H2,
