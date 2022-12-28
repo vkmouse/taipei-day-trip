@@ -52,7 +52,10 @@ const DialogProvider = (props: { children: JSX.Element[] }) => {
     },
     hideLoginRegister: () => setDisplayLoginRegister(false),
     hideUserProgile: () => setDisplayUserProgile(false),
-    hideUserIconEditor: () => setDisplayUserIconEditor(false),
+    hideUserIconEditor: () => {
+      setDisplayUserIconEditor(false);
+      setDisplayUserProgile(true);
+    },
   };
 
   if (isLoggedIn) {
