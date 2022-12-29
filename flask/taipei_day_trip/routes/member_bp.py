@@ -25,19 +25,15 @@ def member_bp(db: Database, cache: Cache):
     def user_refresh(member_id):
         return controller.refresh(member_id)
 
-    @bp.route("/api/user/auth", methods=["GET", "PUT", "DELETE"])
-    def user_auth():
-        if request.method == "GET":
-            return user_auth_get()
-        elif request.method == "PUT":
-            return user_auth_put()
-        elif request.method == "DELETE":
-            return user_auth_delete()
+    @bp.route("/api/user/auth", methods=["GET"])
+    def user_auth_get():
+        @jwt.access_token_required
+        def user_auth_get_wrapper(member_id):
+            return controller.get_auth(member_id)
 
-    @jwt.access_token_required
-    def user_auth_get(member_id):
-        return controller.get_auth(member_id)
+        return user_auth_get_wrapper()
 
+    @bp.route("/api/user/auth", methods=["PUT"])
     def user_auth_put():
         if request.content_type != "application/json":
             return controller.view.render_invalid_parameter()
@@ -49,10 +45,19 @@ def member_bp(db: Database, cache: Cache):
             response.set_cookie("refresh_token", refresh_token, expires=exp, httponly=True, secure=True)
         return response
 
+    @bp.route("/api/user/auth", methods=["DELETE"])
     def user_auth_delete():
         refresh_token = request.cookies.get("refresh_token")
         response = make_response(controller.logout(refresh_token))
         response.set_cookie("refresh_token", "", expires=0)
         return response
+
+    @bp.route("/api/user/avatar", methods=["PUT"])
+    def user_avatar():
+        @jwt.access_token_required
+        def user_icon_put_wrapper(member_id):
+            return controller.upload_avatar(member_id, request.data)
+
+        return user_icon_put_wrapper()
 
     return bp

@@ -3,7 +3,7 @@ from taipei_day_trip.models.types import Member
 
 
 class MemberModel:
-    def add(self, name: str, email: str, password: str) -> bool:
+    def add(self, name: str, email: str, password: str, avatar_url: str) -> bool:
         """Return `False` on `email` not exists."""
         return NotImplemented
 

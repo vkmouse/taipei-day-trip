@@ -71,11 +71,12 @@ class Category:
 
 
 class Member:
-    def __init__(self, id: int, name: str, email: str, password: str):
+    def __init__(self, id: int, name: str, email: str, password: str, avatar_url: str):
         self.id = id
         self.name = name
         self.email = email
         self.password = password
+        self.avatar_url = avatar_url
 
 
 class MRT:

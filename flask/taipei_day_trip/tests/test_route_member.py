@@ -29,7 +29,7 @@ def client(app: Flask):
 
 def create_db() -> MemoryDatabase:
     db = MemoryDatabase()
-    db.members.add("mem1", "mem1@mem1.com", hashpw("12345"))
+    db.members.add("mem1", "mem1@mem1.com", hashpw("12345"), "avatar")
     return db
 
 
