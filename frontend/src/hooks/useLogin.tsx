@@ -20,6 +20,7 @@ const useLogin = () => {
       case LoginResponse.Success:
         setMessage("✔ 登入成功");
         setStatus("Success");
+        await api.getUserInfo();
         break;
       case LoginResponse.EmailNotExist:
         setMessage("⚠ 電子郵件不存在");

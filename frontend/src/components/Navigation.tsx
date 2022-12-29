@@ -1,8 +1,8 @@
 import styled from "@emotion/styled";
-import React, { useEffect } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { useAPIContext } from "../context/APIContext";
-import { useLoginRegisterContext } from "../context/LoginRegisterContext";
+import { useDialogContext } from "../context/DialogContext";
 import { useAppSelector } from "../store/store";
 import {
   H2,
@@ -11,6 +11,7 @@ import {
   Secondery,
   Secondery20,
 } from "../utils/CommonStyles";
+import ProfileMenu from "./ProfileMenu";
 
 const Container = styled.nav`
   display: flex;
@@ -41,6 +42,21 @@ const NavBrand = styled(Link)`
   text-decoration: none;
 `;
 
+const NavToggler = styled.div`
+  position: relative;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+`;
+
+const NavToggleIcon = styled.img`
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+`;
+
 const NavItems = styled.div`
   display: flex;
 `;
@@ -63,18 +79,25 @@ const NavItem = styled.button`
 `;
 
 const Navigation = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const isLoggedIn = useAppSelector((state) => state.user.isLoggedIn);
+  const [loading, setLoading] = useState(true);
   const userInfo = useAppSelector((state) => state.user.userInfo);
-  const loading = useAppSelector((state) => state.user.loading);
-  const { getUserInfo, logout } = useAPIContext();
-  const { show, hide } = useLoginRegisterContext();
+  const { getUserInfo } = useAPIContext();
+  const loadUserInfo = () => {
+    if (!userInfo) {
+      getUserInfo().then(() => {
+        setLoading(false);
+      });
+    } else {
+      setLoading(false);
+    }
+  };
+
+  const location = useLocation();
+  const { showLoginRegister } = useDialogContext();
+  const [isMenuVisible, setIsMenuVisible] = useState(false);
 
   useEffect(() => {
-    if (!isLoggedIn || !userInfo) {
-      getUserInfo();
-    }
+    loadUserInfo();
   }, []);
 
   const handleBrandClicked = () => {
@@ -83,38 +106,43 @@ const Navigation = () => {
     }
   };
 
+  if (loading) {
+    return <></>;
+  }
+
+  if (!userInfo) {
+    return (
+      <Container>
+        <Navbar>
+          <NavBrand to="/" onClick={handleBrandClicked}>
+            台北一日遊
+          </NavBrand>
+          <NavItems>
+            <NavItem onClick={showLoginRegister}>{"登入/註冊"}</NavItem>
+          </NavItems>
+        </Navbar>
+      </Container>
+    );
+  }
+
   return (
     <Container>
       <Navbar>
         <NavBrand to="/" onClick={handleBrandClicked}>
           台北一日遊
         </NavBrand>
-        {loading ? (
-          <></>
-        ) : (
-          <NavItems>
-            {isLoggedIn ? (
-              <>
-                <NavItem onClick={() => navigate("/booking")}>預定行程</NavItem>
-                <NavItem onClick={() => navigate("/history")}>歷史訂單</NavItem>
-              </>
-            ) : (
-              <></>
-            )}
-            <NavItem
-              onClick={
-                isLoggedIn
-                  ? () => {
-                      logout();
-                      hide();
-                    }
-                  : show
-              }
-            >
-              {isLoggedIn ? "登出" : "登入/註冊"}
-            </NavItem>
-          </NavItems>
-        )}
+        <NavItems>
+          <NavToggler
+            onClick={() => {
+              setIsMenuVisible((isMenuVisible) => !isMenuVisible);
+            }}
+          >
+            <NavToggleIcon src={userInfo.avatarUrl + "&size=80"} />
+            <ProfileMenu
+              style={{ display: isMenuVisible ? "block" : "none" }}
+            />
+          </NavToggler>
+        </NavItems>
       </Navbar>
     </Container>
   );

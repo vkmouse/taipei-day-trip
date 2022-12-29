@@ -6,8 +6,8 @@ from taipei_day_trip.models import Database
 
 
 def member_test_case(db: Database):
-    assert db.members.add("name1", "1@1", "pass1") == True
-    assert db.members.add("name1", "1@1", "pass1") == False
+    assert db.members.add("name1", "1@1", "pass1", "avatar_url") == True
+    assert db.members.add("name1", "1@1", "pass1", "avatar_url") == False
     assert db.members.get_by_email("1@1") != None
     assert db.members.get_by_email("2@2") == None
     member = db.members.get_by_email("1@1")

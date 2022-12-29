@@ -8,10 +8,10 @@ class MemoryMemberModel(MemberModel):
         self.__db: List[Member] = []
         self.__id: int = 0
 
-    def add(self, name: str, email: str, password: str) -> bool:
+    def add(self, name: str, email: str, password: str, avatar_url: str) -> bool:
         if self.email_exists(email):
             return False
-        element = Member(self.__next_id, name, email, password)
+        element = Member(self.__next_id, name, email, password, avatar_url)
         self.__db.append(element)
         return True
 

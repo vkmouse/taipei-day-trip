@@ -28,4 +28,5 @@ export type API = {
     password: string
   ) => Promise<Response>;
   removeBooking: (token: string, bookingId: number) => Promise<Response>;
+  uploadUserAvatar: (token: string, blob: Blob) => Promise<Response>;
 };

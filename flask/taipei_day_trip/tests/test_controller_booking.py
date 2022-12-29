@@ -10,7 +10,7 @@ def create_controller() -> BookingController:
     db.categories.add("category1")
     for i in range(20):
         util.add_attraction(db, name=f"attr{i + 1}")
-    db.members.add("mem1", "mem1@mem1.com", hashpw("12345"))
+    db.members.add("mem1", "mem1@mem1.com", hashpw("12345"), "avatar")
     db.bookings.add(1, 1, datetime(2020, 1, 1, 10, 30, 20), datetime(2020, 1, 1, 10, 30, 30), 2500)
     db.bookings.add(1, 2, datetime(2020, 2, 1, 10, 30, 20), datetime(2020, 2, 1, 10, 30, 30), 2000)
     return BookingController(db)

@@ -9,7 +9,7 @@ from taipei_day_trip.utils import hashpw
 def create_controller() -> MemberController:
     db = MemoryDatabase()
     cache = MemoryCache()
-    db.members.add("mem1", "mem1@mem1.com", hashpw("12345"))
+    db.members.add("mem1", "mem1@mem1.com", hashpw("12345"), "avatar")
     return MemberController(db, cache)
 
 
@@ -22,7 +22,9 @@ def test_member_register():
 
 def test_member_get_auth():
     controller = create_controller()
-    assert controller.get_auth(1) == controller.view.render_get_auth(Member(1, "mem1", "mem1@mem1.com", "12345"))
+    assert controller.get_auth(1) == controller.view.render_get_auth(
+        Member(1, "mem1", "mem1@mem1.com", "12345", "avatar")
+    )
     assert controller.get_auth(2) == controller.view.render_get_auth(None)
 
 

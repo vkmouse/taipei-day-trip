@@ -5,17 +5,18 @@ from taipei_day_trip.models.types import Member
 
 class MySQLMemberModel(MySQLModel, MemberModel):
     @MySQLModel.with_connection
-    def add(self, name: str, email: str, password: str, cnx, cursor) -> bool:
+    def add(self, name: str, email: str, password: str, avatar_url: str, cnx, cursor) -> bool:
         query = (
             "INSERT INTO {member} ("
             "    name, "
             "    email, "
-            "    password) "
-            "SELECT %s, %s, %s "
+            "    password,"
+            "    avatar_url) "
+            "SELECT %s, %s, %s, %s "
             "FROM dual "
             "WHERE NOT EXISTS (SELECT * FROM {member} WHERE email = %s)"
         ).format(member=self.tablename)
-        data = (name, email, password, email)
+        data = (name, email, password, avatar_url, email)
         cursor.execute(query, data)
         cnx.commit()
         return cursor.rowcount == 1
@@ -33,6 +34,7 @@ class MySQLMemberModel(MySQLModel, MemberModel):
             name=rows[0]["name"],
             email=rows[0]["email"],
             password=rows[0]["password"],
+            avatar_url=rows[0]["avatar_url"],
         )
 
     @MySQLModel.with_connection
@@ -48,6 +50,7 @@ class MySQLMemberModel(MySQLModel, MemberModel):
             name=rows[0]["name"],
             email=rows[0]["email"],
             password=rows[0]["password"],
+            avatar_url=rows[0]["avatar_url"],
         )
 
     @property
@@ -64,6 +67,7 @@ class MySQLMemberModel(MySQLModel, MemberModel):
             "    name            varchar(255)  NOT NULL,"
             "    email           varchar(255)  NOT NULL,"
             "    password        varchar(72)   NOT NULL,"
+            "    avatar_url      varchar(255)  NOT NULL,"
             "    PRIMARY KEY (id),"
             "    UNIQUE (email)"
             ");"
