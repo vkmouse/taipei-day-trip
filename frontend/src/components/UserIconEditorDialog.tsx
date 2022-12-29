@@ -3,7 +3,6 @@ import React, { CSSProperties, useEffect, useReducer, useState } from "react";
 import { useAPIContext } from "../context/APIContext";
 import {
   BodyMedium,
-  BodyMediumSecondary70,
   Primary,
   Secondery20,
   Secondery70,
@@ -76,6 +75,12 @@ const CancelButton = styled.button`
   cursor: pointer;
   border-radius: 5px;
   border-width: 0;
+`;
+
+const MarkSymbol = styled.div`
+  ${BodyMedium}
+  color: ${Secondery70};
+  user-select: none;
 `;
 
 type Point = {
@@ -295,7 +300,7 @@ const UserIconEditorDialog = (props: { file: File; hide?: () => void }) => {
         </IconEditorWrapper>
       </IconEditorContainer>
       <IconEditorScaleContainer>
-        <BodyMediumSecondary70>-</BodyMediumSecondary70>
+        <MarkSymbol>&nbsp; ― &nbsp;</MarkSymbol>
         <IconEditorScale
           type="range"
           min={0}
@@ -305,7 +310,7 @@ const UserIconEditorDialog = (props: { file: File; hide?: () => void }) => {
             dispatch(resize(Number(e.target.value)));
           }}
         />
-        <BodyMediumSecondary70>+</BodyMediumSecondary70>
+        <MarkSymbol>&nbsp; ＋ &nbsp;</MarkSymbol>
       </IconEditorScaleContainer>
       <ButtonContainer>
         <CancelButton onClick={hide}>取消</CancelButton>

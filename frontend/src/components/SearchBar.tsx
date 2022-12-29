@@ -120,6 +120,7 @@ const SearchBar = (props: {
     <SearchContainer>
       <SearchInputContainer>
         <SearchInput
+          size={1}
           placeholder="輸入景點名稱查詢"
           onChange={(e) => onSearchInputTextChanged?.(e.target.value)}
           onFocus={() => setCategoryListVisible(true)}

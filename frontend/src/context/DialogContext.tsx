@@ -1,5 +1,4 @@
-import React, { createContext, useContext, useState } from "react";
-import Dialog from "../components/Dialog";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import LoginRegisterDialog from "../components/LoginRegisterDialog";
 import UserIconEditorDialog from "../components/UserIconEditorDialog";
 import UserProfileDialog from "../components/UserProfileDialog";
@@ -36,6 +35,8 @@ const initialState: DialogState = {
 };
 
 const DialogContext = createContext<DialogState>(initialState);
+const handleStopWheel = (e: WheelEvent) => e.preventDefault();
+const handleStopTouchMove = (e: TouchEvent) => e.preventDefault();
 
 const DialogProvider = (props: { children: JSX.Element[] }) => {
   const [displayLoginRegister, setDisplayLoginRegister] = useState(false);
@@ -44,48 +45,64 @@ const DialogProvider = (props: { children: JSX.Element[] }) => {
   const [file, setFile] = useState<File>();
   const isLoggedIn = useAppSelector((state) => state.user.isLoggedIn);
   const value: DialogState = {
-    showLoginRegister: () => setDisplayLoginRegister(true),
-    showUserProgile: () => setDisplayUserProgile(true),
+    showLoginRegister: () => {
+      setDisplayLoginRegister(true);
+    },
+    showUserProgile: () => {
+      setDisplayUserProgile(true);
+    },
     showUserIconEditor: (file: File) => {
       setDisplayUserIconEditor(true);
       setFile(file);
     },
-    hideLoginRegister: () => setDisplayLoginRegister(false),
-    hideUserProgile: () => setDisplayUserProgile(false),
+    hideLoginRegister: () => {
+      setDisplayLoginRegister(false);
+    },
+    hideUserProgile: () => {
+      setDisplayUserProgile(false);
+    },
     hideUserIconEditor: () => {
       setDisplayUserIconEditor(false);
       setDisplayUserProgile(true);
     },
   };
 
-  if (isLoggedIn) {
-    return (
-      <DialogContext.Provider value={value}>
-        {displayUserProgile ? (
-          <UserProfileDialog
-            hide={value.hideUserProgile}
-            showEditor={value.showUserIconEditor}
-          />
-        ) : (
-          <></>
-        )}
-        {displayUserIconEditor && file ? (
-          <UserIconEditorDialog file={file} hide={value.hideUserIconEditor} />
-        ) : (
-          <></>
-        )}
-        {props.children}
-      </DialogContext.Provider>
-    );
-  }
+  useEffect(() => {
+    if (displayLoginRegister || displayUserProgile || displayUserIconEditor) {
+      window.addEventListener("wheel", handleStopWheel, {
+        passive: false,
+      });
+      window.addEventListener("touchmove", handleStopTouchMove, {
+        passive: false,
+      });
+    } else {
+      window.removeEventListener("wheel", handleStopWheel);
+      window.removeEventListener("touchmove", handleStopTouchMove);
+    }
+  }, [displayLoginRegister, displayUserProgile, displayUserIconEditor]);
+
+  const selectDialog = () => {
+    if (isLoggedIn && displayUserProgile) {
+      return (
+        <UserProfileDialog
+          hide={value.hideUserProgile}
+          showEditor={value.showUserIconEditor}
+        />
+      );
+    } else if (isLoggedIn && displayUserIconEditor && file) {
+      return (
+        <UserIconEditorDialog file={file} hide={value.hideUserIconEditor} />
+      );
+    } else if (!isLoggedIn && displayLoginRegister) {
+      return <LoginRegisterDialog hide={value.hideLoginRegister} />;
+    } else {
+      return <></>;
+    }
+  };
 
   return (
     <DialogContext.Provider value={value}>
-      {displayLoginRegister ? (
-        <LoginRegisterDialog hide={value.hideLoginRegister} />
-      ) : (
-        <></>
-      )}
+      {selectDialog()}
       {props.children}
     </DialogContext.Provider>
   );
