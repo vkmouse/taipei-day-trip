@@ -98,7 +98,7 @@ const UserProfileDialog = (props: {
     <Dialog title={"會員資料"} hide={hide}>
       <UserIconContainer>
         <UserIconWrapper>
-          <UserIcon src={userInfo?.avatarUrl + "?size=160"} />
+          <UserIcon src={userInfo?.avatarUrl + "&size=160"} />
           <UserIconBackground />
           <UserIconText>更改頭像</UserIconText>
           <UserIconUploader

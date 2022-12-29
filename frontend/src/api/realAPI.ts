@@ -176,6 +176,17 @@ const realAPI: API = {
     });
     return response;
   },
+
+  uploadUserAvatar: async (token: string, blob: Blob): Promise<Response> => {
+    const response = await fetch("/api/user/avatar", {
+      method: "PUT",
+      body: blob,
+      headers: new Headers({
+        Authorization: `Bearer ${token}`,
+      }),
+    });
+    return response;
+  },
 };
 
 export default realAPI;

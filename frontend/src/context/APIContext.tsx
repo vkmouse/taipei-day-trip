@@ -36,6 +36,7 @@ type APIState = {
     contactPhone: string
   ) => Promise<PaymentResponse | null>;
   removeBooking: (bookingId: number) => Promise<boolean>;
+  uploadUserAvatar: (blob: Blob) => Promise<boolean>;
 };
 
 const initialState: APIState = {
@@ -80,6 +81,9 @@ const initialState: APIState = {
     throw new Error("Function not implemented.");
   },
   removeBooking: (): Promise<boolean> => {
+    throw new Error("Function not implemented.");
+  },
+  uploadUserAvatar: (): Promise<boolean> => {
     throw new Error("Function not implemented.");
   },
 };
@@ -325,6 +329,15 @@ const APIProvider = (props: {
     removeBooking: async (bookingId) => {
       const response = await callAPIWithRefresh(token, (token) =>
         api.removeBooking(token, bookingId)
+      );
+      if (response.status === 200) {
+        return true;
+      }
+      return false;
+    },
+    uploadUserAvatar: async (blob) => {
+      const response = await callAPIWithRefresh(token, (token) =>
+        api.uploadUserAvatar(token, blob)
       );
       if (response.status === 200) {
         return true;

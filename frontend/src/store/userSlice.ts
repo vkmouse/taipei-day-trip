@@ -29,9 +29,10 @@ export const userSlice = createSlice({
     },
     setUser: (state, action: PayloadAction<UserInfo>) => {
       state.loading = false;
-      state.userInfo = action.payload;
-      state.userInfo.avatarUrl =
-        "https://cdn.discordapp.com/avatars/616234805130166283/b4e4995f1c5646d0e46ca61bd4d3e667.webp";
+      state.userInfo = {
+        ...action.payload,
+        avatarUrl: action.payload.avatarUrl + `?v=${new Date().getTime()}`,
+      };
     },
     reset: (state) => {
       state.isLoggedIn = false;

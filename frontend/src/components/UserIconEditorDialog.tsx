@@ -1,5 +1,6 @@
 import styled from "@emotion/styled/macro";
 import React, { CSSProperties, useEffect, useReducer, useState } from "react";
+import { useAPIContext } from "../context/APIContext";
 import {
   BodyMedium,
   BodyMediumSecondary70,
@@ -9,8 +10,8 @@ import {
 } from "../utils/CommonStyles";
 import Dialog from "./Dialog";
 
-const editorWidth = 310;
-const editorHeight = 310;
+const editorSize = 310;
+const saveSize = 310;
 
 const IconEditorContainer = styled.div`
   padding: 30px 0 0 0;
@@ -21,8 +22,8 @@ const IconEditorContainer = styled.div`
 
 const IconEditorWrapper = styled.div`
   position: relative;
-  width: ${editorWidth}px;
-  height: ${editorHeight}px;
+  width: ${editorSize}px;
+  height: ${editorSize}px;
   border-radius: 5px;
   overflow: hidden;
 `;
@@ -131,16 +132,16 @@ const reducer = (state: State, action: Action): State => {
   const constrain = (props: { position: Point; scale: number }) => {
     const { position: p, scale } = props;
     p.x = Math.min(p.x, 0);
-    p.x = Math.max(p.x, -state.originWidth * scale + editorWidth);
+    p.x = Math.max(p.x, -state.originWidth * scale + editorSize);
     p.y = Math.min(p.y, 0);
-    p.y = Math.max(p.y, -state.originHeight * scale + editorHeight);
+    p.y = Math.max(p.y, -state.originHeight * scale + editorSize);
     return p;
   };
 
   switch (action.type) {
     case Type.INITIAL: {
       const { width, height } = action.payload;
-      const initialScale = Math.max(editorWidth / width, editorHeight / height);
+      const initialScale = Math.max(editorSize / width, editorSize / height);
       const scale = initialScale;
       return {
         ...state,
@@ -215,6 +216,35 @@ const UserIconEditorDialog = (props: { file: File; hide?: () => void }) => {
   const urlCreator = window.URL || window.webkitURL;
   const { file, hide } = props;
   const [src, setSrc] = useState("");
+  const { getUserInfo, uploadUserAvatar } = useAPIContext();
+
+  const handleConfirmClick = () => {
+    const canvas = document.createElement("canvas");
+    canvas.width = saveSize;
+    canvas.height = saveSize;
+    const ctx = canvas.getContext("2d");
+
+    const image = new Image();
+    image.src = src;
+    image.onload = () => {
+      const srcX = Math.abs(state.position.x) / state.scale;
+      const srcY = Math.abs(state.position.y) / state.scale;
+      const srcW = editorSize / state.scale;
+      const srcH = editorSize / state.scale;
+      const dstX = 0;
+      const dstY = 0;
+      const dstW = saveSize;
+      const dstH = saveSize;
+      ctx?.drawImage(image, srcX, srcY, srcW, srcH, dstX, dstY, dstW, dstH);
+      canvas.toBlob(async (blob) => {
+        if (blob) {
+          await uploadUserAvatar(blob);
+          await getUserInfo();
+          hide?.();
+        }
+      });
+    };
+  };
 
   useEffect(() => {
     const src = urlCreator.createObjectURL(file);
@@ -234,14 +264,12 @@ const UserIconEditorDialog = (props: { file: File; hide?: () => void }) => {
             src={src}
             style={state.style}
             onMouseDown={(e) => {
-              const x = e.clientX;
-              const y = e.clientY;
-              dispatch(panningBegin({ x, y }));
+              const { clientX, clientY } = e;
+              dispatch(panningBegin({ x: clientX, y: clientY }));
             }}
             onMouseMove={(e) => {
-              const x = e.clientX;
-              const y = e.clientY;
-              dispatch(panningMove({ x, y }));
+              const { clientX, clientY } = e;
+              dispatch(panningMove({ x: clientX, y: clientY }));
             }}
             onMouseUp={() => {
               dispatch(panningEnd());
@@ -250,14 +278,12 @@ const UserIconEditorDialog = (props: { file: File; hide?: () => void }) => {
               dispatch(panningEnd());
             }}
             onTouchStart={(e) => {
-              const x = e.targetTouches[0].clientX;
-              const y = e.targetTouches[0].clientY;
-              dispatch(panningBegin({ x, y }));
+              const { clientX, clientY } = e.targetTouches[0];
+              dispatch(panningBegin({ x: clientX, y: clientY }));
             }}
             onTouchMove={(e) => {
-              const x = e.targetTouches[0].clientX;
-              const y = e.targetTouches[0].clientY;
-              dispatch(panningMove({ x, y }));
+              const { clientX, clientY } = e.targetTouches[0];
+              dispatch(panningMove({ x: clientX, y: clientY }));
             }}
             onTouchEnd={() => {
               dispatch(panningEnd());
@@ -282,38 +308,8 @@ const UserIconEditorDialog = (props: { file: File; hide?: () => void }) => {
         <BodyMediumSecondary70>+</BodyMediumSecondary70>
       </IconEditorScaleContainer>
       <ButtonContainer>
-        <CancelButton>取消</CancelButton>
-        <ConfirmButton
-          onClick={() => {
-            const canvas = document.createElement("canvas");
-            canvas.width = editorWidth;
-            canvas.height = editorHeight;
-            const ctx = canvas.getContext("2d");
-
-            const image = new Image();
-            image.src = src;
-            image.onload = () => {
-              ctx?.drawImage(
-                image,
-                Math.abs(state.position.x) / state.scale,
-                Math.abs(state.position.y) / state.scale,
-                editorWidth / state.scale,
-                editorHeight / state.scale,
-                0,
-                0,
-                editorWidth,
-                editorHeight
-              );
-              canvas.toBlob((blob) => {
-                if (blob) {
-                  window.open(urlCreator.createObjectURL(blob));
-                }
-              });
-            };
-          }}
-        >
-          確認
-        </ConfirmButton>
+        <CancelButton onClick={hide}>取消</CancelButton>
+        <ConfirmButton onClick={handleConfirmClick}>確認</ConfirmButton>
       </ButtonContainer>
     </Dialog>
   );

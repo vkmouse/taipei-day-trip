@@ -60,7 +60,7 @@ const ProfileMenu = (props: { style?: CSSProperties }) => {
   return (
     <ProfileMenuContainer style={style}>
       <ProfileRow onClick={showUserProgile}>
-        <ProfileIcon src={userInfo?.avatarUrl + "?size=80"} />
+        <ProfileIcon src={userInfo?.avatarUrl + "&size=80"} />
         <ProfileTextBold>{userInfo?.name}</ProfileTextBold>
       </ProfileRow>
       <hr />

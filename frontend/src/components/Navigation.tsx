@@ -137,7 +137,7 @@ const Navigation = () => {
               setIsMenuVisible((isMenuVisible) => !isMenuVisible);
             }}
           >
-            <NavToggleIcon src={userInfo.avatarUrl + "?size=80"} />
+            <NavToggleIcon src={userInfo.avatarUrl + "&size=80"} />
             <ProfileMenu
               style={{ display: isMenuVisible ? "block" : "none" }}
             />

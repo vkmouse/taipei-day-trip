@@ -140,6 +140,10 @@ const mockAPI: API = {
   ): Promise<Response> {
     throw new Error("Function not implemented.");
   },
+
+  uploadUserAvatar: (token: string, blob: Blob): Promise<Response> => {
+    throw "Not Implement";
+  },
 };
 
 const createAttraction = (id: number): Attraction => {
