@@ -67,7 +67,11 @@ const mockAPI: API = {
     });
   },
 
-  getOrder: (token: string): Promise<Response> => {
+  getOrder: (): Promise<Response> => {
+    throw "Not Implement";
+  },
+
+  getOrders: (): Promise<Response> => {
     throw "Not Implement";
   },
 
@@ -135,6 +139,10 @@ const mockAPI: API = {
     bookingId: number
   ): Promise<Response> {
     throw new Error("Function not implemented.");
+  },
+
+  uploadUserAvatar: (token: string, blob: Blob): Promise<Response> => {
+    throw "Not Implement";
   },
 };
 

@@ -5,6 +5,7 @@ from taipei_day_trip.models.member_model import MemberModel
 from taipei_day_trip.models.mrt_model import MRTModel
 from taipei_day_trip.models.order_model import OrderModel
 
+
 class Database:
     def __init__(self):
         self.__categories = self._create_category_model()
@@ -56,25 +57,30 @@ class Database:
     def _create_order_model(self) -> OrderModel:
         return NotImplemented
 
+
 def copy_db(src: Database, dst: Database):
     copy_categories(src, dst)
     copy_mrt(src, dst)
     copy_attractions(src, dst)
+
 
 def copy_attractions(src: Database, dst: Database):
     values = dst.attractions.get_all()
     for value in src.attractions.get_all():
         is_existed = len(list(filter(lambda x: x.name == value.name, values))) > 0
         if not is_existed:
-            dst.attractions.add(name=value.name,
-                                description=value.description,
-                                address=value.address,
-                                lat=value.lat,
-                                lng=value.lng,
-                                transport=value.transport,
-                                images=value.images,
-                                category=value.category,
-                                mrt=value.mrt)
+            dst.attractions.add(
+                name=value.name,
+                description=value.description,
+                address=value.address,
+                lat=value.lat,
+                lng=value.lng,
+                transport=value.transport,
+                images=value.images,
+                category=value.category,
+                mrt=value.mrt,
+            )
+
 
 def copy_categories(src: Database, dst: Database):
     values = dst.categories.get_all()
@@ -82,6 +88,7 @@ def copy_categories(src: Database, dst: Database):
         is_existed = len(list(filter(lambda x: x.name == value.name, values))) > 0
         if not is_existed:
             dst.categories.add(value.name)
+
 
 def copy_mrt(src: Database, dst: Database):
     values = dst.mrts.get_all()

@@ -2,15 +2,16 @@ from taipei_day_trip.models.member_model import MemberModel
 from taipei_day_trip.models.types import Member
 from taipei_day_trip.models.types import List
 
+
 class MemoryMemberModel(MemberModel):
     def __init__(self):
         self.__db: List[Member] = []
         self.__id: int = 0
 
-    def add(self, name: str, email: str, password: str) -> bool:
+    def add(self, name: str, email: str, password: str, avatar_url: str) -> bool:
         if self.email_exists(email):
             return False
-        element = Member(self.__next_id, name, email, password)
+        element = Member(self.__next_id, name, email, password, avatar_url)
         self.__db.append(element)
         return True
 

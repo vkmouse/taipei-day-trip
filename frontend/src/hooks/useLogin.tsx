@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useAPIContext, LoginResponse } from "../context/APIContext";
+import { useDialogContext } from "../context/DialogContext";
 
 type Status =
   | "Pending"
@@ -12,6 +13,7 @@ const useLogin = () => {
   const api = useAPIContext();
   const [message, setMessage] = useState("");
   const [status, setStatus] = useState<Status>("Success");
+  const { hideLoginRegister } = useDialogContext();
 
   const login = async (email: string, password: string) => {
     setStatus("Pending");
@@ -20,6 +22,8 @@ const useLogin = () => {
       case LoginResponse.Success:
         setMessage("✔ 登入成功");
         setStatus("Success");
+        await api.getUserInfo();
+        hideLoginRegister();
         break;
       case LoginResponse.EmailNotExist:
         setMessage("⚠ 電子郵件不存在");

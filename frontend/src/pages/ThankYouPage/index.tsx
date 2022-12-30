@@ -48,7 +48,7 @@ const ThankYouPage = () => {
         <Section>
           <SectionContainer>
             <Title>{userInfo?.name}，感謝您的預訂，祝您旅遊愉快</Title>
-            <AttractionsInfo bookingResponses={bookingResponses} />
+            <AttractionsInfo bookings={bookingResponses} />
           </SectionContainer>
         </Section>
       </Main>

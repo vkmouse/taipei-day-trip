@@ -4,6 +4,7 @@ from taipei_day_trip.models.memory.mrt_model import MemoryMRTModel
 from taipei_day_trip.models.types import Attraction
 from taipei_day_trip.models.types import List
 
+
 class MemoryAttractionModel(AttractionModel):
     def __init__(self, categories: MemoryCategoryModel, mrts: MemoryMRTModel):
         self.__db: List[Attraction] = []
@@ -11,28 +12,32 @@ class MemoryAttractionModel(AttractionModel):
         self.__categories = categories
         self.__mrts = mrts
 
-    def add(self,
-            name: str, 
-            description: str, 
-            address: str, 
-            lat: float, 
-            lng: float, 
-            transport: str, 
-            images: List[str], 
-            category: str, 
-            mrt: str) -> bool:
+    def add(
+        self,
+        name: str,
+        description: str,
+        address: str,
+        lat: float,
+        lng: float,
+        transport: str,
+        images: List[str],
+        category: str,
+        mrt: str,
+    ) -> bool:
         is_valid = self.__categories.exists(category) and (mrt == None or self.__mrts.exists(mrt))
         if is_valid:
-            element = Attraction(self.__next_id, 
-                                 name,
-                                 description,
-                                 address,
-                                 lat,
-                                 lng,
-                                 transport,
-                                 images,
-                                 category=category,
-                                 mrt=mrt)
+            element = Attraction(
+                self.__next_id,
+                name,
+                description,
+                address,
+                lat,
+                lng,
+                transport,
+                images,
+                category=category,
+                mrt=mrt,
+            )
             self.__db.append(element)
             return True
         return False
