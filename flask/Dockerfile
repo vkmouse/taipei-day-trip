@@ -1,14 +1,17 @@
 # syntax=docker/dockerfile:1
 
-FROM python:3.10-slim-buster
+FROM python:3.10-alpine3.17 as base
+FROM base as builder
+COPY requirements.txt /requirements.txt
+RUN pip install --user -r /requirements.txt
 
-RUN apt-get update && \
-    apt-get -y install gcc
-RUN pip3 install uwsgi
-
+FROM base
 WORKDIR /app
+
 COPY . .
-RUN pip3 install -r requirements.txt
+COPY --from=builder /root/.local /root/.local
+RUN apk add uwsgi-python3
+
 ENV MYSQL_USER=root
 ENV MYSQL_PASSWORD=000000
 ENV MYSQL_HOST=tdt-mysql
