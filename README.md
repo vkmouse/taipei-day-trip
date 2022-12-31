@@ -3,9 +3,15 @@ Taipei Day Trip is an E-commerce website for travel in Taipei.
 
 [Live Demo](https://taipei-trip.ddns.net/)
 
+![](https://github.com/vkmouse/taipei-day-trip/blob/main/docs/book_attraction.gif)
+![](https://github.com/vkmouse/taipei-day-trip/blob/main/docs/user_avatar.gif)
+
 ## Table of Contents
 
 - [Main Features](#main-features)
+- [Architecture](#architecture)
+- [Database Schema](#database-schema)
+- [Frontend Technique](#frontend-technique)
 
 ## Main Features
 
@@ -49,7 +55,11 @@ Taipei Day Trip is an E-commerce website for travel in Taipei.
 
 ## Architecture
 
+<img src="https://github.com/vkmouse/taipei-day-trip/blob/main/docs/Architecture.png" width=800 />
+
 ## Database Schema
+
+<img src="https://github.com/vkmouse/taipei-day-trip/blob/main/docs/DatabaseSchema.png" width=800 />
 
 ## Frontend Technique
 
