@@ -16,6 +16,7 @@ from taipei_day_trip.models.order_model import OrderModel
 from taipei_day_trip.models.types import List
 from taipei_day_trip.models.database import Database
 
+
 class MemoryDatabase(Database):
     def _create_attraction_model(self) -> AttractionModel:
         return MemoryAttractionModel(self.categories, self.mrts)
@@ -36,26 +37,28 @@ class MemoryDatabase(Database):
         return MemoryOrderModel(self.bookings)
 
     def import_from_json_file(self, filename: str):
-        file = open(filename, 'r', encoding='utf8')
+        file = open(filename, "r", encoding="utf8")
         line = file.readline()
         file.close()
         self.import_from_json(line)
 
     def import_from_json(self, json_str):
         json_obj = json.loads(json_str)
-        for attr in json_obj['result']['results']:
-            self.categories.add(attr['CAT'])
-            self.mrts.add(attr['MRT'])
-            self.attractions.add(name=attr['name'],
-                                 description=attr['description'],
-                                 address=attr['address'],
-                                 lat=float(attr['latitude']),
-                                 lng=float(attr['longitude']),
-                                 transport=attr['direction'],
-                                 images=self.__parse_image_property(attr['file']),
-                                 category=attr['CAT'],
-                                 mrt=attr['MRT'])
+        for attr in json_obj["result"]["results"]:
+            self.categories.add(attr["CAT"])
+            self.mrts.add(attr["MRT"])
+            self.attractions.add(
+                name=attr["name"],
+                description=attr["description"],
+                address=attr["address"],
+                lat=float(attr["latitude"]),
+                lng=float(attr["longitude"]),
+                transport=attr["direction"],
+                images=self.__parse_image_property(attr["file"]),
+                category=attr["CAT"],
+                mrt=attr["MRT"],
+            )
 
     def __parse_image_property(self, urls: str) -> List[str]:
-        iter = re.finditer(r'(http(s?):)([/|.|\w|\s|-])*\.(?:PNG|JPG|png|jpg)', urls)
+        iter = re.finditer(r"(http(s?):)([/|.|\w|\s|-])*\.(?:PNG|JPG|png|jpg)", urls)
         return list(map(lambda m: m.group(0), iter))

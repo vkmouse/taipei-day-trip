@@ -3,11 +3,13 @@ import React from "react";
 import { Provider } from "react-redux";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { APIProvider } from "./context/APIContext";
-import { LoginRegisterProvider } from "./context/LoginRegisterContext";
+import { DialogProvider } from "./context/DialogContext";
 import { PurchasedOrderProvider } from "./context/PurchasedOrderContext";
 import AttractionPage from "./pages/AttractionPage";
 import BookingPage from "./pages/BookingPage";
+import HistoryPage from "./pages/HistoryPage";
 import HomePage from "./pages/HomePage";
+import NotFoundPage from "./pages/NotFoundPage";
 import ThankYouPage from "./pages/ThankYouPage";
 import store from "./store/store";
 import { GlobalStyles } from "./utils/CommonStyles";
@@ -17,7 +19,7 @@ function App() {
     <Provider store={store}>
       <APIProvider>
         {/* <APIProvider isMock> */}
-        <LoginRegisterProvider>
+        <DialogProvider>
           <Global styles={GlobalStyles} />
           <PurchasedOrderProvider>
             <Router>
@@ -28,12 +30,14 @@ function App() {
                     <Route path=":attractionId" element={<AttractionPage />} />
                   </Route>
                   <Route path="booking" element={<BookingPage />} />
+                  <Route path="history" element={<HistoryPage />} />
                   <Route path="thankyou" element={<ThankYouPage />} />
                 </Route>
+                <Route path="*" element={<NotFoundPage />} />
               </Routes>
             </Router>
           </PurchasedOrderProvider>
-        </LoginRegisterProvider>
+        </DialogProvider>
       </APIProvider>
     </Provider>
   );

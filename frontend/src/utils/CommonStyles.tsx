@@ -1,4 +1,5 @@
 import { css } from "@emotion/react";
+import styled from "@emotion/styled";
 
 export const Primary = "#448899";
 export const Secondery = "#666666";
@@ -88,4 +89,14 @@ export const H3 = css`
   font-weight: 700;
   font-size: 24px;
   line-height: 32px;
+`;
+
+export const BodyBoldSecondary70 = styled.div`
+  ${BodyBold}
+  color: ${Secondery70};
+`;
+
+export const BodyMediumSecondary70 = styled.div`
+  ${BodyMedium}
+  color: ${Secondery70};
 `;

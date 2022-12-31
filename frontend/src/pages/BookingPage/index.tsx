@@ -11,37 +11,14 @@ import {
   validateName,
   validateEmail,
   validatePhone,
-  validateNumberOnly,
-  validateCardExpiration,
 } from "../../utils/validate";
-import AttractionsInfo from "../../components/AttractionsInfo";
-import {
-  Section,
-  SectionContainer,
-  Title,
-  Row,
-  RowText,
-  RowTextBold,
-  FlexEnd,
-  Button,
-  TapPayInput,
-} from "./styles";
 import { usePurchasedOrderContext } from "../../context/PurchasedOrderContext";
-
-const Input = (props: {
-  dangerMessage: string;
-  placeholder: string;
-  value: string;
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-}) => {
-  return (
-    <InputField
-      {...props}
-      autoFocus
-      style={{ width: "200px", height: "18px" }}
-    />
-  );
-};
+import PaymentSession from "./PaymentSession";
+import ConfirmOrderSession from "./ConfirmOrderSession";
+import ContactInfoSession from "./ContactInfoSession";
+import Loader from "../../components/Loader";
+import AttractionsInfoSession from "./AttractionsInfoSession";
+import NoAttractionSession from "./NoAttractionsSession";
 
 type State = {
   contactName: string;
@@ -135,11 +112,56 @@ const reducer = (state: State, action: Action): State => {
 };
 
 const BookingPage = () => {
-  const isLoggedIn = useAppSelector((state) => state.user.isLoggedIn);
+  const [loading, setLoading] = useState(true);
+  const [bookings, setBookings] = useState<BookingResponse[]>([]);
+  const { getBookings } = useAPIContext();
+  const loadBookings = async () => {
+    const bookings = await getBookings();
+    setBookings(bookings);
+    setLoading(false);
+  };
+
   const userInfo = useAppSelector((state) => state.user.userInfo);
-  const { getUserInfo, getBookings, removeBooking } = useAPIContext();
+  const { getUserInfo } = useAPIContext();
   const navigate = useNavigate();
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const loadUserInfo = () => {
+    if (!userInfo) {
+      getUserInfo().then((userInfo) => {
+        if (!userInfo) {
+          navigate("/");
+        } else {
+          dispatch(setContactName(userInfo.name));
+          dispatch(setContactEmail(userInfo.email));
+          loadBookings();
+        }
+      });
+    } else {
+      dispatch(setContactName(userInfo.name));
+      dispatch(setContactEmail(userInfo.email));
+      loadBookings();
+    }
+  };
+
+  const hasSetup = useRef(false);
+  const {
+    loading: TPDirectLoading,
+    cardIsValid,
+    setup,
+    getPrime,
+  } = useTPDirect();
+  const setupCreditCardBlock = () => {
+    if (
+      !hasSetup.current &&
+      !TPDirectLoading &&
+      userInfo &&
+      bookings.length > 0
+    ) {
+      hasSetup.current = true;
+      setup("tp-card-number", "tp-expiration-date", "tp-ccv");
+    }
+  };
+
+  const [contactState, dispatch] = useReducer(reducer, initialState);
   const {
     contactName,
     contactNameValid,
@@ -149,27 +171,22 @@ const BookingPage = () => {
     contactPhoneDisplay,
     contactPhoneValid,
     contactIsValid,
-  } = state;
-  const [bookingResponses, setBookingResponses] = useState<BookingResponse[]>(
-    []
-  );
+  } = contactState;
   const [paymentMessage, setPaymentMessage] = useState("");
-  const hasSetup = useRef(false);
-  const api = useAPIContext();
-  const { loadingSuccess, cardIsValid, setup, getPrime } = useTPDirect();
+  const { processPayment, removeBooking } = useAPIContext();
   const { setId } = usePurchasedOrderContext();
   const isValid = contactIsValid && cardIsValid;
-  const totalPrice = bookingResponses
+  const totalPrice = bookings
     .map((m) => m.price)
     .reduce((total, price) => total + price, 0);
 
-  const handleSubmit = async () => {
+  const handleConfirmOrderClick = async () => {
     const prime = await getPrime();
     if (prime) {
-      const response = await api.processPayment(
+      const response = await processPayment(
         prime,
         totalPrice,
-        bookingResponses.map((x) => x.bookingId),
+        bookings.map((x) => x.bookingId),
         contactName,
         contactEmail,
         contactPhone
@@ -183,164 +200,87 @@ const BookingPage = () => {
     }
   };
 
-  useEffect(() => {
-    if (!isLoggedIn || !userInfo) {
-      getUserInfo().then((member) => {
-        if (!member) {
-          navigate("/");
-        } else {
-          dispatch(setContactName(userInfo ? userInfo.name : ""));
-          dispatch(setContactEmail(userInfo ? userInfo.email : ""));
-          getBookings().then((bookings) => setBookingResponses(bookings));
-        }
-      });
-    } else {
-      dispatch(setContactName(userInfo ? userInfo.name : ""));
-      dispatch(setContactEmail(userInfo ? userInfo.email : ""));
-      getBookings().then((bookings) => setBookingResponses(bookings));
+  const handleAttractionDeleteClick = async (bookingId: number) => {
+    const success = await removeBooking(bookingId);
+    if (success) {
+      setBookings((bookingResponses) =>
+        bookingResponses.filter((p) => p.bookingId !== bookingId)
+      );
     }
-  }, []);
-
-  useEffect(() => {
-    window.scrollTo({ top: 0 });
-  }, [bookingResponses]);
+  };
 
   useEffect(() => {
     document.title = "台北一日遊 - 預定行程";
+    loadUserInfo();
   }, []);
 
   useEffect(() => {
-    if (
-      !hasSetup.current &&
-      loadingSuccess &&
-      userInfo &&
-      bookingResponses.length > 0
-    ) {
-      hasSetup.current = true;
-      setup("tp-card-number", "tp-expiration-date", "tp-ccv");
-    }
-  }, [userInfo, bookingResponses, loadingSuccess]);
+    setupCreditCardBlock();
+    window.scrollTo({ top: 0 });
+  }, [userInfo, bookings, TPDirectLoading]);
+
+  if (loading || TPDirectLoading) {
+    return (
+      <>
+        <Navigation />
+        <Header />
+        <Main>
+          <Loader percent={0} />
+        </Main>
+        <Footer style={{ flexDirection: "column" }} />
+      </>
+    );
+  }
+
+  if (!userInfo) {
+    return <></>;
+  }
+
+  if (bookings.length === 0) {
+    return (
+      <>
+        <Navigation />
+        <Header />
+        <Main>
+          <NoAttractionSession name={userInfo.name} />
+        </Main>
+        <Footer style={{ flexDirection: "column" }} />
+      </>
+    );
+  }
 
   return (
     <>
       <Navigation />
       <Header />
       <Main>
-        <Section>
-          <SectionContainer>
-            {userInfo ? (
-              <>
-                <Title>您好，{userInfo.name}，待預定的行程如下：</Title>
-                <AttractionsInfo
-                  bookingResponses={bookingResponses}
-                  onDeleteClick={async (bookingId) => {
-                    const success = await removeBooking(bookingId);
-                    if (success) {
-                      setBookingResponses((bookingResponses) =>
-                        bookingResponses.filter(
-                          (p) => p.bookingId !== bookingId
-                        )
-                      );
-                    }
-                  }}
-                />
-              </>
-            ) : (
-              <></>
-            )}
-          </SectionContainer>
-        </Section>
-        {bookingResponses.length === 0 ? (
-          <></>
-        ) : (
-          <>
-            <Section>
-              <SectionContainer>
-                <Title>您的聯絡資訊</Title>
-                <Row>
-                  <RowText>聯絡姓名：</RowText>
-                  <Input
-                    dangerMessage={
-                      contactNameValid || contactName.length === 0
-                        ? ""
-                        : "⚠ 請輸入 1 ~ 20 個字元"
-                    }
-                    placeholder=""
-                    value={contactName}
-                    onChange={(e) => dispatch(setContactName(e.target.value))}
-                  />
-                </Row>
-                <Row>
-                  <RowText>聯絡信箱：</RowText>
-                  <Input
-                    dangerMessage={
-                      contactEmailValid || contactEmail.length === 0
-                        ? ""
-                        : "⚠ 請輸入正確的電子郵件"
-                    }
-                    placeholder=""
-                    value={contactEmail}
-                    onChange={(e) => dispatch(setContactEmail(e.target.value))}
-                  />
-                </Row>
-                <Row>
-                  <RowText>手機號碼：</RowText>
-                  <Input
-                    dangerMessage={
-                      contactPhoneValid || contactPhoneDisplay.length === 0
-                        ? ""
-                        : "⚠ 請輸入正確的手機號碼"
-                    }
-                    placeholder=""
-                    value={contactPhoneDisplay}
-                    onChange={(e) => dispatch(setContactPhone(e.target.value))}
-                  />
-                </Row>
-                <RowTextBold>
-                  請保持手機暢通，準時到達，導覽人員將用手機與您聯繫，務必留下正確的聯絡方式。
-                </RowTextBold>
-              </SectionContainer>
-            </Section>
-            <Section>
-              <SectionContainer>
-                <Title>信用卡付款資訊</Title>
-                <Row>
-                  <RowText>卡片號碼：</RowText>
-                  <TapPayInput id="tp-card-number" />
-                </Row>
-                <Row>
-                  <RowText>過期時間：</RowText>
-                  <TapPayInput id="tp-expiration-date" />
-                </Row>
-                <Row>
-                  <RowText>驗證密碼：</RowText>
-                  <TapPayInput id="tp-ccv" />
-                </Row>
-              </SectionContainer>
-            </Section>
-            <Section>
-              <SectionContainer>
-                <FlexEnd>
-                  <RowTextBold>總價：新台幣 {totalPrice} 元</RowTextBold>
-                </FlexEnd>
-                <FlexEnd>
-                  <Button
-                    style={{ cursor: isValid ? "pointer" : "not-allowed" }}
-                    disabled={!isValid}
-                    onClick={handleSubmit}
-                  >
-                    確認訂購並付款
-                  </Button>
-                </FlexEnd>
-                <FlexEnd>
-                  <RowText style={{ color: "red" }}>{paymentMessage}</RowText>
-                </FlexEnd>
-              </SectionContainer>
-            </Section>
-          </>
-        )}
+        <AttractionsInfoSession
+          name={userInfo.name}
+          bookings={bookings}
+          onDeleteClick={handleAttractionDeleteClick}
+        />
+        <ContactInfoSession
+          contactNameValid={contactNameValid || contactName.length === 0}
+          contactEmailValid={contactEmailValid || contactEmail.length === 0}
+          contactPhoneValid={
+            contactPhoneValid || contactPhoneDisplay.length === 0
+          }
+          contactName={contactName}
+          contactEmail={contactEmail}
+          contactPhone={contactPhoneDisplay}
+          onContactNameChange={(value) => dispatch(setContactName(value))}
+          onContactEmailChange={(value) => dispatch(setContactEmail(value))}
+          onContactPhoneChange={(value) => dispatch(setContactPhone(value))}
+        />
+        <PaymentSession />
+        <ConfirmOrderSession
+          isValid={isValid}
+          message={paymentMessage}
+          price={totalPrice}
+          onConfirmOrderClick={handleConfirmOrderClick}
+        />
       </Main>
-      <Footer style={{ flexDirection: "column" }} />
+      <Footer />
     </>
   );
 };

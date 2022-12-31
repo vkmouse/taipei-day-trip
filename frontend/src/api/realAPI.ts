@@ -67,6 +67,16 @@ const realAPI: API = {
     return response;
   },
 
+  getOrders: async (token: string): Promise<Response> => {
+    const response = await fetch(`/api/orders`, {
+      method: "GET",
+      headers: new Headers({
+        Authorization: `Bearer ${token}`,
+      }),
+    });
+    return response;
+  },
+
   getUserInfo: async (token: string): Promise<Response> => {
     const response = await fetch("/api/user/auth", {
       method: "GET",
@@ -162,6 +172,17 @@ const realAPI: API = {
       headers: new Headers({
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
+      }),
+    });
+    return response;
+  },
+
+  uploadUserAvatar: async (token: string, blob: Blob): Promise<Response> => {
+    const response = await fetch("/api/user/avatar", {
+      method: "PUT",
+      body: blob,
+      headers: new Headers({
+        Authorization: `Bearer ${token}`,
       }),
     });
     return response;

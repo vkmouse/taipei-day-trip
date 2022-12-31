@@ -25,6 +25,7 @@ type APIState = {
   logout: () => Promise<void>;
   getBookings: () => Promise<BookingResponse[]>;
   getOrder: (orderId: number) => Promise<OrderResponse | null>;
+  getOrders: () => Promise<OrderResponse[]>;
   getUserInfo: () => Promise<UserInfo | null>;
   processPayment: (
     prime: string,
@@ -35,6 +36,7 @@ type APIState = {
     contactPhone: string
   ) => Promise<PaymentResponse | null>;
   removeBooking: (bookingId: number) => Promise<boolean>;
+  uploadUserAvatar: (blob: Blob) => Promise<boolean>;
 };
 
 const initialState: APIState = {
@@ -69,6 +71,9 @@ const initialState: APIState = {
   getOrder: (): Promise<OrderResponse | null> => {
     throw new Error("Function not implemented.");
   },
+  getOrders: (): Promise<OrderResponse[]> => {
+    throw new Error("Function not implemented.");
+  },
   getUserInfo: (): Promise<UserInfo> => {
     throw new Error("Function not implemented.");
   },
@@ -76,6 +81,9 @@ const initialState: APIState = {
     throw new Error("Function not implemented.");
   },
   removeBooking: (): Promise<boolean> => {
+    throw new Error("Function not implemented.");
+  },
+  uploadUserAvatar: (): Promise<boolean> => {
     throw new Error("Function not implemented.");
   },
 };
@@ -175,6 +183,7 @@ const APIProvider = (props: {
         const body: {
           data: {
             orderId: number;
+            price: number;
             status: number;
             trip: {
               attraction: {
@@ -209,6 +218,50 @@ const APIProvider = (props: {
         }
       }
       return null;
+    },
+    getOrders: async () => {
+      const response = await callAPIWithRefresh(token, (token) =>
+        api.getOrders(token)
+      );
+      if (response.status === 200) {
+        const body: {
+          data: {
+            orderId: number;
+            price: number;
+            status: number;
+            trip: {
+              attraction: {
+                id: number;
+                name: string;
+                address: string;
+                image: string;
+              };
+              bookingId: number;
+              starttime: string;
+              endtime: string;
+              price: number;
+            }[];
+            contact: {
+              name: string;
+              email: string;
+              phone: string;
+            };
+          }[];
+        } = await response.json();
+        return body.data.map((m) => {
+          return {
+            ...m,
+            trip: m.trip.map((n) => {
+              return {
+                ...n,
+                starttime: parseDateTimeString(n.starttime),
+                endtime: parseDateTimeString(n.endtime),
+              };
+            }),
+          };
+        });
+      }
+      return [];
     },
     getUserInfo: async () => {
       dispatch(startLoading());
@@ -276,6 +329,15 @@ const APIProvider = (props: {
     removeBooking: async (bookingId) => {
       const response = await callAPIWithRefresh(token, (token) =>
         api.removeBooking(token, bookingId)
+      );
+      if (response.status === 200) {
+        return true;
+      }
+      return false;
+    },
+    uploadUserAvatar: async (blob) => {
+      const response = await callAPIWithRefresh(token, (token) =>
+        api.uploadUserAvatar(token, blob)
       );
       if (response.status === 200) {
         return true;

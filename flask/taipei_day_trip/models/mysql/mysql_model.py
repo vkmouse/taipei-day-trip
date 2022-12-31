@@ -1,6 +1,7 @@
 import mysql.connector
 import logging
 
+
 class MySQLModel:
     def with_connection(func):
         def wrap(self, *args, **kwargs):
@@ -10,11 +11,12 @@ class MySQLModel:
             try:
                 output = func(self, *args, **kwargs, cnx=cnx, cursor=cursor)
             except mysql.connector.Error as err:
-                logging.error('Something went wrong: {}'.format(err))
+                logging.error("Something went wrong: {}".format(err))
             finally:
                 cursor.close()
                 cnx.close()
             return output
+
         return wrap
 
     def __init__(self, cnxpool: mysql.connector.pooling.MySQLConnectionPool, debug: bool):
@@ -33,7 +35,7 @@ class MySQLModel:
 
     @with_connection
     def table_exists(self, cnx, cursor) -> bool:
-        cursor.execute('SHOW TABLES;')
+        cursor.execute("SHOW TABLES;")
         isExists = (self.tablename,) in cursor.fetchall()
         return isExists
 
@@ -47,4 +49,4 @@ class MySQLModel:
 
     @property
     def drop_table_statement(self) -> str:
-        return 'DROP TABLE {};'.format(self.tablename)
+        return "DROP TABLE {};".format(self.tablename)

@@ -29,7 +29,10 @@ export const userSlice = createSlice({
     },
     setUser: (state, action: PayloadAction<UserInfo>) => {
       state.loading = false;
-      state.userInfo = action.payload;
+      state.userInfo = {
+        ...action.payload,
+        avatarUrl: action.payload.avatarUrl + `?v=${new Date().getTime()}`,
+      };
     },
     reset: (state) => {
       state.isLoggedIn = false;
