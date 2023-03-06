@@ -1,13 +1,14 @@
 # syntax=docker/dockerfile:1
 
-FROM node:16.13.2-alpine
+FROM node:16.13.2-alpine AS build-stage
 
 WORKDIR /app
-COPY . .
-
+COPY package*.json /app/
 RUN npm install
-RUN npm install -g serve
-RUN npm run build
-EXPOSE 3000
 
-CMD [ "serve", "-s", "build" ]
+COPY . .
+RUN npm run build
+
+FROM nginx:alpine
+COPY --from=build-stage /app/build/ /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/default.conf
