@@ -98,12 +98,12 @@ const setPassword = (password: string): Action => {
 };
 
 const initialState: State = {
-  email: "",
-  emailValid: false,
-  name: "",
-  nameValid: false,
-  password: "",
-  passwordValid: false,
+  email: "a@a.a",
+  emailValid: true,
+  name: "vkmouse",
+  nameValid: true,
+  password: "aaaa",
+  passwordValid: true,
 };
 
 const Reducer = (state: State, action: Action): State => {

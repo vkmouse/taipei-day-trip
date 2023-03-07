@@ -124,3 +124,32 @@ export const TapPayInput = styled.div`
   border: 1px solid #CCCCCC;
   border-radius: 5px;
 `;
+
+export const CopyIcon = styled(AttractionsActionIcon)`
+  width: 28px;
+  height: 28px;
+  padding: 4px;
+  border-radius: 5px;
+`;
+
+export const CopyButton = styled.button`
+  position: relative;
+  display: inline-block;
+  margin: 0 0 0 5px;
+  padding: 0;
+  border: 0;
+  background-color: white;
+
+  &:hover::after {
+    content: "複製預設數值";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 8px;
+    background-color: #333;
+    color: #fff;
+    border-radius: 5px;
+    white-space: nowrap;
+  }
+`;
